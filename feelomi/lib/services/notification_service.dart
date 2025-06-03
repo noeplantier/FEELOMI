@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:developer';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
@@ -49,7 +49,7 @@ class NotificationService {
     if (Platform.isAndroid) {
       final status = await Permission.notification.request();
       if (status.isDenied) {
-        debugPrint('Permissions de notification refusées');
+        log('Permissions de notification refusées');
       }
     } else if (Platform.isIOS) {
       await _flutterLocalNotificationsPlugin
@@ -65,7 +65,7 @@ class NotificationService {
 
   void _onNotificationTapped(NotificationResponse notificationResponse) {
     final payload = notificationResponse.payload;
-    debugPrint('Notification tappée avec payload: $payload');
+    log('Notification tappée avec payload: $payload');
     
     // Ici vous pouvez gérer la navigation vers différents écrans
     // selon le type de notification
