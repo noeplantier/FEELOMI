@@ -3,11 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../providers/emotion_provider.dart';
 import '../../models/emotion_entry.dart';
-import '../../utils/constants.dart';
-import '../../widgets/emotion/emotion_selector.dart';
-import '../../widgets/emotion/intensity_slider.dart';
-import '../../widgets/emotion/trigger_chip_selector.dart';
-import '../../widgets/common/feelomi_button.dart';
 
 class EmotionTrackingScreen extends StatefulWidget {
   const EmotionTrackingScreen({Key? key}) : super(key: key);

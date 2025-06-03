@@ -4,10 +4,6 @@ import 'package:intl/intl.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/emotion_provider.dart';
 import '../../utils/routes.dart';
-import '../../widgets/home/emotion_summary_card.dart';
-import '../../widgets/home/habit_tracker_widget.dart';
-import '../../widgets/home/wellbeing_content_list.dart';
-import '../../widgets/home/quick_action_button.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../models/emotion_entry.dart';
 
@@ -93,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             DateFormat('EEEE d MMMM', 'fr_FR').format(DateTime.now()),
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
         ],
@@ -317,4 +313,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+extension on Map<String, dynamic>? {
+  get displayName => null;
 }

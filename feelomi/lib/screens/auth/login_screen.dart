@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.validateEmail,
-                    autofillHints: const [AutofillHints.email],
+                    autofillHints: const [AutofillHints.email], suffixIcon: null,
                   ),
                   const SizedBox(height: 16),
                   
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   FeelomiButton(
                     onPressed: _handleGoogleSignIn,
                     text: 'Continuer avec Google',
-                    icon: Image.asset('assets/images/google_logo.png', height: 24),
+                    leadingImage: Image.asset('assets/images/google_logo.png', height: 24),
                     color: Colors.white,
                     textColor: Colors.black87,
                     borderColor: Colors.grey.shade300,
@@ -244,5 +244,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+}
+
+extension on AuthProvider {
+  Future<bool> signInWithGoogle() {
+    // Implement actual Google sign-in logic
+    throw UnimplementedError('Google sign-in not implemented');
   }
 }

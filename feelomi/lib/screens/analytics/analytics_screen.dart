@@ -7,13 +7,7 @@ import '../../providers/emotion_provider.dart';
 import '../../models/emotion_entry.dart';
 import '../../models/chart_data.dart';
 import '../../widgets/analytics/time_range_selector.dart';
-import '../../widgets/analytics/emotion_chart_card.dart';
-import '../../widgets/analytics/trigger_analysis_card.dart';
-import '../../widgets/analytics/habit_correlation_card.dart';
-import '../../widgets/analytics/emotion_breakdown_card.dart';
-import '../../widgets/common/custom_app_bar.dart';
-import '../../utils/color_utils.dart';
-import '../../utils/date_utils.dart' as date_util;
+
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({Key? key}) : super(key: key);
@@ -38,6 +32,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
   List<FlSpot> _trendData = [];
   
   final List<String> _timeRanges = ['7 jours', '30 jours', '90 jours', '1 an', 'Personnalisé'];
+  
+  var ColorUtils;
 
   @override
   void initState() {
@@ -690,7 +686,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
           TimeRangeSelector(
             selectedRange: _selectedTimeRange,
             availableRanges: _timeRanges,
-            onRangeChanged: _changeTimeRange,
+            onRangeChanged: _changeTimeRange, onRangeSelected: (DateTime start, DateTime end) {  },
           ),
           
           // Date range display
@@ -731,4 +727,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
       ),
     );
   }
+}
+
+class TriggerAnalysisCard {
+}
+
+extension on EmotionProvider {
+  Future<void> fetchEmotionsForDateRange(DateTime startDate, DateTime endDate) async {}
 }
