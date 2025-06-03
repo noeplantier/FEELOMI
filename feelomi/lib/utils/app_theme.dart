@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -63,10 +65,9 @@ class AppTheme {
         fontFamily: 'Poppins',
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: surfaceColor,
       elevation: 2,
-      // ignore: deprecated_member_use
       shadowColor: Colors.black.withOpacity(0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -270,7 +271,7 @@ class AppTheme {
         fontFamily: 'Poppins',
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color(0xFF1E1E1E),
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.3),

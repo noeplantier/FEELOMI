@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
@@ -49,7 +49,7 @@ class NotificationService {
     if (Platform.isAndroid) {
       final status = await Permission.notification.request();
       if (status.isDenied) {
-        log('Permissions de notification refusées');
+        debugPrint('Permissions de notification refusées');
       }
     } else if (Platform.isIOS) {
       await _flutterLocalNotificationsPlugin
@@ -65,7 +65,7 @@ class NotificationService {
 
   void _onNotificationTapped(NotificationResponse notificationResponse) {
     final payload = notificationResponse.payload;
-    log('Notification tappée avec payload: $payload');
+    debugPrint('Notification tappée avec payload: $payload');
     
     // Ici vous pouvez gérer la navigation vers différents écrans
     // selon le type de notification
@@ -276,4 +276,25 @@ class NotificationService {
       importance: NotificationImportance.high,
     );
   }
+}
+
+extension on FlutterLocalNotificationsPlugin {
+  Future<void> schedule(int id, String title, String body, DateTime scheduledDate, NotificationDetails platformChannelSpecifics, {String? payload, required AndroidScheduleMode androidScheduleMode}) async {}
+}
+
+/// Custom importance levels for notifications
+class NotificationImportance {
+  static const high = NotificationImportance._('high');
+  static const defaultImportance = NotificationImportance._('default');
+
+  final String value;
+  const NotificationImportance._(this.value);
+}
+
+/// Maps custom NotificationImportance to flutter_local_notifications Importance
+Importance _mapImportance(NotificationImportance importance) {
+  if (importance == NotificationImportance.high) {
+    return Importance.high;
+  }
+  return Importance.defaultImportance;
 }
