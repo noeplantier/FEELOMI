@@ -77,49 +77,18 @@ class Constants {
   static const String emptyAnimation = "assets/animations/empty.json";
 
     /// Constantes pour les assets
-    static const _AssetsConstants Assets = _AssetsConstants();
 
   static getEmotionColor(param0) {}
   }
   
   /// Classe pour les constantes d'assets
-  class _AssetsConstants {
-    // Empêcher l'instanciation
-    const _AssetsConstants();
-    
-    // Images
-    final String logo = "assets/images/logo.png";
-    static const String logoHorizontal = "assets/images/logo_horizontal.png";
-    static const String welcomeBackground = "assets/images/welcome_bg.png";
-    static const String profilePlaceholder = "assets/images/profile_placeholder.png";
-    static const String googleLogo = "assets/images/google_logo.png";
-    static const String appleLogo = "assets/images/apple_logo.png";
-    static const String onboarding1 = "assets/images/onboarding_1.png";
-    static const String onboarding2 = "assets/images/onboarding_2.png";
-    static const String onboarding3 = "assets/images/onboarding_3.png";
-    
-    /// Clés pour SharedPreferences
-    static const PrefKeys = _PrefKeysConstants();
-  }
-  
+ 
   /// Classe pour les constantes de préférences
   class _PrefKeysConstants {
     // Empêcher l'instanciation
     const _PrefKeysConstants();
   }
   
-
-    
-
-  /// Classe privée pour les arguments de navigation
-  class _NavArgsConstants {
-    // Empêcher l'instanciation
-    const _NavArgsConstants();
-  }
-  
-  /// Clés pour les arguments de navigation
-  class NavArgs {
-  /// Classe privée pour les arguments de navigation
   /// Clés pour les arguments de navigation
   class NavArgs {
     // Empêcher l'instanciation
@@ -128,25 +97,8 @@ class Constants {
     static const String emotionId = "emotion_id";
     static const String isEditing = "is_editing";
     static const String initialTab = "initial_tab";
-    static const String returnToRoute = "return_to_route";
-  /// Classe privée pour l'analytique
-  class _AnalyticsEventsConstants {
-    // Empêcher l'instanciation
-    const _AnalyticsEventsConstants();
   }
   
-  /// Classe privée pour l'analytique
-  class _AnalyticsEvents {
-    // Empêcher l'instanciation
-    const _AnalyticsEvents();
-  }
-  /// Clés pour l'analytique
-  static class AnalyticsEvents {
-    // Empêcher l'instanciation
-    AnalyticsEvents._();
-    
-    // Événements d'authentification
-    static const String login = "login";
   /// Clés pour l'analytique
   class AnalyticsEvents {
     // Empêcher l'instanciation
@@ -172,7 +124,7 @@ class Constants {
     static const String startSubscription = "start_subscription";
     static const String cancelSubscription = "cancel_subscription";
   }
-    static const String shareContent = "share_content";
+
   /// Classe privée pour les valeurs prédéfinies
   class _Presets {
     // Empêcher l'instanciation
@@ -234,7 +186,7 @@ class Constants {
   }
   
   /// Correspondances entre émotions et couleurs
-  static final Map<String, Color> emotionColors = {
+  final Map<String, Color> emotionColors = {
     'Joie': Colors.yellow.shade600,
     'Contentement': Colors.green.shade300,
     'Enthousiasme': Colors.orange.shade300,
@@ -263,90 +215,3 @@ class Constants {
     'Indifférence': Colors.grey.shade500,
     'Soulagement': Colors.teal.shade200,
   };
-  
-  /// Obtient la couleur pour une émotion donnée
-  static Color getEmotionColor(String emotion) {
-    return emotionColors[emotion] ?? Colors.grey;
-  }
-  
-  /// Détermine si une couleur est sombre pour choisir le texte en conséquence
-  static bool isDarkColor(Color color) {
-    return color.computeLuminance() < 0.5;
-  }
-  
-  /// Obtient la couleur de texte appropriée selon la couleur de fond
-  static Color getTextColorForBackground(Color backgroundColor) {
-    return isDarkColor(backgroundColor) ? Colors.white : Colors.black87;
-  }
-}
-
-/// Classe pour les clés de widgets - utile pour les tests et les références
-class FeelomiKeys {
-  // Empêcher l'instanciation
-  FeelomiKeys._();
-  
-  // Clés d'écrans
-  static const Key splashScreen = Key('splash_screen');
-  static const Key loginScreen = Key('login_screen');
-  static const Key registerScreen = Key('register_screen');
-  static const Key homeScreen = Key('home_screen');
-  static const Key emotionTrackingScreen = Key('emotion_tracking_screen');
-  static const Key analyticsScreen = Key('analytics_screen');
-  static const Key profileScreen = Key('profile_screen');
-  
-  // Clés de formulaires
-  static const Key loginForm = Key('login_form');
-  static const Key registerForm = Key('register_form');
-  static const Key emotionForm = Key('emotion_form');
-  static const Key habitForm = Key('habit_form');
-  
-  // Clés de widgets
-  static const Key bottomNav = Key('bottom_nav');
-  static const Key emotionSelector = Key('emotion_selector');
-  static const Key intensitySlider = Key('intensity_slider');
-  static const Key triggerSelector = Key('trigger_selector');
-  static const Key emotionNotes = Key('emotion_notes');
-  static const Key habitTracker = Key('habit_tracker');
-  static const Key emotionChart = Key('emotion_chart');
-  static const Key profileAvatar = Key('profile_avatar');
-  static const Key subscriptionCard = Key('subscription_card');
-}
-
-/// Erreurs personnalisées pour l'application
-class FeelomiErrors {
-  // Empêcher l'instanciation
-  FeelomiErrors._();
-  
-  static const String networkError = "Erreur de connexion. Veuillez vérifier votre connexion internet.";
-  static const String authError = "Erreur d'authentification. Veuillez vous reconnecter.";
-  static const String sessionExpired = "Votre session a expiré. Veuillez vous reconnecter.";
-  static const String unknownError = "Une erreur inattendue s'est produite. Veuillez réessayer.";
-  static const String dataLoadError = "Impossible de charger les données. Veuillez réessayer.";
-  static const String dataSaveError = "Impossible d'enregistrer les données. Veuillez réessayer.";
-  static const String permissionDenied = "Autorisation refusée. Veuillez vérifier vos permissions.";
-  static const String invalidInput = "Entrée invalide. Veuillez vérifier vos informations.";
-  static const String serverError = "Erreur de serveur. Veuillez réessayer ultérieurement.";
-  static const String premiumRequired = "Cette fonctionnalité nécessite un abonnement premium.";
-}
-
-/// Expressions régulières utiles
-class RegExPatterns {
-  // Empêcher l'instanciation
-  RegExPatterns._();
-  
-  static final RegExp email = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-  static final RegExp password = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$');
-  static final RegExp name = RegExp(r'^[a-zA-ZÀ-ÿ\s\-]{2,50}$');
-  static final RegExp phoneNumber = RegExp(r'^\+?[0-9]{8,15}$');
-  static final RegExp time24h = RegExp(r'^([01]?[0-9]|2[0-3]):[0-5][0-9]$');
-  static final RegExp url = RegExp(r'^(http|https)://[a-zA-Z0-9\-.]+\.[a-zA-Z]{2,}(/\S*)?$');
-  static final RegExp hexColor = RegExp(r'^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$');
-  static final RegExp zipCode = RegExp(r'^\d{5}(?:[-\s]\d{4})?$');
-  static final RegExp alphanumeric = RegExp(r'^[a-zA-Z0-9]+$');
-}
-
-    final String onboarding3 = "assets/images/onboarding_3.png";
-    /// Clés pour les routes de navigation
-    static const Routes = _RoutesConstants();
-  }
-  }

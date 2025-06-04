@@ -93,8 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.updateProfile(
+        name: _nameController.text.trim(),
+        email: authProvider.currentUser?.email,
         displayName: _nameController.text.trim(),
-        profileImage: _imageFile,
       );
       
       if (mounted) {
@@ -140,7 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       
       try {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        await authProvider.signOut();
         
         if (mounted) {
           Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (route) => false);
@@ -668,4 +668,6 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
 
 extension on Map<String, dynamic>? {
   get displayName => null;
+  
+  get email => null;
 }

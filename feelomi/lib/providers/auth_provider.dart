@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -144,7 +146,7 @@ class AuthProvider with ChangeNotifier {
   // Mise à jour du profil
   Future<bool> updateProfile({
     String? name,
-    String? email,
+    String? email, File? profileImage, required String displayName,
   }) async {
     if (!_isAuthenticated || _currentUser == null) return false;
 
@@ -313,4 +315,6 @@ class AuthProvider with ChangeNotifier {
   Future signInWithEmailAndPassword(String trim, String text) async {}
 
   Future<void> loadUserProfile() async {}
+
+  Future<void> signOut() async {}
 }
