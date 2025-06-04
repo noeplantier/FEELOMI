@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    _setLoading(true);
     
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -46,12 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       _showErrorDialog('Échec de connexion', 'Veuillez vérifier vos identifiants et réessayer.');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _setLoading(false);
     }
   }
 
   Future<void> _handleGoogleSignIn() async {
-    setState(() => _isLoading = true);
+    _setLoading(true);
     
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -63,8 +63,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       _showErrorDialog('Échec de connexion', 'Impossible de se connecter avec Google. Veuillez réessayer.');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _setLoading(false);
     }
+  }
+
+  void _setLoading(bool loading) {
+    if (mounted) setState(() => _isLoading = loading);
   }
 
   void _showErrorDialog(String title, String message) {
@@ -103,140 +107,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: size.height * 0.05),
-                  // Logo et titre
-                  Hero(
-                    tag: 'app_logo',
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      height: 120,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    'Bienvenue sur Feelomi',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Connectez-vous pour suivre votre bien-être émotionnel',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  _buildHeader(theme),
                   const SizedBox(height: 40),
-                  
-                  // Champ email
-                  FeelomiTextField(
-                    controller: _emailController,
-                    label: 'Email',
-                    prefixIcon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: Validators.validateEmail,
-                    autofillHints: const [AutofillHints.email],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Champ mot de passe
-                  FeelomiTextField(
-                    controller: _passwordController,
-                    label: 'Mot de passe',
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: _obscurePassword,
-                    validator: Validators.validatePassword,
-                    autofillHints: const [AutofillHints.password],
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        color: theme.colorScheme.primary,
-                      ),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                    ),
-                  ),
-                  
-                  // Se souvenir de moi et mot de passe oublié
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (value) => setState(() => _rememberMe = value!),
-                          ),
-                          Text('Se souvenir de moi', style: theme.textTheme.bodyMedium),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pushNamed(context, Routes.forgotPassword),
-                        child: const Text('Mot de passe oublié?'),
-                      ),
-                    ],
-                  ),
-                  
+                  _buildLoginFields(theme),
                   const SizedBox(height: 24),
-                  
-                  // Bouton de connexion
-                  FeelomiButton(
-                    onPressed: _handleLogin,
-                    text: 'Se connecter',
-                    isLoading: _isLoading, leadingImage: null, color: null, textColor: null, borderColor: null,
-                  ),
-                  
                   const SizedBox(height: 24),
-                  
-                  // Divider avec "ou"
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: theme.colorScheme.onSurface.withOpacity(0.3))),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'ou',
-                          style: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.6)),
-                        ),
-                      ),
-                      Expanded(child: Divider(color: theme.colorScheme.onSurface.withOpacity(0.3))),
-                    ],
-                  ),
-                  
+                  _buildDivider(theme),
                   const SizedBox(height: 24),
-                  
-                  // Connexion avec Google
-                  FeelomiButton(
-                    onPressed: _handleGoogleSignIn,
-                    text: 'Continuer avec Google',
-                    leadingImage: Image.asset('assets/images/google_logo.png', height: 24),
-                    color: Colors.white,
-                    textColor: Colors.black87,
-                    borderColor: Colors.grey.shade300,
-                  ),
-                  
+                  _buildGoogleButton(),
                   const SizedBox(height: 32),
-                  
-                  // Lien vers inscription
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Nouveau sur Feelomi? ',
-                        style: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
-                      ),
-                      GestureDetector(
-                        onTap: _navigateToSignUp,
-                        child: Text(
-                          'Créer un compte',
-                          style: TextStyle(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildSignUpLink(theme),
                 ],
               ),
             ),
@@ -245,10 +125,142 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  Widget _buildHeader(ThemeData theme) {
+    return Column(
+      children: [
+        // Logo et titre
+        Hero(
+          tag: 'app_logo',
+          child: Image.asset(
+            'assets/images/logo.png',
+            height: 120,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          'Bienvenue sur Feelomi',
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Connectez-vous pour suivre votre bien-être émotionnel',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginFields(ThemeData theme) {
+    return Column(
+      children: [
+        // Champ email
+  
+        
+        // Champ mot de passe
+        FeelomiTextField(
+          controller: _passwordController,
+          label: 'Mot de passe',
+          prefixIcon: Icons.lock_outline,
+          obscureText: _obscurePassword,
+          validator: Validators.validatePassword,
+          autofillHints: const [AutofillHints.password],
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => _handleLogin(),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+              color: theme.colorScheme.primary,
+            ),
+            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+            tooltip: _obscurePassword ? 'Afficher le mot de passe' : 'Masquer le mot de passe',
+          ),
+        ),
+        
+        // Se souvenir de moi et mot de passe oublié
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) => setState(() => _rememberMe = value!),
+                  ),
+                  Text('Se souvenir de moi', style: theme.textTheme.bodyMedium),
+                ],
+              ),
+              TextButton(
+                onPressed: () => Navigator.pushNamed(context, Routes.forgotPassword),
+                child: const Text('Mot de passe oublié?'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDivider(ThemeData theme) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: theme.colorScheme.onSurface.withOpacity(0.3))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'ou',
+            style: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          ),
+        ),
+        Expanded(child: Divider(color: theme.colorScheme.onSurface.withOpacity(0.3))),
+      ],
+    );
+  }
+
+  Widget _buildGoogleButton() {
+    return FeelomiButton(
+      onPressed: _isLoading ? null : _handleGoogleSignIn,
+      text: 'Continuer avec Google',
+      leadingImage: Image.asset('assets/images/google_logo.png', height: 24),
+      color: Colors.white,
+      textColor: Colors.black87,
+      borderColor: Colors.grey.shade300,
+    );
+  }
+
+  Widget _buildSignUpLink(ThemeData theme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Nouveau sur Feelomi? ',
+          style: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+        ),
+        GestureDetector(
+          onTap: _navigateToSignUp,
+          child: Text(
+            'Créer un compte',
+            style: TextStyle(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 extension on AuthProvider {
-  Future<bool> signInWithGoogle() {
+  Future<bool> signInWithGoogle() async {
     // Implement actual Google sign-in logic
     throw UnimplementedError('Google sign-in not implemented');
   }

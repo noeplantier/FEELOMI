@@ -1,3 +1,4 @@
+import 'package:feelomi/models/emotion_model.dart' as model;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -129,7 +130,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
         triggers: _triggers,
       );
 
-      await Provider.of<EmotionProvider>(context, listen: false).saveEmotionEntry(emotionEntry);
+      await Provider.of<EmotionProvider>(context, listen: false).saveEmotionEntry(emotionEntry as model.EmotionEntry);
 
       if (mounted) {
         Navigator.pop(context, true);
@@ -200,13 +201,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
-            EmotionSelector(
-              emotions: _emotionCategories,
-              selectedEmotion: _primaryEmotion,
-              onEmotionSelected: (emotion) => _selectEmotion(emotion, true),
-              isPrimary: true,
-            ),
+        
             
             const SizedBox(height: 24),
             
@@ -225,13 +220,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            EmotionSelector(
-              emotions: _emotionCategories,
-              selectedEmotion: _secondaryEmotion ?? '',
-              onEmotionSelected: (emotion) => _selectEmotion(emotion, false),
-              isPrimary: false,
-              disabledEmotion: _primaryEmotion,
-            ),
+  
             
             const SizedBox(height: 24),
             
@@ -242,11 +231,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
-            IntensitySlider(
-              initialValue: _intensity,
-              onChanged: _updateIntensity,
-            ),
+     
             
             const SizedBox(height: 24),
             
@@ -258,13 +243,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            TriggerChipSelector(
-              triggers: _commonTriggers,
-              selectedTriggers: _triggers,
-              onToggleTrigger: _toggleTrigger,
-              onAddCustomTrigger: _addCustomTrigger,
-            ),
-            
+      
             const SizedBox(height: 24),
             
             // Section notes
@@ -292,13 +271,7 @@ class _EmotionTrackingScreenState extends State<EmotionTrackingScreen> {
             ),
             
             const SizedBox(height: 32),
-            
-            // Bouton d'enregistrement
-            FeelomiButton(
-              onPressed: _saveEmotionEntry,
-              text: 'Enregistrer mon émotion',
-              isLoading: _isLoading,
-            ),
+          
             
             const SizedBox(height: 32),
           ],

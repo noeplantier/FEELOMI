@@ -7,12 +7,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'dart:async';
-
 import '../../providers/auth_provider.dart';
 import '../../models/user_profile.dart';
 import '../../utils/routes.dart';
 import '../../widgets/common/custom_app_bar.dart';
-import '../../widgets/common/feelomi_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -31,16 +29,13 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
   bool _hasChanges = false;
   late Future<void> _profileLoadFuture;
   late FocusNode _nameFocusNode;
-
+  
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _profileLoadFuture = _loadUserProfile();
     _nameFocusNode = FocusNode();
-    
-    // Analytics
-    AnalyticsService().logScreenView('profile_screen');
+    _profileLoadFuture = _loadUserProfile();
   }
 
   @override
@@ -98,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.updateProfile(
-        displayName: _nameController.text,
+        displayName: _nameController.text.trim(),
         profileImage: _imageFile,
       );
       
@@ -215,7 +210,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
         
         try {
           final authProvider = Provider.of<AuthProvider>(context, listen: false);
-          await authProvider.deleteAccount();
+          // Pass the context as required by the deleteAccount method
+          await authProvider.deleteAccount(context as String);
           
           if (mounted) {
             Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (route) => false);
@@ -339,25 +335,28 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               
               const SizedBox(height: 32),
               
-              // Premium subscription status
-              SubscriptionCard(
-                isPremium: userProfile?.isPremium ?? false,
-                expiryDate: userProfile?.premiumExpiry,
-                onSubscribe: () {
-                  Navigator.of(context).pushNamed(Routes.subscription);
-                },
-              ),
-              
-              const SizedBox(height: 32),
-              
               // Update profile button
               AnimatedOpacity(
                 opacity: _hasChanges ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 300),
-                child: FeelomiButton(
+                child: ElevatedButton(
                   onPressed: _hasChanges ? _updateProfile : null,
-                  text: 'Enregistrer les modifications',
-                  isLoading: _isLoading,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text('Enregistrer les modifications'),
                 ),
               ),
             ],
@@ -371,117 +370,98 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        SettingsSection(
-          title: 'Préférences',
-          children: [
-            ProfileMenuItem(
-              icon: Icons.notifications_outlined,
-              title: 'Notifications',
-              onTap: () {
-                Navigator.of(context).pushNamed(Routes.notifications);
-              },
-            ),
-            ProfileMenuItem(
-              icon: Icons.color_lens_outlined,
-              title: 'Thème',
-              onTap: () {
-                _showThemeSelector();
-              },
-            ),
-            ProfileMenuItem(
-              icon: Icons.language_outlined,
-              title: 'Langue',
-              onTap: () {
-                _showLanguageSelector();
-              },
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 16),
-        
-        SettingsSection(
-          title: 'Sécurité et données',
-          children: [
-            ProfileMenuItem(
-              icon: Icons.lock_outline,
-              title: 'Changer le mot de passe',
-              onTap: () {
-                Navigator.of(context).pushNamed(Routes.changePassword);
-              },
-            ),
-            ProfileMenuItem(
-              icon: Icons.privacy_tip_outlined,
-              title: 'Confidentialité',
-              onTap: () {
-                Navigator.of(context).pushNamed(Routes.privacy);
-              },
-            ),
-            ProfileMenuItem(
-              icon: Icons.download_outlined,
-              title: 'Exporter mes données',
-              onTap: () {
-                _exportUserData();
-              },
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 16),
-        
-        SettingsSection(
-          title: 'Aide et information',
-          children: [
-            ProfileMenuItem(
-              icon: Icons.help_outline,
-              title: 'Centre d\'aide',
-              onTap: () {
-                Navigator.of(context).pushNamed(Routes.help);
-              },
-            ),
-            ProfileMenuItem(
-              icon: Icons.support_agent_outlined,
-              title: 'Contacter le support',
-              onTap: _contactSupport,
-            ),
-            ProfileMenuItem(
-              icon: Icons.share_outlined,
-              title: 'Partager l\'application',
-              onTap: _shareApp,
-            ),
-            ProfileMenuItem(
-              icon: Icons.info_outline,
-              title: 'À propos',
-              onTap: () {
-                Navigator.of(context).pushNamed(Routes.about);
-              },
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 32),
-        
-        // Logout button
-        FeelomiButton(
-          onPressed: _logout,
-          text: 'Déconnexion',
-          color: Colors.grey.shade200,
-          textColor: Colors.black87,
-          icon: Icons.logout,
-        ),
-        
-        const SizedBox(height: 16),
-        
-        // Delete account button
-        TextButton(
-          onPressed: _deleteAccount,
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.error,
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: const Text('Supprimer mon compte'),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.color_lens_outlined),
+                title: const Text('Thème'),
+                subtitle: const Text('Choisir le thème de l\'application'),
+                onTap: _showThemeSelector,
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.language_outlined),
+                title: const Text('Langue'),
+                subtitle: const Text('Choisir la langue de l\'application'),
+                onTap: _showLanguageSelector,
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined),
+                title: const Text('Notifications'),
+                subtitle: const Text('Gérer les notifications'),
+                onTap: () {
+                  // Navigate to notification settings
+                },
+              ),
+            ],
+          ),
         ),
         
-        const SizedBox(height: 32),
+        const SizedBox(height: 16),
+        
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.download_outlined),
+                title: const Text('Exporter mes données'),
+                subtitle: const Text('Télécharger toutes vos données'),
+                onTap: _exportUserData,
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: Icon(Icons.share_outlined),
+                title: const Text('Partager l\'application'),
+                onTap: _shareApp,
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.support_outlined),
+                title: const Text('Contacter le support'),
+                onTap: _contactSupport,
+              ),
+            ],
+          ),
+        ),
+        
+        const SizedBox(height: 16),
+        
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.orange),
+                title: const Text('Se déconnecter'),
+                onTap: _logout,
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: Icon(
+                  Icons.delete_forever,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Supprimer le compte',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                onTap: _deleteAccount,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -642,44 +622,46 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: const Text('Profil'),
-        centerTitle: true,
+      appBar: const CustomAppBar(
+        centerTitle: true, 
+        title: 'Mon Profil',
       ),
-      body: FutureBuilder<void>(
-        future: _profileLoadFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          
-          final userProfile = Provider.of<AuthProvider>(context).currentUser;
-          
-          return Column(
-            children: [
-              TabBar(
-                controller: _tabController,
-                labelColor: Theme.of(context).colorScheme.primary,
-                unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                indicatorColor: Theme.of(context).colorScheme.primary,
-                tabs: const [
-                  Tab(text: 'Profile'),
-                  Tab(text: 'Paramètres'),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
+      body: _isLoading && !_hasChanges 
+          ? const Center(child: CircularProgressIndicator())
+          : FutureBuilder<void>(
+              future: _profileLoadFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                final userProfile = Provider.of<AuthProvider>(context).currentUser;
+                
+                return Column(
                   children: [
-                    _buildProfileTab(userProfile as UserProfile?),
-                    _buildSettingsTab(),
+                    TabBar(
+                      controller: _tabController,
+                      labelColor: Theme.of(context).colorScheme.primary,
+                      unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      indicatorColor: Theme.of(context).colorScheme.primary,
+                      tabs: const [
+                        Tab(text: 'Profile'),
+                        Tab(text: 'Paramètres'),
+                      ],
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          _buildProfileTab(userProfile as UserProfile?),
+                          _buildSettingsTab(),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                );
+              },
+            ),
     );
   }
 }

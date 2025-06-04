@@ -5,7 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/emotion_provider.dart';
 import '../../utils/routes.dart';
 import '../../widgets/common/custom_app_bar.dart';
-import '../../models/emotion_entry.dart';
+import '../../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -54,6 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         Navigator.pushNamed(context, Routes.emotionTracking);
         break;
+      case 3:
+        Navigator.pushNamed(context, Routes.export);
+        break;
       case 4:
         Navigator.pushNamed(context, Routes.profile);
         break;
@@ -96,52 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget _buildQuickActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Actions rapides',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              QuickActionButton(
-                icon: Icons.add_reaction_outlined,
-                label: 'Ajouter une émotion',
-                color: Theme.of(context).colorScheme.primary,
-                onTap: _handleAddEmotion,
-              ),
-              QuickActionButton(
-                icon: Icons.checklist_rounded,
-                label: 'Mes habitudes',
-                color: Theme.of(context).colorScheme.secondary,
-                onTap: () {
-                  // Navigation vers le suivi des habitudes
-                },
-              ),
-              QuickActionButton(
-                icon: Icons.support_agent_outlined,
-                label: 'Consulter',
-                color: Theme.of(context).colorScheme.tertiary,
-                onTap: () {
-                  // Navigation vers les consultations
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
+  
   Widget _buildDailyEmotionCard() {
     final emotionProvider = Provider.of<EmotionProvider>(context);
     final todaysEmotion = emotionProvider.todaysEmotion;
@@ -214,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12),
-          HabitTrackerWidget(),
+          // TODO: Implémenter le widget de suivi d'habitudes
         ],
       ),
     );
@@ -231,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12),
-          WellbeingContentList(),
+          // TODO: Implémenter les contenus recommandés
         ],
       ),
     );
@@ -241,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: Image.asset('assets/images/logo_horizontal.png', height: 30),
+        title: '',
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
@@ -267,7 +225,6 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const SizedBox(height: 12),
                 _buildGreeting(),
-                _buildQuickActions(),
                 _buildDailyEmotionCard(),
                 _buildHabitTracker(),
                 _buildWellbeingContent(),
@@ -317,4 +274,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
 extension on Map<String, dynamic>? {
   get displayName => null;
+}
+
+class EmotionSummaryCard extends StatelessWidget {
+  final Emotion emotion;
+
+  const EmotionSummaryCard({Key? key, required this.emotion}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  _getEmotionIcon(emotion.emotionType),
+                  size: 32,
+                  color: Constants.getEmotionColor(emotion.emotionType ?? ''),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  emotion.emotionType ?? 'Non spécifié',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  DateFormat('HH:mm').format(emotion.timestamp ?? DateTime.now()),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+            if (emotion.description != null && emotion.description!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                emotion.description!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getEmotionIcon(String? emotionType) {
+    switch (emotionType?.toLowerCase()) {
+      case 'joyeux':
+        return Icons.sentiment_very_satisfied;
+      case 'content':
+        return Icons.sentiment_satisfied;
+      case 'neutre':
+        return Icons.sentiment_neutral;
+      case 'triste':
+        return Icons.sentiment_dissatisfied;
+      case 'anxieux':
+        return Icons.sentiment_very_dissatisfied;
+      default:
+        return Icons.mood;
+    }
+  }
+}
+
+class Emotion {
+  String? get emotionType => null;
+  
+  get timestamp => null;
+  
+  get description => null;
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Classe de constantes pour l'application Feelomi
 class Constants {
   // Empêcher l'instanciation
@@ -69,108 +71,121 @@ class Constants {
   static const double desktopBreakpoint = 1200.0;
   
   /// Chemins d'assets
+  static const String loadingAnimation = "assets/animations/loading.json";
+  static const String successAnimation = "assets/animations/success.json";
+  static const String errorAnimation = "assets/animations/error.json";
+  static const String emptyAnimation = "assets/animations/empty.json";
 
-  static const class _Assets {
+    /// Constantes pour les assets
+    static const _AssetsConstants Assets = _AssetsConstants();
+
+  static getEmotionColor(param0) {}
+  }
+  
+  /// Classe pour les constantes d'assets
+  class _AssetsConstants {
     // Empêcher l'instanciation
-    const _Assets();
+    const _AssetsConstants();
     
     // Images
     final String logo = "assets/images/logo.png";
-    final String logoHorizontal = "assets/images/logo_horizontal.png";
-    final String welcomeBackground = "assets/images/welcome_bg.png";
-    final String profilePlaceholder = "assets/images/profile_placeholder.png";
-    final String googleLogo = "assets/images/google_logo.png";
-    final String appleLogo = "assets/images/apple_logo.png";
-    final String onboarding1 = "assets/images/onboarding_1.png";
-    final String onboarding2 = "assets/images/onboarding_2.png";
-    final String onboarding3 = "assets/images/onboarding_3.png";
+    static const String logoHorizontal = "assets/images/logo_horizontal.png";
+    static const String welcomeBackground = "assets/images/welcome_bg.png";
+    static const String profilePlaceholder = "assets/images/profile_placeholder.png";
+    static const String googleLogo = "assets/images/google_logo.png";
+    static const String appleLogo = "assets/images/apple_logo.png";
+    static const String onboarding1 = "assets/images/onboarding_1.png";
+    static const String onboarding2 = "assets/images/onboarding_2.png";
+    static const String onboarding3 = "assets/images/onboarding_3.png";
     
-    // Animations
-    final String loadingAnimation = "assets/animations/loading.json";
-    final String successAnimation = "assets/animations/success.json";
-    final String errorAnimation = "assets/animations/error.json";
-    final String emptyAnimation = "assets/animations/empty.json";
-  /// Clés pour SharedPreferences
-  static const PrefKeys = _PrefKeys();
+    /// Clés pour SharedPreferences
+    static const PrefKeys = _PrefKeysConstants();
+  }
   
-  static const class _PrefKeys {
+  /// Classe pour les constantes de préférences
+  class _PrefKeysConstants {
     // Empêcher l'instanciation
-    const _PrefKeys();
+    const _PrefKeysConstants();
+  }
+  
+
     
-    final String isFirstLaunch = "is_first_launch";
-    final String userId = "user_id";
-    final String userEmail = "user_email";
-    final String userToken = "user_token";
-    final String isLoggedIn = "is_logged_in";
-    final String tokenExpiry = "token_expiry";
-    final String themeMode = "theme_mode";
-    final String language = "language";
-    final String notificationsEnabled = "notifications_enabled";
-    final String lastSyncTimestamp = "last_sync_timestamp";
-    final String deviceId = "device_id";
-    final String hasCompletedOnboarding = "has_completed_onboarding";
-    final String reminderTimes = "reminder_times";
+
+  /// Classe privée pour les arguments de navigation
+  class _NavArgsConstants {
+    // Empêcher l'instanciation
+    const _NavArgsConstants();
+  }
+  
   /// Clés pour les arguments de navigation
-  static const NavArgs = _NavArgs();
-  
-  static const class _NavArgs {
+  class NavArgs {
+  /// Classe privée pour les arguments de navigation
+  /// Clés pour les arguments de navigation
+  class NavArgs {
     // Empêcher l'instanciation
-    const _NavArgs();
+    NavArgs._();
     
-    final String emotionId = "emotion_id";
-    final String habitId = "habit_id";
-    final String contentId = "content_id";
-    final String professionalId = "professional_id";
-    final String appointmentId = "appointment_id";
-    final String isEditing = "is_editing";
-    final String initialTab = "initial_tab";
-    final String returnToRoute = "return_to_route";
-  /// Clés pour l'analytique
-  static const AnalyticsEvents = _AnalyticsEvents();
+    static const String emotionId = "emotion_id";
+    static const String isEditing = "is_editing";
+    static const String initialTab = "initial_tab";
+    static const String returnToRoute = "return_to_route";
+  /// Classe privée pour l'analytique
+  class _AnalyticsEventsConstants {
+    // Empêcher l'instanciation
+    const _AnalyticsEventsConstants();
+  }
   
-  static const class _AnalyticsEvents {
+  /// Classe privée pour l'analytique
+  class _AnalyticsEvents {
     // Empêcher l'instanciation
     const _AnalyticsEvents();
+  }
+  /// Clés pour l'analytique
+  static class AnalyticsEvents {
+    // Empêcher l'instanciation
+    AnalyticsEvents._();
     
     // Événements d'authentification
-    final String login = "login";
-    final String signup = "signup";
-    final String logout = "logout";
-    final String passwordReset = "password_reset";
+    static const String login = "login";
+  /// Clés pour l'analytique
+  class AnalyticsEvents {
+    // Empêcher l'instanciation
+    AnalyticsEvents._();
+    
+    // Événements d'authentification
+    static const String login = "login";
+    static const String signup = "signup";
+    static const String logout = "logout";
+    static const String passwordReset = "password_reset";
     
     // Événements d'émotion
-    final String addEmotion = "add_emotion";
-    final String editEmotion = "edit_emotion";
-    final String deleteEmotion = "delete_emotion";
-    
-    // Événements d'habitude
-    final String createHabit = "create_habit";
-    final String completeHabit = "complete_habit";
-    final String deleteHabit = "delete_habit";
-    
-    // Événements de contenu
-    final String viewContent = "view_content";
-    final String favoriteContent = "favorite_content";
-    final String shareContent = "share_content";
-    
-    // Événements de consultation
-    final String bookAppointment = "book_appointment";
-    final String cancelAppointment = "cancel_appointment";
-    final String completeAppointment = "complete_appointment";
+    static const String addEmotion = "add_emotion";
+    static const String editEmotion = "edit_emotion";
+    static const String deleteEmotion = "delete_emotion";
+    static const String viewContent = "view_content";
+    static const String favoriteContent = "favorite_content";
+    static const String shareContent = "share_content";
+    static const String completeAppointment = "complete_appointment";
     
     // Événements d'abonnement
-    final String viewSubscription = "view_subscription";
-    final String startSubscription = "start_subscription";
-    final String cancelSubscription = "cancel_subscription";
-  /// Listes de valeurs prédéfinies
-  static const Presets = _Presets();
-  
-  static const class _Presets {
+    static const String viewSubscription = "view_subscription";
+    static const String startSubscription = "start_subscription";
+    static const String cancelSubscription = "cancel_subscription";
+  }
+    static const String shareContent = "share_content";
+  /// Classe privée pour les valeurs prédéfinies
+  class _Presets {
     // Empêcher l'instanciation
     const _Presets();
+  }
+
+  /// Listes de valeurs prédéfinies
+  class Presets {
+    // Empêcher l'instanciation
+    Presets._();
     
     // Émotions primaires par catégorie
-    final Map<String, List<String>> emotionCategories = {
+    static const Map<String, List<String>> emotionCategories = {
       'Positives': [
         'Joie', 'Contentement', 'Enthousiasme', 'Fierté', 'Amour', 
         'Gratitude', 'Soulagement', 'Sérénité', 'Espoir'
@@ -186,7 +201,7 @@ class Constants {
     };
     
     // Déclencheurs communs d'émotions
-    final List<String> commonTriggers = [
+    static const List<String> commonTriggers = [
       'Travail', 'Relations', 'Santé', 'Finances', 'Famille', 
       'Sommeil', 'Alimentation', 'Activité physique', 'Stress',
       'Médias sociaux', 'Actualités', 'Météo', 'Solitude',
@@ -195,28 +210,20 @@ class Constants {
     ];
     
     // Catégories d'habitudes
-    final List<String> habitCategories = [
+    static const List<String> habitCategories = [
       'Sommeil', 'Exercice', 'Alimentation', 'Méditation', 'Lecture',
       'Hydratation', 'Relations', 'Loisirs', 'Productivité', 'Santé',
       'Créativité', 'Nature', 'Apprentissage'
     ];
     
     // Types de métriques pour les habitudes
-    final Map<String, String> habitMetricTypes = {
+    static const Map<String, String> habitMetricTypes = {
       'duration': 'Durée',
       'boolean': 'Fait/Non fait',
       'quantity': 'Quantité',
       'rating': 'Évaluation'
     };
     
-    // Spécialités des professionnels
-    final List<String> professionalSpecialties = [
-      'Psychologue', 'Psychothérapeute', 'Coach de vie', 
-      'Coach en bien-être', 'Conseiller en santé mentale',
-      'Psychiatre', 'Thérapeute familial', 'Méditateur',
-      'Nutritionniste', 'Préparateur mental'
-    ];
-  }
     // Spécialités des professionnels
     static const List<String> professionalSpecialties = [
       'Psychologue', 'Psychothérapeute', 'Coach de vie', 
@@ -338,10 +345,8 @@ class RegExPatterns {
   static final RegExp alphanumeric = RegExp(r'^[a-zA-Z0-9]+$');
 }
 
+    final String onboarding3 = "assets/images/onboarding_3.png";
+    /// Clés pour les routes de navigation
+    static const Routes = _RoutesConstants();
   }
-  }
-  static const String loadingAnimation = "assets/animations/loading.json";
-    final String successAnimation = "assets/animations/success.json";
-    final String errorAnimation = "assets/animations/error.json";
-    final String emptyAnimation = "assets/animations/empty.json";
   }

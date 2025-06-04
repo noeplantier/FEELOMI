@@ -1,3 +1,4 @@
+import 'package:feelomi/models/emotion_entry.dart' hide EmotionEntry;
 import 'package:flutter/foundation.dart';
 import '../models/emotion_model.dart';
 import '../services/database_service.dart';
@@ -21,6 +22,8 @@ class EmotionProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get hasEntries => _emotionEntries.isNotEmpty;
+
+  get todaysEmotion => null;
 
   // Récupération des données
   Future<void> loadEmotionEntries({
@@ -325,4 +328,10 @@ class EmotionProvider with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  Future<void> saveEmotionEntry(EmotionEntry emotionEntry) async {}
+
+  Future<void> fetchRecentEmotions() async {}
+
+  Future<void> fetchTodaysEmotion() async {}
 }
