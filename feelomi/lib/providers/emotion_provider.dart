@@ -13,6 +13,8 @@ class EmotionProvider with ChangeNotifier {
   String? _error;
   String? _currentUserId;
 
+  var emotions;
+
   // Getters
   List<EmotionEntry> get emotionEntries => List.unmodifiable(_emotionEntries);
   EmotionAnalytics? get analytics => _analytics;

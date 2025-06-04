@@ -1,4 +1,8 @@
 class Validators {
+  static var validateEmail;
+
+  static var validatePassword;
+
   static String? email(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email is required';

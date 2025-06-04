@@ -3,7 +3,7 @@ Collecting workspace information# Spécifications techniques pour l'application 
 ## Architecture générale
 
 ### Frontend
-- **Framework**: Flutter (dernière version stable)
+- **Framework**: Flutter
 - **Langage**: Dart
 - **État**: Provider pour la gestion d'état
 - **Interface utilisateur**: Material Design 3 avec design system personnalisé
@@ -63,7 +63,7 @@ interface EmotionEntry {
   emotion: {
     primary: string;
     secondary?: string;
-    intensity: number; // 1-10
+    intensity: number;
   };
   notes?: string;
   triggers: string[];

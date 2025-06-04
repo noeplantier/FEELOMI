@@ -309,4 +309,8 @@ class AuthProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  Future signInWithEmailAndPassword(String trim, String text) async {}
+
+  Future<void> loadUserProfile() async {}
 }

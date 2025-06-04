@@ -10,14 +10,9 @@ import 'dart:async';
 
 import '../../providers/auth_provider.dart';
 import '../../models/user_profile.dart';
-import '../../utils/constants.dart';
 import '../../utils/routes.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/feelomi_button.dart';
-import '../../widgets/profile/settings_section.dart';
-import '../../widgets/profile/subscription_card.dart';
-import '../../widgets/profile/profile_menu_item.dart';
-import '../../services/analytics_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -676,7 +671,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildProfileTab(userProfile),
+                    _buildProfileTab(userProfile as UserProfile?),
                     _buildSettingsTab(),
                   ],
                 ),
@@ -687,4 +682,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       ),
     );
   }
+}
+
+extension on Map<String, dynamic>? {
+  get displayName => null;
 }

@@ -12,4 +12,5 @@ class Routes {
   static const String export = '/export';
   static const String help = '/help';
   static const String about = '/about';
+  static const String forgotPassword = '/forgot-password';
 }

@@ -26,7 +26,7 @@ class FeelomiButton extends StatelessWidget {
     this.icon,
     this.customColor,
     this.padding,
-    this.borderRadius,
+    this.borderRadius, required Image leadingImage, required Color color, required Color textColor, required Color borderColor,
   }) : super(key: key);
 
   @override

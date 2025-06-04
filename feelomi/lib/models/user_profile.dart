@@ -288,6 +288,14 @@ class UserMetrics extends Equatable {
 }
 
 UserMetrics _$UserMetricsFromJson(Map<String, dynamic> json) {
+  return UserMetrics(
+    totalEmotionEntries: json['totalEmotionEntries'] as int? ?? 0,
+    totalHabitRecords: json['totalHabitRecords'] as int? ?? 0,
+    streakDays: json['streakDays'] as int? ?? 0,
+    lastEntryDate: json['lastEntryDate'] != null 
+        ? UserMetrics._dateTimeFromJson(json['lastEntryDate']) 
+        : null,
+  );
 }
 
 Map<String, dynamic> _$UserMetricsToJson(UserMetrics userMetrics) {
@@ -550,4 +558,22 @@ class UserProfile extends Equatable {
 }
 
 UserProfile _$UserProfileFromJson(Map<String, dynamic> json) {
+  return UserProfile(
+    id: json['id'] as String,
+    email: json['email'] as String,
+    displayName: json['displayName'] as String?,
+    photoUrl: json['photoUrl'] as String?,
+    createdAt: UserProfile._timestampFromJson(json['createdAt']),
+    lastLogin: UserProfile._timestampFromJson(json['lastLogin']),
+    isPremium: json['isPremium'] as bool? ?? false,
+    premiumExpiry: json['premiumExpiry'] != null 
+        ? UserProfile._nullableTimestampFromJson(json['premiumExpiry'])
+        : null,
+    settings: json['settings'] != null 
+        ? UserSettings.fromJson(json['settings'] as Map<String, dynamic>)
+        : null,
+    metrics: json['metrics'] != null 
+        ? UserMetrics.fromJson(json['metrics'] as Map<String, dynamic>)
+        : null,
+  );
 }

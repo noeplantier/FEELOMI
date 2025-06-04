@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:lottie/lottie.dart';
 import '../providers/auth_provider.dart';
 import '../utils/routes.dart';
 import '../utils/app_theme.dart';

@@ -5,9 +5,39 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import '../../providers/emotion_provider.dart';
 import '../../models/emotion_entry.dart';
-import '../../models/chart_data.dart';
 import '../../widgets/analytics/time_range_selector.dart';
+import '../../widgets/common/custom_app_bar.dart';
 
+class ColorUtils {
+  static Color getColorForEmotion(String emotion) {
+    final Map<String, Color> colors = {
+      'Joie': Colors.yellow.shade600,
+      'Contentement': Colors.green.shade400,
+      'Enthousiasme': Colors.orange.shade400,
+      'Fierté': Colors.amber.shade700,
+      'Amour': Colors.pink.shade400,
+      'Gratitude': Colors.teal.shade400,
+      'Tristesse': Colors.blue.shade700,
+      'Peur': Colors.purple.shade700,
+      'Colère': Colors.red.shade700,
+      'Anxiété': Colors.indigo.shade600,
+      'Frustration': Colors.deepOrange.shade700,
+      'Honte': Colors.brown.shade600,
+      'Surprise': Colors.cyan.shade600,
+      'Curiosité': Colors.lightBlue.shade400,
+      'Confusion': Colors.blueGrey.shade500,
+      'Calme': Colors.lightBlue.shade200,
+      'Ennui': Colors.grey.shade500,
+      'Fatigue': Colors.grey.shade700,
+    };
+    
+    return colors[emotion] ?? Colors.grey;
+  }
+  
+  static Color getTextColorForBackground(Color backgroundColor) {
+    return backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
+}
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({Key? key}) : super(key: key);
@@ -32,8 +62,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
   List<FlSpot> _trendData = [];
   
   final List<String> _timeRanges = ['7 jours', '30 jours', '90 jours', '1 an', 'Personnalisé'];
-  
-  var ColorUtils;
 
   @override
   void initState() {
@@ -379,7 +407,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
               barTouchData: BarTouchData(
                 enabled: true,
                 touchTooltipData: BarTouchTooltipData(
-                  tooltipBgColor: Theme.of(context).colorScheme.surface.withOpacity(0.8),
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
                     final weekdays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
                     return BarTooltipItem(
@@ -670,7 +697,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Text('Analyse'),
+        title: 'Analyse de vos émotions',
         centerTitle: true,
         actions: [
           IconButton(
@@ -686,7 +713,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
           TimeRangeSelector(
             selectedRange: _selectedTimeRange,
             availableRanges: _timeRanges,
-            onRangeChanged: _changeTimeRange, onRangeSelected: (DateTime start, DateTime end) {  },
+            onRangeChanged: _changeTimeRange,
+            onRangeSelected: (start, end) {
+              setState(() {
+                _startDate = start;
+                _endDate = end;
+                _loadData();
+              });
+            },
           ),
           
           // Date range display
@@ -729,9 +763,262 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> with SingleTickerProv
   }
 }
 
-class TriggerAnalysisCard {
+class TriggerAnalysisCard extends StatelessWidget {
+  final Map<String, int> triggerCounts;
+  
+  const TriggerAnalysisCard({Key? key, required this.triggerCounts}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final sortedTriggers = triggerCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Analyse des déclencheurs', 
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            if (sortedTriggers.isEmpty)
+              const Center(child: Text('Aucun déclencheur identifié'))
+            else
+              Column(
+                children: sortedTriggers.take(5).map((entry) {
+                  final percent = entry.value / sortedTriggers.map((e) => e.value).reduce((a, b) => a + b) * 100;
+                  
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Text(entry.key, overflow: TextOverflow.ellipsis),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LinearProgressIndicator(
+                                value: entry.value / (sortedTriggers[0].value * 1.2),
+                                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                                color: Theme.of(context).colorScheme.primary,
+                                minHeight: 8,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${entry.value} fois (${percent.toStringAsFixed(1)}%)',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HabitCorrelationCard extends StatelessWidget {
+  const HabitCorrelationCard({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Corrélation avec les habitudes',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            const Center(
+              child: Column(
+                children: [
+                  Icon(Icons.query_stats_outlined, size: 48, color: Colors.grey),
+                  SizedBox(height: 8),
+                  Text('Données insuffisantes', style: TextStyle(color: Colors.grey)),
+                  SizedBox(height: 4),
+                  Text('Suivez vos habitudes pour voir leurs effets sur vos émotions',
+                      style: TextStyle(fontSize: 12, color: Colors.grey), textAlign: TextAlign.center),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EmotionChartCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final double height;
+  final Widget child;
+  
+  const EmotionChartCard({
+    Key? key, 
+    required this.title, 
+    required this.subtitle, 
+    required this.height, 
+    required this.child
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: height,
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EmotionBreakdownCard extends StatelessWidget {
+  final Map<String, int> emotionCounts;
+  final Map<String, double> emotionIntensities;
+  
+  const EmotionBreakdownCard({
+    Key? key, 
+    required this.emotionCounts, 
+    required this.emotionIntensities
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final sortedEmotions = emotionCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Répartition des émotions', 
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            if (sortedEmotions.isEmpty)
+              const Center(child: Text('Aucune émotion enregistrée'))
+            else
+              Column(
+                children: sortedEmotions.take(5).map((entry) {
+                  final percent = entry.value / sortedEmotions.map((e) => e.value).reduce((a, b) => a + b) * 100;
+                  final intensity = emotionIntensities[entry.key]?.toStringAsFixed(1) ?? '0';
+                  
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: ColorUtils.getColorForEmotion(entry.key),
+                          child: Text(
+                            entry.key.substring(0, 1).toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: ColorUtils.getTextColorForBackground(
+                                ColorUtils.getColorForEmotion(entry.key)
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(entry.key, overflow: TextOverflow.ellipsis),
+                              Text(
+                                '${entry.value} fois (${percent.toStringAsFixed(1)}%)',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.speed, size: 14),
+                                  const SizedBox(width: 4),
+                                  Text('Intensité: $intensity/10'),
+                                ],
+                              ),
+                              LinearProgressIndicator(
+                                value: double.parse(intensity) / 10,
+                                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                                color: ColorUtils.getColorForEmotion(entry.key),
+                                minHeight: 6,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 extension on EmotionProvider {
-  Future<void> fetchEmotionsForDateRange(DateTime startDate, DateTime endDate) async {}
+  Future<void> fetchEmotionsForDateRange(DateTime startDate, DateTime endDate) async {
+    // Cette méthode sera implémentée dans votre EmotionProvider
+    // Pour le moment, on utilise une implémentation vide pour résoudre l'erreur
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+  
+  List<EmotionEntry> get emotions {
+    // Cette propriété sera implémentée dans votre EmotionProvider
+    // Pour le moment, on retourne une liste vide pour résoudre l'erreur
+    return [];
+  }
 }

@@ -52,7 +52,7 @@ class FeelomiTextField extends StatefulWidget {
     this.focusNode,
     this.textInputAction,
     this.onSubmitted,
-    this.autofocus = false,
+    this.autofocus = false, required IconData prefixIcon, required List<String> autofillHints, required IconButton suffixIcon,
   }) : super(key: key);
 
   @override

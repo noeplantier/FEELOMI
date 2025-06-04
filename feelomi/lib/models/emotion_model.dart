@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class EmotionEntry {
   final String id;

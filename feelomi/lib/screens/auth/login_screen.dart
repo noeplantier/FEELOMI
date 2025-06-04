@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.validateEmail,
-                    autofillHints: const [AutofillHints.email], suffixIcon: null,
+                    autofillHints: const [AutofillHints.email],
                   ),
                   const SizedBox(height: 16),
                   
@@ -183,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   FeelomiButton(
                     onPressed: _handleLogin,
                     text: 'Se connecter',
-                    isLoading: _isLoading,
+                    isLoading: _isLoading, leadingImage: null, color: null, textColor: null, borderColor: null,
                   ),
                   
                   const SizedBox(height: 24),
