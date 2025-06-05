@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,15 +14,16 @@ class MyApp extends StatelessWidget {
       title: 'Feelomi',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-          secondary: Colors.amberAccent,
+          seedColor: const Color.fromARGB(255, 150, 95, 186),
+          secondary: const Color.fromARGB(255, 90, 0, 150),
         ),
         fontFamily: 'Poppins',
       ),
-      home: const MoodTrackerPage(title: 'Journal Émotionnel Feelomi'),
+      home: const HomePage(),
     );
   }
 }
+
 
 class MoodTrackerPage extends StatefulWidget {
   const MoodTrackerPage({super.key, required this.title});
@@ -87,9 +89,8 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       _notesController.clear();
     });
     
-    // Log pour debug (à remplacer par un vrai stockage)
-    print('Mood entry saved: $moodEntry');
   }
+  
 
   void _toggleKeyword(String keyword) {
     setState(() {
