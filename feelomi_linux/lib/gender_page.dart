@@ -1,25 +1,21 @@
-import 'package:feelomi_linux/gender_page.dart';
 import 'package:flutter/material.dart';
-import 'gender_page.dart';
-// ...existing code...
 
-class HealthTracker extends StatefulWidget {
-  const HealthTracker({super.key});
+class GenderPage extends StatefulWidget {
+  const GenderPage({super.key});
 
   @override
-  State<HealthTracker> createState() => _HealthTrackerState();
+  State<GenderPage> createState() => _GenderPageState();
 }
 
-class _HealthTrackerState extends State<HealthTracker> {
+class _GenderPageState extends State<GenderPage> {
   // Option sélectionnée
-  String? _selectedOption;
+  String? _selectedGender;
 
-  // Options disponibles
-  final List<Map<String, String>> _healthOptions = [
-    {'emoji': '❤️', 'text': 'Je veux réduire mon stress'},
-    {'emoji': '🤖', 'text': 'Je veux essayer la thérapie IA'},
-    {'emoji': '🙂', 'text': 'Je veux être une meilleure personne'},
-    {'emoji': '🖱️', 'text': 'J\'essaye juste l\'application'},
+  // Options disponibles pour le genre
+  final List<Map<String, String>> _genderOptions = [
+    {'emoji': '👨', 'text': 'Je suis un homme'},
+    {'emoji': '👩', 'text': 'Je suis une femme'},
+    {'emoji': '🌟', 'text': 'Je suis non-binaire'},
   ];
 
   @override
@@ -65,7 +61,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                             ),
                             child: Center(
                               child: Text(
-                                '1',
+                                '2',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold,
@@ -75,7 +71,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Objectif',
+                            'Genre',
                             style: TextStyle(
                               color: primaryColor,
                               fontWeight: FontWeight.bold,
@@ -83,20 +79,11 @@ class _HealthTrackerState extends State<HealthTracker> {
                           ),
                         ],
                       ),
-                        
-                        
-                        TextButton(
+                      TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Étape ignorée')),
-                          );
-                          // Redirection vers la page de sélection du genre
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const GenderPage(),
-                            ),
                           );
                         },
                         child: Text(
@@ -112,7 +99,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.25, // 25% de progression
+                    value: 0.5, // 50% de progression
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -132,7 +119,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                     
                     // Titre principal en violet
                     Text(
-                      'Quel est ton objectif de santé pour aujourd\'hui ?',
+                      'Quel est ton genre ?',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -142,17 +129,17 @@ class _HealthTrackerState extends State<HealthTracker> {
                     
                     const SizedBox(height: 40),
                     
-                    // Options de santé (boutons radio)
-                    ...List.generate(_healthOptions.length, (index) {
-                      final option = _healthOptions[index];
-                      final isSelected = _selectedOption == option['text'];
+                    // Options de genre (boutons radio)
+                    ...List.generate(_genderOptions.length, (index) {
+                      final option = _genderOptions[index];
+                      final isSelected = _selectedGender == option['text'];
                       
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              _selectedOption = option['text'];
+                              _selectedGender = option['text'];
                             });
                           },
                           child: Container(
@@ -256,20 +243,14 @@ class _HealthTrackerState extends State<HealthTracker> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                 onPressed: _selectedOption == null
+                  onPressed: _selectedGender == null
                       ? null // Désactivé si aucune option sélectionnée
                       : () {
-                          // Enregistrer l'option sélectionnée
+                          // Action pour continuer
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Option choisie : $_selectedOption')),
+                            SnackBar(content: Text('Genre choisi : $_selectedGender')),
                           );
-                          // Navigation vers la page de sélection du genre
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const GenderPage(),
-                            ),
-                          );
+                          // Navigation vers l'étape suivante
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
