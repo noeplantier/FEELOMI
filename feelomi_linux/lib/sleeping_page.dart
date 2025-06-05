@@ -1,4 +1,5 @@
 import 'package:feelomi_linux/happy_page.dart';
+import 'package:feelomi_linux/mental_page.dart';
 import 'package:flutter/material.dart';
 
 class SleepingPage extends StatefulWidget {
@@ -380,22 +381,22 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                     top: currentPosition * (MediaQuery.of(context).size.height * 0.5 - 40) + 10,
                                     right: -16,
                                     child: ElevatedButton(
-                                       onPressed: () {
-                                      // Enregistrer la qualité de sommeil sélectionnée
-                                      final sleepQuality = _sleepLevels[_selectedLevel]['title'];
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Qualité de sommeil : $sleepQuality'),
-                                        ),
-                                      );
-                                      // Navigation vers la page des choses qui rendent heureux
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const HappyPage(),
-                                        ),
-                                      );
-                                    },
+                                          onPressed: () {
+                                          // Enregistrer la qualité de sommeil sélectionnée
+                                          final sleepQuality = _sleepLevels[_selectedLevel]['title'];
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Qualité de sommeil : $sleepQuality'),
+                                            ),
+                                          );
+                                          // Navigation vers la page des symptômes de santé mentale
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => const MentalPage(),
+                                            ),
+                                          );
+                                        },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: _sleepLevels[_selectedLevel]['color'],
                                         foregroundColor: Colors.white,
