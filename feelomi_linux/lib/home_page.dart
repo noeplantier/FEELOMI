@@ -1,3 +1,4 @@
+import 'package:feelomi_linux/login_page.dart';
 import 'package:feelomi_linux/main.dart';
 import 'package:flutter/material.dart';
 
@@ -124,11 +125,14 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 
                 // Bouton de connexion
-                TextButton(
-                  onPressed: () {
-                    // Navigation vers la page de connexion
-                    // Remplacez par votre logique de navigation
-                  },
+          TextButton(
+  onPressed: () {
+    // Navigation vers la page de connexion
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  },
                   style: TextButton.styleFrom(
                     foregroundColor: const Color.fromARGB(255, 90, 0, 150),
                   ),
