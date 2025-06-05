@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'physical_page.dart';
 
 class HelpPage extends StatefulWidget {
   const HelpPage({super.key});
@@ -106,22 +107,28 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                           ),
                         ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
-                          // Navigation vers la page suivante à implémenter
-                        },
-                        child: Text(
-                          'Passer cette étape',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
+               TextButton(
+      onPressed: () {
+        // Action pour passer l'étape
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Étape ignorée')),
+        );
+        // Navigation vers la page de détresse physique
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PhysicalPage(),
+          ),
+        );
+      },
+      child: Text(
+        'Passer cette étape',
+        style: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 12,
+        ),
+      ),
+    ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -413,16 +420,21 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: _selectedOption == null
-                      ? null // Désactivé si aucune option sélectionnée
-                      : () {
-                          // Enregistrer l'option sélectionnée
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Réponse : $_selectedOption')),
-                          );
-                          // Navigation vers la page suivante
-                          // À implémenter
-                        },
+                 onPressed: _selectedOption == null
+        ? null // Désactivé si aucune option sélectionnée
+        : () {
+            // Enregistrer l'option sélectionnée
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Réponse : $_selectedOption')),
+            );
+            // Navigation vers la page de détresse physique
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PhysicalPage(),
+              ),
+            );
+          },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
