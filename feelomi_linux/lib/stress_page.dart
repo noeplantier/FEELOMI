@@ -1,3 +1,5 @@
+import 'package:feelomi_linux/analysis_page.dart';
+import 'package:feelomi_linux/better_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'happy_page.dart';
@@ -232,130 +234,180 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                     ),
                   ),
                   
-                  // Jauge en arc de cercle pour le niveau de stress
+                  // Jauge en arc de cercle pour le niveau de stress (style arc-en-ciel)
                   SizedBox(
-                    height: 260,
+                    height: 300,
+                    width: double.infinity,
                     child: Stack(
-                      alignment: Alignment.center,
+                      alignment: Alignment.bottomCenter,
                       children: [
-                        // Cadre d'arc
-                        Container(
-                          width: 250,
-                          height: 250,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade50,
-                            border: Border.all(
-                              color: Colors.grey.shade200,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        
-                        // Arc de cercle arrière (grisé)
-                        CustomPaint(
-                          size: const Size(240, 240),
-                          painter: ArcPainter(
-                            sweepAngle: math.pi,
-                            color: Colors.grey.shade300,
-                            strokeWidth: 15,
-                          ),
-                        ),
-                        
-                        // Arc de cercle animé (coloré)
-                        AnimatedBuilder(
-                          animation: _animation,
-                          builder: (context, child) {
-                            return CustomPaint(
-                              size: const Size(240, 240),
-                              painter: ArcPainter(
-                                sweepAngle: _animation.value * math.pi,
-                                color: _stressLevels[_stressLevel]['color'],
-                                strokeWidth: 15,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        // Labels sur l'arc
-                        ...List.generate(_stressLevels.length, (index) {
-                          final angle = index * (math.pi / (_stressLevels.length - 1));
-                          final isSelected = index == _stressLevel;
-                          
-                          return Positioned(
-                            left: 120 + 100 * math.cos(angle),
-                            top: 120 - 100 * math.sin(angle),
-                            child: GestureDetector(
-                              onTap: () => _setStressLevel(index),
-                              child: Container(
-                                width: isSelected ? 40 : 30,
-                                height: isSelected ? 40 : 30,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? _stressLevels[index]['color']
-                                      : Colors.white,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: _stressLevels[index]['color'],
-                                    width: 2,
-                                  ),
-                                  boxShadow: isSelected 
-                                      ? [
-                                          BoxShadow(
-                                            color: _stressLevels[index]['color'].withOpacity(0.3),
-                                            blurRadius: 8,
-                                            spreadRadius: 2,
-                                          )
-                                        ] 
-                                      : null,
-                                ),
-                                child: Icon(
-                                  _stressLevels[index]['icon'],
-                                  color: isSelected ? Colors.white : _stressLevels[index]['color'],
-                                  size: isSelected ? 20 : 16,
+                        // Positionnement de l'arc
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: 220,
+                          child: Stack(
+                            children: [
+                              // Arc de cercle arrière (grisé)
+                              CustomPaint(
+                                size: const Size(double.infinity, 220),
+                                painter: RainbowArcPainter(
+                                  progress: 1.0,
+                                  color: Colors.grey.shade300,
+                                  strokeWidth: 18,
                                 ),
                               ),
-                            ),
-                          );
-                        }),
-                        
-                        // Niveau actuel au centre
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AnimatedBuilder(
-                              animation: _animation,
-                              builder: (context, child) {
-                                return Text(
-                                  _stressLevels[_stressLevel]['title'],
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: _stressLevels[_stressLevel]['color'],
+                              
+                              // Arc de cercle animé (coloré)
+                              AnimatedBuilder(
+                                animation: _animation,
+                                builder: (context, child) {
+                                  return CustomPaint(
+                                    size: const Size(double.infinity, 220),
+                                    painter: RainbowArcPainter(
+                                      progress: _animation.value,
+                                      color: _stressLevels[_stressLevel]['color'],
+                                      strokeWidth: 18,
+                                    ),
+                                  );
+                                },
+                              ),
+                              
+                              // Labels sur l'arc
+                              ...List.generate(_stressLevels.length, (index) {
+                                // Calculer la position horizontale pour chaque niveau
+                                // Distribuer uniformément de gauche à droite
+                                final xPosition = MediaQuery.of(context).size.width * 
+                                    (0.15 + (index * 0.7 / (_stressLevels.length - 1)));
+                                
+                                // Calculer la position verticale (sur l'arc)
+                                final yOffset = 160 - (80 * math.sin(index * math.pi / (_stressLevels.length - 1)));
+                                
+                                final isSelected = index == _stressLevel;
+                                
+                                return Positioned(
+                                  left: xPosition - 20, // Centrer sur la position
+                                  bottom: yOffset,
+                                  child: GestureDetector(
+                                    onTap: () => _setStressLevel(index),
+                                    child: Container(
+                                      width: isSelected ? 40 : 30,
+                                      height: isSelected ? 40 : 30,
+                                      decoration: BoxDecoration(
+                                        color: isSelected 
+                                            ? _stressLevels[index]['color']
+                                            : Colors.white,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: _stressLevels[index]['color'],
+                                          width: 2,
+                                        ),
+                                        boxShadow: isSelected 
+                                            ? [
+                                                BoxShadow(
+                                                  color: _stressLevels[index]['color'].withOpacity(0.3),
+                                                  blurRadius: 8,
+                                                  spreadRadius: 2,
+                                                )
+                                              ] 
+                                            : null,
+                                      ),
+                                      child: Icon(
+                                        _stressLevels[index]['icon'],
+                                        color: isSelected ? Colors.white : _stressLevels[index]['color'],
+                                        size: isSelected ? 20 : 16,
+                                      ),
+                                    ),
                                   ),
                                 );
-                              }
-                            ),
-                            const SizedBox(height: 8),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: Text(
-                                _stressLevels[_stressLevel]['description'],
-                                key: ValueKey<int>(_stressLevel),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade700,
+                              }),
+                              
+                              // Labels de texte sous l'arc
+                              ...List.generate(_stressLevels.length, (index) {
+                                // Calculer la position horizontale pour chaque niveau
+                                final xPosition = MediaQuery.of(context).size.width * 
+                                    (0.15 + (index * 0.7 / (_stressLevels.length - 1)));
+                                
+                                final isSelected = index == _stressLevel;
+                                
+                                return Positioned(
+                                  left: xPosition - 40, // Centrer sur la position
+                                  bottom: 10,
+                                  width: 80, // Largeur fixe pour le texte
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        _stressLevels[index]['title'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: isSelected ? 14 : 12,
+                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                          color: isSelected 
+                                              ? _stressLevels[index]['color']
+                                              : Colors.grey.shade700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                        
+                        // Niveau actuel au-dessus de l'arc
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: Container(
+                                  key: ValueKey<int>(_stressLevel),
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: _stressLevels[_stressLevel]['color'].withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: _stressLevels[_stressLevel]['color'],
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        _stressLevels[_stressLevel]['title'],
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: _stressLevels[_stressLevel]['color'],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        _stressLevels[_stressLevel]['description'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                   
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
                   
                   // Sélecteur de niveau de stress sous forme de boutons
                   Padding(
@@ -470,21 +522,21 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Enregistrer le niveau de stress
-                    final stressTitle = _stressLevels[_stressLevel]['title'];
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Niveau de stress : $stressTitle')),
-                    );
-                    
-                    // Navigation vers la page suivante
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HappyPage(),
-                      ),
-                    );
-                  },
+                      onPressed: () {
+                      // Enregistrer le niveau de stress
+                      final stressTitle = _stressLevels[_stressLevel]['title'];
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Niveau de stress : $stressTitle')),
+                      );
+                      
+                      // Navigation vers la page d'engagement
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BetterPage(),
+                        ),
+                      );
+                    },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _stressLevels[_stressLevel]['color'],
                     foregroundColor: Colors.white,
@@ -514,24 +566,26 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
   }
 }
 
-// Painter personnalisé pour dessiner l'arc de cercle
-class ArcPainter extends CustomPainter {
-  final double sweepAngle;
+// Painter personnalisé pour dessiner l'arc en arc-en-ciel (du bas vers le haut)
+class RainbowArcPainter extends CustomPainter {
+  final double progress;
   final Color color;
   final double strokeWidth;
   
-  ArcPainter({
-    required this.sweepAngle,
+  RainbowArcPainter({
+    required this.progress,
     required this.color,
     this.strokeWidth = 10,
   });
   
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromCenter(
-      center: Offset(size.width / 2, size.height / 2),
-      width: size.width,
-      height: size.height,
+    // Créer un rectangle pour l'arc
+    final rect = Rect.fromLTWH(
+      -size.width * 0.2,          // Décaler à gauche pour agrandir l'arc
+      -size.height * 1.8,         // Décaler en haut pour que l'arc commence en bas
+      size.width * 1.4,           // Largeur augmentée pour un arc plus large
+      size.height * 2.5,          // Hauteur ajustée pour un arc semi-circulaire
     );
     
     final paint = Paint()
@@ -540,19 +594,21 @@ class ArcPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth;
     
-    // L'arc commence en haut (- math.pi/2) et va vers la droite
+    // Dessiner un arc du bas gauche au bas droit en passant par le haut
+    // L'arc commence à -pi (côté gauche) et va jusqu'à 0 (côté droit)
+    // Le progress détermine jusqu'où l'arc est dessiné
     canvas.drawArc(
-      rect, 
-      -math.pi/2, 
-      sweepAngle,
-      false, 
+      rect,
+      -math.pi,                  // Angle de départ (gauche)
+      math.pi * progress,        // Angle de balayage (jusqu'à la droite selon progress)
+      false,
       paint,
     );
   }
   
   @override
-  bool shouldRepaint(covariant ArcPainter oldDelegate) {
-    return sweepAngle != oldDelegate.sweepAngle || 
+  bool shouldRepaint(covariant RainbowArcPainter oldDelegate) {
+    return progress != oldDelegate.progress || 
            color != oldDelegate.color ||
            strokeWidth != oldDelegate.strokeWidth;
   }
