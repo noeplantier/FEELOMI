@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'age_page.dart';
 
 class GenderPage extends StatefulWidget {
   const GenderPage({super.key});
@@ -84,6 +85,13 @@ class _GenderPageState extends State<GenderPage> {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Étape ignorée')),
+                          );
+                          // Navigation vers la page d'âge
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AgePage(),
+                            ),
                           );
                         },
                         child: Text(
@@ -250,7 +258,13 @@ class _GenderPageState extends State<GenderPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Genre choisi : $_selectedGender')),
                           );
-                          // Navigation vers l'étape suivante
+                          // Navigation vers la page d'âge
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AgePage(),
+                            ),
+                          );
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
