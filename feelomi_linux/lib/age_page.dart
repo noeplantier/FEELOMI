@@ -1,6 +1,7 @@
-// TODO Implement this library.import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'weight_page.dart';
+
 
 class AgePage extends StatefulWidget {
   const AgePage({super.key});
@@ -74,14 +75,19 @@ class _AgePageState extends State<AgePage> {
                           ),
                         ],
                       ),
-                      TextButton(
+                        TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Étape ignorée')),
                           );
-                          // Navigation vers page suivante
-                          // À implémenter
+                          // Navigation vers la page de poids
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const WeightPage(),
+                            ),
+                          );
                         },
                         child: Text(
                           'Passer cette étape',
@@ -91,6 +97,7 @@ class _AgePageState extends State<AgePage> {
                           ),
                         ),
                       ),
+
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -191,13 +198,19 @@ class _AgePageState extends State<AgePage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
+                  
+                onPressed: () {
                     // Enregistrer l'âge sélectionné
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Âge choisi : $_selectedAge ans')),
                     );
-                    // Navigation vers la page suivante
-                    // À implémenter
+                    // Navigation vers la page de poids
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WeightPage(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
