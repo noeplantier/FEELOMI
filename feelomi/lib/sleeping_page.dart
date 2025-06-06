@@ -421,11 +421,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                               onPressed: () {
                                                 // Enregistrer la qualité de sommeil sélectionnée
                                                 final sleepQuality = _sleepLevels[_selectedLevel]['title'];
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text('Qualité de sommeil : $sleepQuality'),
-                                                  ),
-                                                );
+                                       
                                                 // Navigation vers la page des symptômes de santé mentale
                                                 Navigator.push(
                                                   context,

@@ -696,15 +696,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                   onPressed: () {
                     // Enregistrer les médicaments spécifiés
                     final meds = _medicController.text;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          meds.isEmpty
-                              ? 'Aucun médicament spécifié'
-                              : 'Médicaments enregistrés: $meds',
-                        ),
-                      ),
-                    );
+            
                     // Navigation vers la page finale
                     Navigator.push(
                       context,

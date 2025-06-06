@@ -691,15 +691,7 @@ class _BetterPageState extends State<BetterPage> {
                 child: ElevatedButton(
                   onPressed: _hasDrawnSmile
                     ? () {
-                        // Animation de succès
-                        HapticFeedback.heavyImpact();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Félicitations pour ton engagement! 🎉'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        
+        
                         // Navigation vers la page suivante
                         Navigator.push(
                           context,
@@ -709,16 +701,7 @@ class _BetterPageState extends State<BetterPage> {
                         );
                       }
                     : () {
-                        // Vérifier si l'utilisateur a dessiné quelque chose
-                        if (_points.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Dessine un sourire pour symboliser ton engagement'),
-                              backgroundColor: Colors.amber,
-                            ),
-                          );
-                          return;
-                        }
+      
                         
                         // Inciter à dessiner un sourire valide
                         _checkDrawing();
