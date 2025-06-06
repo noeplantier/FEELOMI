@@ -6,7 +6,7 @@ import 'dart:async';
 
 class SpecifyPage extends StatefulWidget {
   final String medicType;
-  
+
   const SpecifyPage({super.key, required this.medicType});
 
   @override
@@ -16,13 +16,13 @@ class SpecifyPage extends StatefulWidget {
 class _SpecifyPageState extends State<SpecifyPage> {
   // Contrôleur pour le champ de texte
   final TextEditingController _medicController = TextEditingController();
-  
+
   // Instance de Speech to Text
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _speechEnabled = false;
   bool _isRecording = false;
   String _lastWords = '';
-  
+
   // Base de données simulée de médicaments pour l'auto-suggestion
   final List<String> _medicDatabase = [
     'Doliprane 500mg',
@@ -45,11 +45,11 @@ class _SpecifyPageState extends State<SpecifyPage> {
     'Ibuprofène',
     'Paracétamol',
   ];
-  
+
   // Liste de suggestions
   List<String> _suggestions = [];
   Timer? _debounceTimer;
-  
+
   @override
   void initState() {
     super.initState();
@@ -64,30 +64,30 @@ class _SpecifyPageState extends State<SpecifyPage> {
     );
     setState(() {});
   }
-  
+
   // Démarrage de l'écoute vocale
   void _startListening() async {
     if (!_speechEnabled) {
       _initSpeech();
     }
-    
+
     setState(() {
       _isRecording = true;
       _lastWords = '';
     });
-    
+
     await _speech.listen(
       onResult: _onSpeechResult,
       localeId: 'fr_FR', // Langue française
       listenFor: const Duration(seconds: 30), // Durée maximale d'écoute
       pauseFor: const Duration(seconds: 3), // Pause automatique après silence
     );
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Écoute active, parlez maintenant...')),
     );
   }
-  
+
   // Arrêt de l'écoute vocale
   void _stopListening() {
     _speech.stop();
@@ -95,7 +95,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
       _isRecording = false;
     });
   }
-  
+
   // Bascule de l'état d'enregistrement
   void _toggleRecording() {
     if (_isRecording) {
@@ -104,13 +104,13 @@ class _SpecifyPageState extends State<SpecifyPage> {
       _startListening();
     }
   }
-  
+
   // Traitement du résultat de la reconnaissance vocale
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _lastWords = result.recognizedWords;
     });
-    
+
     if (result.finalResult) {
       // Ajout du texte reconnu au champ de médicaments
       if (_lastWords.isNotEmpty) {
@@ -118,7 +118,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
       }
     }
   }
-  
+
   // Traitement du statut de la reconnaissance vocale
   void _onSpeechStatus(String status) {
     if (status == 'done' || status == 'notListening') {
@@ -127,13 +127,13 @@ class _SpecifyPageState extends State<SpecifyPage> {
       });
     }
   }
-  
+
   // Gestion des erreurs de reconnaissance vocale
   void _onSpeechError(dynamic error) {
     setState(() {
       _isRecording = false;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Erreur de reconnaissance vocale: ${error.toString()}'),
@@ -141,66 +141,67 @@ class _SpecifyPageState extends State<SpecifyPage> {
       ),
     );
   }
-  
+
   // Traitement du texte reconnu pour identifier les médicaments
   void _processRecognizedText(String text) {
     // Convertir en minuscules pour la recherche
     final lowerText = text.toLowerCase();
-    
+
     // Rechercher des correspondances dans la base de données
     List<String> foundMeds = _medicDatabase
         .where((med) => lowerText.contains(med.toLowerCase()))
         .toList();
-    
+
     // Si aucun médicament trouvé, utiliser le texte brut
     if (foundMeds.isEmpty) {
       // Diviser le texte en mots potentiels pour les médicaments
       final words = lowerText.split(' ');
-      
+
       // Recherche plus avancée
       for (final word in words) {
-        if (word.length >= 4) { // Ignorer les mots trop courts
+        if (word.length >= 4) {
+          // Ignorer les mots trop courts
           final possibleMeds = _medicDatabase
               .where((med) => med.toLowerCase().contains(word))
               .toList();
-          
+
           foundMeds.addAll(possibleMeds);
         }
       }
-      
+
       // Si toujours rien trouvé, utiliser le texte brut
       if (foundMeds.isEmpty) {
         foundMeds = [text];
       }
     }
-    
+
     // Ajouter les médicaments identifiés au champ de texte
     final currentText = _medicController.text;
     String newText = foundMeds.join(', ');
-    
+
     if (currentText.isNotEmpty) {
       newText = '$currentText, $newText';
     }
-    
+
     setState(() {
       _medicController.text = newText;
     });
   }
-  
+
   // Recherche de suggestions basée sur le texte saisi
   void _onTextChanged() {
     final text = _medicController.text;
-    
+
     // Annuler le timer précédent s'il est actif
     _debounceTimer?.cancel();
-    
+
     // Créer un nouveau timer pour éviter les recherches trop fréquentes
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       // Obtenir le dernier mot saisi
       final words = text.split(',');
       if (words.isNotEmpty) {
         final lastWord = words.last.trim().toLowerCase();
-        
+
         if (lastWord.isNotEmpty) {
           // Rechercher des correspondances dans la base de données
           setState(() {
@@ -217,19 +218,19 @@ class _SpecifyPageState extends State<SpecifyPage> {
       }
     });
   }
-  
+
   // Sélection d'une suggestion
   void _selectSuggestion(String suggestion) {
     final words = _medicController.text.split(',');
     words.removeLast();
-    
+
     String newText = words.join(',');
     if (newText.isNotEmpty) {
       newText = '$newText, $suggestion';
     } else {
       newText = suggestion;
     }
-    
+
     setState(() {
       _medicController.text = newText;
       _suggestions = [];
@@ -243,18 +244,18 @@ class _SpecifyPageState extends State<SpecifyPage> {
     _speech.cancel();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     // Titre dynamique basé sur le type de médicament
     String pageTitle;
     String placeholderText;
     Color medicColor;
     IconData medicIcon;
-    
+
     switch (widget.medicType) {
       case 'prescrits':
         pageTitle = 'Quels médicaments prends-tu ?';
@@ -274,7 +275,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
         medicColor = primaryColor;
         medicIcon = Icons.medication;
     }
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -306,10 +307,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -353,7 +351,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 1.04, // 100% de progression
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -362,7 +360,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -372,7 +370,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal en violet
                       Text(
                         pageTitle,
@@ -383,9 +381,9 @@ class _SpecifyPageState extends State<SpecifyPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Sous-titre explicatif
                       Text(
                         'Cette information nous aidera à adapter ton expérience.',
@@ -395,9 +393,9 @@ class _SpecifyPageState extends State<SpecifyPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Icône du type de médicament
                       Container(
                         width: 80,
@@ -406,15 +404,11 @@ class _SpecifyPageState extends State<SpecifyPage> {
                           shape: BoxShape.circle,
                           color: medicColor.withOpacity(0.2),
                         ),
-                        child: Icon(
-                          medicIcon,
-                          size: 40,
-                          color: medicColor,
-                        ),
+                        child: Icon(medicIcon, size: 40, color: medicColor),
                       ),
-                      
+
                       const SizedBox(height: 30),
-                      
+
                       // Champ de texte avec bouton microphone
                       Container(
                         decoration: BoxDecoration(
@@ -439,7 +433,9 @@ class _SpecifyPageState extends State<SpecifyPage> {
                               children: [
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
                                     child: TextField(
                                       controller: _medicController,
                                       onChanged: (value) {
@@ -453,9 +449,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                           fontStyle: FontStyle.italic,
                                         ),
                                       ),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                      ),
+                                      style: const TextStyle(fontSize: 16),
                                       maxLines: 3,
                                       minLines: 1,
                                     ),
@@ -465,17 +459,30 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                   margin: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _isRecording ? Colors.red : primaryColor,
+                                    color: _isRecording
+                                        ? Colors.red
+                                        : primaryColor,
                                   ),
                                   child: IconButton(
                                     onPressed: _toggleRecording,
                                     icon: AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 200),
-                                      transitionBuilder: (Widget child, Animation<double> animation) {
-                                        return ScaleTransition(scale: animation, child: child);
-                                      },
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      transitionBuilder:
+                                          (
+                                            Widget child,
+                                            Animation<double> animation,
+                                          ) {
+                                            return ScaleTransition(
+                                              scale: animation,
+                                              child: child,
+                                            );
+                                          },
                                       child: Icon(
-                                        _isRecording ? Icons.stop : Icons.mic_none,
+                                        _isRecording
+                                            ? Icons.stop
+                                            : Icons.mic_none,
                                         key: ValueKey<bool>(_isRecording),
                                         color: Colors.white,
                                       ),
@@ -484,7 +491,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                 ),
                               ],
                             ),
-                            
+
                             // Affichage de la reconnaissance en cours
                             if (_isRecording && _lastWords.isNotEmpty)
                               Container(
@@ -528,7 +535,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                   ],
                                 ),
                               ),
-                            
+
                             // Affichage des suggestions
                             if (_suggestions.isNotEmpty)
                               Container(
@@ -545,7 +552,10 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 16, top: 8),
+                                      padding: const EdgeInsets.only(
+                                        left: 16,
+                                        top: 8,
+                                      ),
                                       child: Text(
                                         'Suggestions:',
                                         style: TextStyle(
@@ -554,21 +564,29 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                         ),
                                       ),
                                     ),
-                                    ..._suggestions.map((suggestion) => InkWell(
-                                      onTap: () => _selectSuggestion(suggestion),
-                                      child: Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                        child: Text(
-                                          suggestion,
-                                          style: const TextStyle(fontSize: 14),
+                                    ..._suggestions.map(
+                                      (suggestion) => InkWell(
+                                        onTap: () =>
+                                            _selectSuggestion(suggestion),
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 10,
+                                          ),
+                                          child: Text(
+                                            suggestion,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    )),
+                                    ),
                                   ],
                                 ),
                               ),
-                            
+
                             // Affichage des médicaments identifiés
                             if (_medicController.text.isNotEmpty)
                               Container(
@@ -606,26 +624,35 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                           .split(',')
                                           .map((med) => med.trim())
                                           .where((med) => med.isNotEmpty)
-                                          .map((med) => Chip(
-                                            backgroundColor: medicColor.withOpacity(0.2),
-                                            labelStyle: TextStyle(
-                                              color: medicColor,
-                                              fontSize: 14,
+                                          .map(
+                                            (med) => Chip(
+                                              backgroundColor: medicColor
+                                                  .withOpacity(0.2),
+                                              labelStyle: TextStyle(
+                                                color: medicColor,
+                                                fontSize: 14,
+                                              ),
+                                              label: Text(med),
+                                              deleteIconColor: medicColor,
+                                              onDeleted: () {
+                                                // Supprimer ce médicament de la liste
+                                                setState(() {
+                                                  List<String> meds =
+                                                      _medicController.text
+                                                          .split(',')
+                                                          .map((m) => m.trim())
+                                                          .where(
+                                                            (m) =>
+                                                                m.isNotEmpty &&
+                                                                m != med,
+                                                          )
+                                                          .toList();
+                                                  _medicController.text = meds
+                                                      .join(', ');
+                                                });
+                                              },
                                             ),
-                                            label: Text(med),
-                                            deleteIconColor: medicColor,
-                                            onDeleted: () {
-                                              // Supprimer ce médicament de la liste
-                                              setState(() {
-                                                List<String> meds = _medicController.text
-                                                    .split(',')
-                                                    .map((m) => m.trim())
-                                                    .where((m) => m.isNotEmpty && m != med)
-                                                    .toList();
-                                                _medicController.text = meds.join(', ');
-                                              });
-                                            },
-                                          ))
+                                          )
                                           .toList(),
                                     ),
                                   ],
@@ -634,9 +661,9 @@ class _SpecifyPageState extends State<SpecifyPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 30),
-                      
+
                       // Message informatif
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -674,7 +701,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -696,7 +723,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                   onPressed: () {
                     // Enregistrer les médicaments spécifiés
                     final meds = _medicController.text;
-            
+
                     // Navigation vers la page finale
                     Navigator.push(
                       context,
@@ -718,7 +745,10 @@ class _SpecifyPageState extends State<SpecifyPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

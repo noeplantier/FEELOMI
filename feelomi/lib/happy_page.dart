@@ -209,7 +209,7 @@ class _HappyPageState extends State<HappyPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 1.56,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

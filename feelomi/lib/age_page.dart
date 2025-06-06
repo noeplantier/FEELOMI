@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'weight_page.dart';
 
-
 class AgePage extends StatefulWidget {
   const AgePage({super.key});
 
@@ -18,7 +17,7 @@ class _AgePageState extends State<AgePage> {
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -50,10 +49,7 @@ class _AgePageState extends State<AgePage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -75,7 +71,7 @@ class _AgePageState extends State<AgePage> {
                           ),
                         ],
                       ),
-                        TextButton(
+                      TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -97,13 +93,12 @@ class _AgePageState extends State<AgePage> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.75, // 75% de progression
+                    value: 0.39,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -112,7 +107,7 @@ class _AgePageState extends State<AgePage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -129,9 +124,9 @@ class _AgePageState extends State<AgePage> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Sélecteur d'âge au style iOS
                   Container(
                     height: 200,
@@ -153,8 +148,8 @@ class _AgePageState extends State<AgePage> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w500,
-                              color: index == _selectedAge 
-                                  ? primaryColor 
+                              color: index == _selectedAge
+                                  ? primaryColor
                                   : Colors.black87,
                             ),
                           ),
@@ -162,7 +157,7 @@ class _AgePageState extends State<AgePage> {
                       }),
                     ),
                   ),
-                  
+
                   // Indication visuelle de la sélection
                   Container(
                     alignment: Alignment.center,
@@ -179,7 +174,7 @@ class _AgePageState extends State<AgePage> {
                 ],
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -198,9 +193,7 @@ class _AgePageState extends State<AgePage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  
-                onPressed: () {
-                   
+                  onPressed: () {
                     // Navigation vers la page de poids
                     Navigator.push(
                       context,
@@ -222,7 +215,10 @@ class _AgePageState extends State<AgePage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

@@ -11,7 +11,7 @@ class MedicsPage extends StatefulWidget {
 class _MedicsPageState extends State<MedicsPage> {
   // Option sélectionnée
   String? _selectedOption;
-  
+
   // Liste des options de médicaments
   final List<Map<String, dynamic>> _medicOptions = [
     {
@@ -39,12 +39,12 @@ class _MedicsPageState extends State<MedicsPage> {
       'color': Colors.grey,
     },
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -76,10 +76,7 @@ class _MedicsPageState extends State<MedicsPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -111,7 +108,8 @@ class _MedicsPageState extends State<MedicsPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SpecifyPage(medicType: 'default'),
+                              builder: (context) =>
+                                  const SpecifyPage(medicType: 'default'),
                             ),
                           );
                         },
@@ -127,8 +125,9 @@ class _MedicsPageState extends State<MedicsPage> {
                   ),
                   const SizedBox(height: 8),
                   // Barre de progression
+                  // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 0.91,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -137,7 +136,7 @@ class _MedicsPageState extends State<MedicsPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -147,7 +146,7 @@ class _MedicsPageState extends State<MedicsPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal en violet
                       Text(
                         'Prends-tu des médicaments ?',
@@ -158,9 +157,9 @@ class _MedicsPageState extends State<MedicsPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Sous-titre explicatif
                       Text(
                         'Cette information nous aide à personnaliser au mieux ton expérience.',
@@ -170,24 +169,25 @@ class _MedicsPageState extends State<MedicsPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Grille de cartes pour les options
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.9,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.9,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
                         itemCount: _medicOptions.length,
                         itemBuilder: (context, index) {
                           final option = _medicOptions[index];
                           final isSelected = _selectedOption == option['id'];
-                          
+
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -199,7 +199,9 @@ class _MedicsPageState extends State<MedicsPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                                 side: BorderSide(
-                                  color: isSelected ? primaryColor : Colors.transparent,
+                                  color: isSelected
+                                      ? primaryColor
+                                      : Colors.transparent,
                                   width: isSelected ? 2 : 0,
                                 ),
                               ),
@@ -207,9 +209,9 @@ class _MedicsPageState extends State<MedicsPage> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: isSelected 
-                                    ? primaryColor.withOpacity(0.1)
-                                    : Colors.white,
+                                  color: isSelected
+                                      ? primaryColor.withOpacity(0.1)
+                                      : Colors.white,
                                 ),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -233,8 +235,8 @@ class _MedicsPageState extends State<MedicsPage> {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: isSelected 
-                                            ? FontWeight.bold 
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
                                             : FontWeight.w500,
                                         color: isSelected
                                             ? secondaryColor
@@ -248,9 +250,9 @@ class _MedicsPageState extends State<MedicsPage> {
                           );
                         },
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Message informatif
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -288,7 +290,7 @@ class _MedicsPageState extends State<MedicsPage> {
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -308,35 +310,39 @@ class _MedicsPageState extends State<MedicsPage> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _selectedOption == null
-                    ? null // Désactivé si aucune option sélectionnée
-                    : () {
-                        // Navigation en fonction de l'option sélectionnée
-                        if (_selectedOption == 'prescrits' || _selectedOption == 'supplements') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SpecifyPage(medicType: _selectedOption!),
-                            ),
-                          );
-                        } else if (_selectedOption == 'aucun') {
-                          // Pour l'option "Je n'en prends pas", on peut naviguer vers une page spécifique
-                          // ou vers la page suivante du workflow
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SpecifyPage(medicType: 'none'),
-                            ),
-                          );
-                        } else if (_selectedOption == 'prive') {
-                          // Pour l'option "Je préfère ne pas en parler"
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SpecifyPage(medicType: 'private'),
-                            ),
-                          );
-                        }
-                      },
+                      ? null // Désactivé si aucune option sélectionnée
+                      : () {
+                          // Navigation en fonction de l'option sélectionnée
+                          if (_selectedOption == 'prescrits' ||
+                              _selectedOption == 'supplements') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SpecifyPage(medicType: _selectedOption!),
+                              ),
+                            );
+                          } else if (_selectedOption == 'aucun') {
+                            // Pour l'option "Je n'en prends pas", on peut naviguer vers une page spécifique
+                            // ou vers la page suivante du workflow
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const SpecifyPage(medicType: 'none'),
+                              ),
+                            );
+                          } else if (_selectedOption == 'prive') {
+                            // Pour l'option "Je préfère ne pas en parler"
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const SpecifyPage(medicType: 'private'),
+                              ),
+                            );
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -351,7 +357,10 @@ class _MedicsPageState extends State<MedicsPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

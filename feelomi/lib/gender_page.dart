@@ -23,7 +23,7 @@ class _GenderPageState extends State<GenderPage> {
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -55,10 +55,7 @@ class _GenderPageState extends State<GenderPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -107,7 +104,7 @@ class _GenderPageState extends State<GenderPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.5, // 50% de progression
+                    value: 0.26,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -116,7 +113,7 @@ class _GenderPageState extends State<GenderPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
@@ -124,7 +121,7 @@ class _GenderPageState extends State<GenderPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    
+
                     // Titre principal en violet
                     Text(
                       'Quel est ton genre ?',
@@ -134,14 +131,14 @@ class _GenderPageState extends State<GenderPage> {
                         color: primaryColor,
                       ),
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Options de genre (boutons radio)
                     ...List.generate(_genderOptions.length, (index) {
                       final option = _genderOptions[index];
                       final isSelected = _selectedGender == option['text'];
-                      
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: GestureDetector(
@@ -226,13 +223,13 @@ class _GenderPageState extends State<GenderPage> {
                         ),
                       );
                     }),
-                    
+
                     const SizedBox(height: 40),
                   ],
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -254,7 +251,6 @@ class _GenderPageState extends State<GenderPage> {
                   onPressed: _selectedGender == null
                       ? null // Désactivé si aucune option sélectionnée
                       : () {
-                         
                           // Navigation vers la page d'âge
                           Navigator.push(
                             context,
@@ -277,7 +273,10 @@ class _GenderPageState extends State<GenderPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

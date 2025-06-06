@@ -12,7 +12,7 @@ class WeightPage extends StatefulWidget {
 class _WeightPageState extends State<WeightPage> {
   // Poids sélectionné (défaut à 70 kg)
   int _selectedWeight = 70;
-  
+
   // Décimales du poids (0 à 9)
   int _selectedDecimal = 0;
 
@@ -20,7 +20,7 @@ class _WeightPageState extends State<WeightPage> {
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -52,10 +52,7 @@ class _WeightPageState extends State<WeightPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -77,34 +74,34 @@ class _WeightPageState extends State<WeightPage> {
                           ),
                         ],
                       ),
-                       TextButton(
-                    onPressed: () {
-                      // Action pour passer l'étape
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Étape ignorée')),
-                      );
-                      // Navigation vers la page d'aide professionnelle
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HelpPage(),
+                      TextButton(
+                        onPressed: () {
+                          // Action pour passer l'étape
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Étape ignorée')),
+                          );
+                          // Navigation vers la page d'aide professionnelle
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HelpPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Passer cette étape',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Passer cette étape',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
                       ),
-                    ),
-                  ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.9, // 90% de progression
+                    value: 0.52,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -113,7 +110,7 @@ class _WeightPageState extends State<WeightPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -130,9 +127,9 @@ class _WeightPageState extends State<WeightPage> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Design balance digitale
                   Container(
                     decoration: BoxDecoration(
@@ -191,9 +188,9 @@ class _WeightPageState extends State<WeightPage> {
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Deux sélecteurs côte à côte
                         Row(
                           children: [
@@ -213,14 +210,17 @@ class _WeightPageState extends State<WeightPage> {
                                       _selectedWeight = index + 30;
                                     });
                                   },
-                                  children: List<Widget>.generate(121, (int index) {
+                                  children: List<Widget>.generate(121, (
+                                    int index,
+                                  ) {
                                     return Center(
                                       child: Text(
                                         '${index + 30}',
                                         style: TextStyle(
                                           fontSize: 22,
-                                          fontWeight: (index + 30) == _selectedWeight 
-                                              ? FontWeight.bold 
+                                          fontWeight:
+                                              (index + 30) == _selectedWeight
+                                              ? FontWeight.bold
                                               : FontWeight.normal,
                                           color: (index + 30) == _selectedWeight
                                               ? primaryColor
@@ -232,7 +232,7 @@ class _WeightPageState extends State<WeightPage> {
                                 ),
                               ),
                             ),
-                            
+
                             const Text(
                               ',',
                               style: TextStyle(
@@ -240,7 +240,7 @@ class _WeightPageState extends State<WeightPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            
+
                             // Sélecteur décimales
                             Expanded(
                               flex: 2,
@@ -257,14 +257,16 @@ class _WeightPageState extends State<WeightPage> {
                                       _selectedDecimal = index;
                                     });
                                   },
-                                  children: List<Widget>.generate(10, (int index) {
+                                  children: List<Widget>.generate(10, (
+                                    int index,
+                                  ) {
                                     return Center(
                                       child: Text(
                                         '$index',
                                         style: TextStyle(
                                           fontSize: 22,
-                                          fontWeight: index == _selectedDecimal 
-                                              ? FontWeight.bold 
+                                          fontWeight: index == _selectedDecimal
+                                              ? FontWeight.bold
                                               : FontWeight.normal,
                                           color: index == _selectedDecimal
                                               ? primaryColor
@@ -276,7 +278,7 @@ class _WeightPageState extends State<WeightPage> {
                                 ),
                               ),
                             ),
-                            
+
                             // Indication kg
                             const Expanded(
                               flex: 2,
@@ -295,7 +297,7 @@ class _WeightPageState extends State<WeightPage> {
                       ],
                     ),
                   ),
-                  
+
                   // Conseils en bas
                   Padding(
                     padding: const EdgeInsets.all(24.0),
@@ -312,7 +314,7 @@ class _WeightPageState extends State<WeightPage> {
                 ],
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -331,16 +333,13 @@ class _WeightPageState extends State<WeightPage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-           onPressed: () {
-   
-      // Navigation vers la page d'aide professionnelle
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HelpPage(),
-        ),
-      );
-    },
+                  onPressed: () {
+                    // Navigation vers la page d'aide professionnelle
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HelpPage()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -354,7 +353,10 @@ class _WeightPageState extends State<WeightPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

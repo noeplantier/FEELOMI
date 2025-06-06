@@ -8,15 +8,16 @@ class PhysicalPage extends StatefulWidget {
   State<PhysicalPage> createState() => _PhysicalPageState();
 }
 
-class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderStateMixin {
+class _PhysicalPageState extends State<PhysicalPage>
+    with SingleTickerProviderStateMixin {
   // Option sélectionnée (null, 'oui', 'non')
   String? _selectedOption;
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -49,10 +50,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -74,7 +72,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                           ),
                         ],
                       ),
-                      
+
                       // Bouton pour passer l'étape
                       TextButton(
                         onPressed: () {
@@ -99,10 +97,10 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                     ],
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.98, // 98% de progression
+                    value: 0.78,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -111,7 +109,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                 ],
               ),
             ),
-            
+
             // Contenu principal
             Expanded(
               child: SingleChildScrollView(
@@ -122,7 +120,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal en violet
                       Text(
                         'As-tu une détresse physique ?',
@@ -133,9 +131,9 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Sous-titre explicatif
                       Text(
                         'Cette information nous aide à mieux cerner tes besoins.',
@@ -145,34 +143,36 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Options avec leur description
                       // Option Oui
                       _buildOptionCard(
                         title: 'Oui une ou plusieurs',
-                        description: 'Je ressens une douleur physique à différents endroits sur mon corps.',
+                        description:
+                            'Je ressens une douleur physique à différents endroits sur mon corps.',
                         icon: Icons.check_circle_outline,
                         option: 'oui',
                         primaryColor: primaryColor,
                         secondaryColor: secondaryColor,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Option Non
                       _buildOptionCard(
                         title: 'Pas de douleur physique du tout',
-                        description: 'Je me sens bien physiquement, pas de douleur particulière.',
+                        description:
+                            'Je me sens bien physiquement, pas de douleur particulière.',
                         icon: Icons.cancel_outlined,
                         option: 'non',
                         primaryColor: primaryColor,
                         secondaryColor: secondaryColor,
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Message informatif
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -210,7 +210,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -230,17 +230,16 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _selectedOption == null
-                    ? null // Désactivé si aucune option sélectionnée
-                    : () {
-                
-                        // Navigation vers la page des médicaments
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MedicsPage(),
-                          ),
-                        );
-                      },
+                      ? null // Désactivé si aucune option sélectionnée
+                      : () {
+                          // Navigation vers la page des médicaments
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MedicsPage(),
+                            ),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -255,7 +254,10 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),
@@ -269,10 +271,10 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
       ),
     );
   }
-  
+
   // Widget pour construire une carte d'option réutilisable
   Widget _buildOptionCard({
-    required String title, 
+    required String title,
     required String description,
     required IconData icon,
     required String option,
@@ -280,7 +282,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
     required Color secondaryColor,
   }) {
     final bool isSelected = _selectedOption == option;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -291,14 +293,10 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected
-              ? primaryColor.withOpacity(0.2)
-              : Colors.white,
+          color: isSelected ? primaryColor.withOpacity(0.2) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: isSelected
-                ? primaryColor
-                : Colors.grey.shade300,
+            color: isSelected ? primaryColor : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -310,9 +308,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
               children: [
                 Icon(
                   icon,
-                  color: isSelected
-                      ? primaryColor
-                      : Colors.grey.shade600,
+                  color: isSelected ? primaryColor : Colors.grey.shade600,
                   size: 28,
                 ),
                 const SizedBox(width: 12),
@@ -322,9 +318,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? secondaryColor
-                          : Colors.black87,
+                      color: isSelected ? secondaryColor : Colors.black87,
                     ),
                     // Empêcher le débordement du texte
                     overflow: TextOverflow.ellipsis,
@@ -339,10 +333,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
               padding: const EdgeInsets.only(left: 40.0),
               child: Text(
                 description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
               ),
             ),
           ],

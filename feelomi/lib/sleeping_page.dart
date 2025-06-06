@@ -10,10 +10,11 @@ class SleepingPage extends StatefulWidget {
   State<SleepingPage> createState() => _SleepingPageState();
 }
 
-class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderStateMixin {
+class _SleepingPageState extends State<SleepingPage>
+    with SingleTickerProviderStateMixin {
   // Niveau de sommeil sélectionné (0-4)
   int _selectedLevel = 2; // Par défaut à "Raisonnable"
-  
+
   // Options de qualité de sommeil
   final List<Map<String, dynamic>> _sleepLevels = [
     {
@@ -52,11 +53,11 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
       'color': Colors.green.shade500,
     },
   ];
-  
+
   // Animation pour le déplacement du bouton
   late AnimationController _animController;
   late Animation<double> _buttonAnimation;
-  
+
   @override
   void initState() {
     super.initState();
@@ -65,20 +66,20 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
       vsync: this,
     );
     _buttonAnimation = Tween<double>(begin: 0, end: 0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeInOut)
+      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
     );
   }
-  
+
   @override
   void dispose() {
     _animController.dispose();
     super.dispose();
   }
-  
+
   void _selectSleepLevel(int level) {
     // Feedback haptique pour améliorer l'expérience utilisateur
     HapticFeedback.lightImpact();
-    
+
     // Animer le déplacement du bouton
     _animController.reset();
     final prevLevel = _selectedLevel;
@@ -88,24 +89,24 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
       final startPos = _getPositionForLevel(prevLevel);
       final endPos = _getPositionForLevel(level);
       _buttonAnimation = Tween<double>(begin: startPos, end: endPos).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeInOut)
+        CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
       );
     });
     _animController.forward();
   }
-  
+
   // Calculer la position verticale pour le niveau de sommeil
   double _getPositionForLevel(int level) {
     // Conversion du niveau (0-4) vers une position (0-1)
     // 0 = bas de l'échelle (médiocre), 1 = haut de l'échelle (excellente)
     return 1.0 - (level / 4.0);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -137,10 +138,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -170,7 +168,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                           );
                           // Navigation vers la page finale
                           Navigator.push(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => const MentalPage(),
                             ),
@@ -189,7 +187,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 1.17,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -198,7 +196,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                 ],
               ),
             ),
-            
+
             Expanded(
               child: Column(
                 children: [
@@ -209,7 +207,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 20),
-                        
+
                         // Titre principal en violet
                         Text(
                           'Comment évaluerais-tu ta qualité de sommeil ?',
@@ -220,9 +218,9 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Sous-titre explicatif
                         Text(
                           'Ta qualité de sommeil a un impact important sur ta santé mentale.',
@@ -235,7 +233,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                       ],
                     ),
                   ),
-                  
+
                   // Partie principale avec le curseur et les niveaux de sommeil
                   Expanded(
                     child: LayoutBuilder(
@@ -243,11 +241,11 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                         // Calculer la hauteur disponible pour le placement des points
                         final availableHeight = constraints.maxHeight - 40;
                         final itemHeight = availableHeight / 5;
-                        
+
                         return Row(
                           children: [
                             const SizedBox(width: 24),
-                            
+
                             // Colonne des niveaux de sommeil (de haut en bas)
                             Expanded(
                               flex: 3,
@@ -255,19 +253,26 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                 children: [
                                   // Afficher les niveaux dans l'ordre inverse (excellente en haut)
                                   ...List.generate(5, (index) {
-                                    final level = 4 - index; // Inverser l'indice (0 = excellent, 4 = médiocre)
+                                    final level =
+                                        4 -
+                                        index; // Inverser l'indice (0 = excellent, 4 = médiocre)
                                     final sleepData = _sleepLevels[level];
                                     final isSelected = level == _selectedLevel;
                                     return Expanded(
                                       child: GestureDetector(
                                         onTap: () => _selectSleepLevel(level),
                                         child: Container(
-                                          margin: const EdgeInsets.symmetric(vertical: 8),
+                                          margin: const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: isSelected
-                                                ? sleepData['color'].withOpacity(0.2)
+                                                ? sleepData['color']
+                                                      .withOpacity(0.2)
                                                 : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
                                             border: Border.all(
                                               color: isSelected
                                                   ? sleepData['color']
@@ -283,34 +288,48 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                                 height: 50,
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  color: sleepData['color'].withOpacity(0.2),
+                                                  color: sleepData['color']
+                                                      .withOpacity(0.2),
                                                 ),
-                                                margin: const EdgeInsets.symmetric(horizontal: 12),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                    ),
                                                 alignment: Alignment.center,
                                                 child: Text(
                                                   sleepData['emoji'],
-                                                  style: const TextStyle(fontSize: 24),
+                                                  style: const TextStyle(
+                                                    fontSize: 24,
+                                                  ),
                                                 ),
                                               ),
                                               // Texte du niveau
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Text(
                                                       sleepData['title'],
                                                       style: TextStyle(
                                                         fontSize: 16,
-                                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                                        color: isSelected ? sleepData['color'] : Colors.black87,
+                                                        fontWeight: isSelected
+                                                            ? FontWeight.bold
+                                                            : FontWeight.normal,
+                                                        color: isSelected
+                                                            ? sleepData['color']
+                                                            : Colors.black87,
                                                       ),
                                                     ),
                                                     Text(
                                                       sleepData['description'],
                                                       style: TextStyle(
                                                         fontSize: 14,
-                                                        color: Colors.grey.shade600,
+                                                        color: Colors
+                                                            .grey
+                                                            .shade600,
                                                       ),
                                                     ),
                                                   ],
@@ -325,7 +344,7 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                 ],
                               ),
                             ),
-                            
+
                             // Curseur vertical
                             SizedBox(
                               width: 80,
@@ -336,7 +355,8 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                     children: [
                                       // Ligne verticale du curseur
                                       Positioned(
-                                        left: 35, // Centré dans la largeur du container
+                                        left:
+                                            35, // Centré dans la largeur du container
                                         top: 20,
                                         bottom: 20,
                                         width: 8,
@@ -353,24 +373,35 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                                 Colors.red.shade400,
                                               ],
                                             ),
-                                            borderRadius: BorderRadius.circular(4),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      
+
                                       // Points sur la ligne
                                       ...List.generate(5, (index) {
-                                        final level = 4 - index; // Inverser l'indice (0 = excellent, 4 = médiocre)
-                                        final isSelected = level == _selectedLevel;
-                                        
+                                        final level =
+                                            4 -
+                                            index; // Inverser l'indice (0 = excellent, 4 = médiocre)
+                                        final isSelected =
+                                            level == _selectedLevel;
+
                                         // Position précise calculée à partir de la hauteur disponible
-                                        final topPosition = (index * itemHeight) + 20 + (itemHeight / 2) - 8;
-                                        
+                                        final topPosition =
+                                            (index * itemHeight) +
+                                            20 +
+                                            (itemHeight / 2) -
+                                            8;
+
                                         return Positioned(
                                           top: topPosition,
-                                          left: 28, // Centrer le point sur la ligne
+                                          left:
+                                              28, // Centrer le point sur la ligne
                                           child: GestureDetector(
-                                            onTap: () => _selectSleepLevel(level),
+                                            onTap: () =>
+                                                _selectSleepLevel(level),
                                             child: Container(
                                               width: isSelected ? 24 : 16,
                                               height: isSelected ? 24 : 16,
@@ -380,13 +411,18 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                                     ? _sleepLevels[level]['color']
                                                     : Colors.white,
                                                 border: Border.all(
-                                                  color: _sleepLevels[level]['color'],
+                                                  color:
+                                                      _sleepLevels[level]['color'],
                                                   width: 2,
                                                 ),
                                                 boxShadow: isSelected
                                                     ? [
                                                         BoxShadow(
-                                                          color: _sleepLevels[level]['color'].withOpacity(0.3),
+                                                          color:
+                                                              _sleepLevels[level]['color']
+                                                                  .withOpacity(
+                                                                    0.3,
+                                                                  ),
                                                           spreadRadius: 2,
                                                           blurRadius: 4,
                                                         ),
@@ -397,44 +433,71 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                           ),
                                         );
                                       }),
-                                      
+
                                       // Bouton de validation animé - CORRECTION ICI
                                       AnimatedBuilder(
                                         animation: _animController,
                                         builder: (context, child) {
                                           // Calcul précis de la position du bouton en fonction du niveau
                                           int reverseIndex = 4 - _selectedLevel;
-                                          double topPosition = (reverseIndex * itemHeight) + 20 + (itemHeight / 2) - 24;
-                                          
+                                          double topPosition =
+                                              (reverseIndex * itemHeight) +
+                                              20 +
+                                              (itemHeight / 2) -
+                                              24;
+
                                           // Animation de transition entre les positions
                                           if (_animController.isAnimating) {
-                                            int prevReverseIndex = 4 - int.parse(_buttonAnimation.value.toStringAsFixed(0));
-                                            double prevTopPosition = (prevReverseIndex * itemHeight) + 20 + (itemHeight / 2) - 24;
-                                            double nextTopPosition = (reverseIndex * itemHeight) + 20 + (itemHeight / 2) - 24;
-                                            topPosition = prevTopPosition + (nextTopPosition - prevTopPosition) * _animController.value;
+                                            int prevReverseIndex =
+                                                4 -
+                                                int.parse(
+                                                  _buttonAnimation.value
+                                                      .toStringAsFixed(0),
+                                                );
+                                            double prevTopPosition =
+                                                (prevReverseIndex *
+                                                    itemHeight) +
+                                                20 +
+                                                (itemHeight / 2) -
+                                                24;
+                                            double nextTopPosition =
+                                                (reverseIndex * itemHeight) +
+                                                20 +
+                                                (itemHeight / 2) -
+                                                24;
+                                            topPosition =
+                                                prevTopPosition +
+                                                (nextTopPosition -
+                                                        prevTopPosition) *
+                                                    _animController.value;
                                           }
-                                          
+
                                           return Positioned(
                                             top: topPosition,
                                             right: -16,
                                             child: ElevatedButton(
                                               onPressed: () {
                                                 // Enregistrer la qualité de sommeil sélectionnée
-                                                final sleepQuality = _sleepLevels[_selectedLevel]['title'];
-                                       
+                                                final sleepQuality =
+                                                    _sleepLevels[_selectedLevel]['title'];
+
                                                 // Navigation vers la page des symptômes de santé mentale
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => const MentalPage(),
+                                                    builder: (context) =>
+                                                        const MentalPage(),
                                                   ),
                                                 );
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: _sleepLevels[_selectedLevel]['color'],
+                                                backgroundColor:
+                                                    _sleepLevels[_selectedLevel]['color'],
                                                 foregroundColor: Colors.white,
                                                 shape: const CircleBorder(),
-                                                padding: const EdgeInsets.all(16),
+                                                padding: const EdgeInsets.all(
+                                                  16,
+                                                ),
                                                 elevation: 4,
                                               ),
                                               child: const Icon(
@@ -450,14 +513,14 @@ class _SleepingPageState extends State<SleepingPage> with SingleTickerProviderSt
                                 },
                               ),
                             ),
-                            
+
                             const SizedBox(width: 24),
                           ],
                         );
-                      }
+                      },
                     ),
                   ),
-                  
+
                   // Message informatif en bas
                   Padding(
                     padding: const EdgeInsets.all(24.0),

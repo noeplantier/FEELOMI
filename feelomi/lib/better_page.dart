@@ -1,3 +1,4 @@
+import 'package:feelomi/validation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'happy_page.dart';
@@ -18,11 +19,11 @@ class _BetterPageState extends State<BetterPage> {
   double _strokeWidth = 5.0;
   bool _showCompletionMessage = false;
   bool _hasDrawnSmile = false;
-  
+
   // Pour la détection de sourire
   double? _minX, _maxX, _minY, _maxY;
   bool _isCurveUp = false;
-  
+
   // Méthode pour effacer le dessin
   void _clearDrawing() {
     setState(() {
@@ -33,7 +34,7 @@ class _BetterPageState extends State<BetterPage> {
     });
     HapticFeedback.mediumImpact();
   }
-  
+
   // Réinitialiser les valeurs de détection
   void _resetDetectionValues() {
     _minX = null;
@@ -42,23 +43,23 @@ class _BetterPageState extends State<BetterPage> {
     _maxY = null;
     _isCurveUp = false;
   }
-  
+
   // Analyser les points de dessin pour déterminer si c'est un sourire
   void _analyzeDrawing() {
     if (_points.isEmpty) return;
-    
+
     // Récupérer les points valides (non null)
     final validPoints = _points.whereType<DrawingPoint>().toList();
-    
+
     // Besoin d'au moins quelques points pour analyser
     if (validPoints.length < 10) return;
-    
+
     // Trouver les extrémités du dessin
     double minX = double.infinity;
     double maxX = -double.infinity;
     double minY = double.infinity;
     double maxY = -double.infinity;
-    
+
     // Calculer les limites du dessin
     for (var point in validPoints) {
       if (point.offset.dx < minX) minX = point.offset.dx;
@@ -66,58 +67,64 @@ class _BetterPageState extends State<BetterPage> {
       if (point.offset.dy < minY) minY = point.offset.dy;
       if (point.offset.dy > maxY) maxY = point.offset.dy;
     }
-    
+
     // Vérifier si le dessin forme une courbe ascendante (sourire)
     // Pour cela, on divise le dessin en segments horizontaux et on vérifie les directions
-    
+
     // Largeur du dessin
     final width = maxX - minX;
     if (width < 50) return; // Le dessin est trop petit
-    
+
     // Diviser en 10 segments horizontaux
     final segmentWidth = width / 10;
-    
+
     // Points intéressants pour détecter une courbe de sourire
     List<double> yValues = [];
-    
+
     for (int i = 0; i < 10; i++) {
       final segmentStart = minX + i * segmentWidth;
       final segmentEnd = minX + (i + 1) * segmentWidth;
-      
+
       // Trouver les points dans ce segment
-      final segmentPoints = validPoints.where(
-        (p) => p.offset.dx >= segmentStart && p.offset.dx < segmentEnd
-      ).toList();
-      
+      final segmentPoints = validPoints
+          .where((p) => p.offset.dx >= segmentStart && p.offset.dx < segmentEnd)
+          .toList();
+
       // S'il y a des points, prendre leur hauteur moyenne
       if (segmentPoints.isNotEmpty) {
         double sum = segmentPoints.fold(0, (sum, p) => sum + p.offset.dy);
         yValues.add(sum / segmentPoints.length);
       }
     }
-    
+
     // Un sourire typique aura des valeurs y qui descendent puis remontent
     // (en partant du milieu, car les gens dessinent souvent du centre vers les côtés)
     if (yValues.length > 5) {
       bool hasDownCurve = false;
       bool hasUpCurve = false;
-      
+
       // Vérifier si les points du milieu sont plus bas que les extrémités
       double left = yValues.take(2).reduce((a, b) => a + b) / 2;
-      double right = yValues.skip(yValues.length - 2).take(2).reduce((a, b) => a + b) / 2;
-      double middle = yValues.skip(yValues.length ~/ 2 - 1).take(3).reduce((a, b) => a + b) / 3;
-      
+      double right =
+          yValues.skip(yValues.length - 2).take(2).reduce((a, b) => a + b) / 2;
+      double middle =
+          yValues
+              .skip(yValues.length ~/ 2 - 1)
+              .take(3)
+              .reduce((a, b) => a + b) /
+          3;
+
       // Dans un sourire, le milieu est plus bas que les extrémités
       if (middle > left && middle > right) {
         hasUpCurve = true;
       }
-      
+
       // Aspect ratio - un sourire est généralement plus large que haut
       double aspectRatio = width / (maxY - minY);
-      
+
       // Définir si c'est un sourire
       _isCurveUp = hasUpCurve && aspectRatio > 1.5;
-      
+
       // Stocker les valeurs pour affichage de debug
       _minX = minX;
       _maxX = maxX;
@@ -125,23 +132,22 @@ class _BetterPageState extends State<BetterPage> {
       _maxY = maxY;
     }
   }
-  
+
   // Méthode pour vérifier si un visage souriant a été dessiné
   void _checkDrawing() {
     // Analyser le dessin
     _analyzeDrawing();
-    
+
     if (_isCurveUp) {
       setState(() {
         _hasDrawnSmile = true;
         _showCompletionMessage = true;
       });
-      
+
       // Vibration pour feedback positif
       HapticFeedback.heavyImpact();
-      
-      // Message de félicitations après un délai
 
+      // Message de félicitations après un délai
     }
   }
 
@@ -150,7 +156,7 @@ class _BetterPageState extends State<BetterPage> {
     final primaryColor = const Color.fromARGB(255, 90, 0, 150);
     final secondaryColor = const Color.fromARGB(255, 150, 95, 186);
     final backgroundColor = const Color.fromARGB(255, 70, 0, 120);
-    
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -182,14 +188,11 @@ class _BetterPageState extends State<BetterPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
+                              border: Border.all(color: Colors.white, width: 2),
                             ),
                             child: const Center(
                               child: Text(
-                                '12',
+                                '13',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -215,7 +218,7 @@ class _BetterPageState extends State<BetterPage> {
                           );
                           // Navigation vers la page du bonheur
                           Navigator.push(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => const HappyPage(),
                             ),
@@ -223,10 +226,7 @@ class _BetterPageState extends State<BetterPage> {
                         },
                         child: const Text(
                           'Passer cette étape',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                         ),
                       ),
                     ],
@@ -234,16 +234,18 @@ class _BetterPageState extends State<BetterPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 1.69,
                     backgroundColor: Colors.white.withOpacity(0.2),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Colors.white,
+                    ),
                     minHeight: 5,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -253,7 +255,7 @@ class _BetterPageState extends State<BetterPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal
                       const Text(
                         'Prêt à t\'engager pour une meilleure santé mentale ?',
@@ -264,9 +266,9 @@ class _BetterPageState extends State<BetterPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // Drapeau avec symbole de santé mentale
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -278,7 +280,7 @@ class _BetterPageState extends State<BetterPage> {
                               color: Colors.black.withOpacity(0.3),
                               blurRadius: 8,
                               spreadRadius: 1,
-                            )
+                            ),
                           ],
                         ),
                         child: Row(
@@ -333,9 +335,9 @@ class _BetterPageState extends State<BetterPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Instructions pour le dessin
                       Container(
                         width: double.infinity,
@@ -352,11 +354,7 @@ class _BetterPageState extends State<BetterPage> {
                           children: [
                             const Row(
                               children: [
-                                Icon(
-                                  Icons.draw,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                                Icon(Icons.draw, color: Colors.white, size: 20),
                                 SizedBox(width: 10),
                                 Text(
                                   'Dessine un visage souriant',
@@ -379,9 +377,9 @@ class _BetterPageState extends State<BetterPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // Zone de dessin
                       Container(
                         height: 300,
@@ -401,65 +399,75 @@ class _BetterPageState extends State<BetterPage> {
                               borderRadius: BorderRadius.circular(20),
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
-                              onPanStart: (details) {
-                                setState(() {
-                                  _points.add(
-                                    DrawingPoint(
-                                      details.localPosition,
-                                      Paint()
-                                        ..color = _selectedColor
-                                        ..isAntiAlias = true
-                                        ..strokeWidth = _strokeWidth
-                                        ..strokeCap = StrokeCap.round,
-                                    ),
-                                  );
-                                  _showCompletionMessage = false;
-                                  _hasDrawnSmile = false;
-                                });
-                              },
-                              onPanUpdate: (details) {
-                                setState(() {
-                                  _points.add(
-                                    DrawingPoint(
-                                      details.localPosition,
-                                      Paint()
-                                        ..color = _selectedColor
-                                        ..isAntiAlias = true
-                                        ..strokeWidth = _strokeWidth
-                                        ..strokeCap = StrokeCap.round,
-                                    ),
-                                  );
-                                });
-                              },
-                              onPanEnd: (details) {
-                                setState(() {
-                                  _points.add(null); // Marquer la fin d'une ligne
-                                });
-                                
-                                // Auto-vérification après chaque trait terminé
-                                _analyzeDrawing();
-                                if (_isCurveUp) {
+                                onPanStart: (details) {
                                   setState(() {
-                                    _hasDrawnSmile = true;
-                                    _showCompletionMessage = true;
+                                    _points.add(
+                                      DrawingPoint(
+                                        details.localPosition,
+                                        Paint()
+                                          ..color = _selectedColor
+                                          ..isAntiAlias = true
+                                          ..strokeWidth = _strokeWidth
+                                          ..strokeCap = StrokeCap.round,
+                                      ),
+                                    );
+                                    _showCompletionMessage = false;
+                                    _hasDrawnSmile = false;
                                   });
-                                  
-                                  // Vibration pour feedback positif
-                                  HapticFeedback.mediumImpact();
-                                }
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: CustomPaint(
-                                  painter: DrawingPainter(_points),
-                                  size: Size.infinite,
-                                  foregroundPainter: _minX != null && _maxX != null ? 
-                                    DebugPainter(_minX!, _maxX!, _minY!, _maxY!, _isCurveUp) : null,
+                                },
+                                onPanUpdate: (details) {
+                                  setState(() {
+                                    _points.add(
+                                      DrawingPoint(
+                                        details.localPosition,
+                                        Paint()
+                                          ..color = _selectedColor
+                                          ..isAntiAlias = true
+                                          ..strokeWidth = _strokeWidth
+                                          ..strokeCap = StrokeCap.round,
+                                      ),
+                                    );
+                                  });
+                                },
+                                onPanEnd: (details) {
+                                  setState(() {
+                                    _points.add(
+                                      null,
+                                    ); // Marquer la fin d'une ligne
+                                  });
+
+                                  // Auto-vérification après chaque trait terminé
+                                  _analyzeDrawing();
+                                  if (_isCurveUp) {
+                                    setState(() {
+                                      _hasDrawnSmile = true;
+                                      _showCompletionMessage = true;
+                                    });
+
+                                    // Vibration pour feedback positif
+                                    HapticFeedback.mediumImpact();
+                                  }
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: CustomPaint(
+                                    painter: DrawingPainter(_points),
+                                    size: Size.infinite,
+                                    foregroundPainter:
+                                        _minX != null && _maxX != null
+                                        ? DebugPainter(
+                                            _minX!,
+                                            _maxX!,
+                                            _minY!,
+                                            _maxY!,
+                                            _isCurveUp,
+                                          )
+                                        : null,
+                                  ),
                                 ),
                               ),
                             ),
-                        ),  
-                            
+
                             // Exemple de sourire (afficher un guide discret)
                             if (_points.isEmpty)
                               Center(
@@ -481,20 +489,25 @@ class _BetterPageState extends State<BetterPage> {
                                     ),
                                     const SizedBox(height: 20),
                                     CustomPaint(
-                                      painter: SmileGuidePainter(Colors.white.withOpacity(0.2)),
+                                      painter: SmileGuidePainter(
+                                        Colors.white.withOpacity(0.2),
+                                      ),
                                       size: const Size(120, 60),
                                     ),
                                   ],
                                 ),
                               ),
-                              
+
                             // Message de validation quand sourire détecté
                             if (_showCompletionMessage)
                               Positioned(
                                 bottom: 10,
                                 right: 10,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.green,
                                     borderRadius: BorderRadius.circular(20),
@@ -522,9 +535,9 @@ class _BetterPageState extends State<BetterPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Barre d'outils de dessin
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -543,10 +556,13 @@ class _BetterPageState extends State<BetterPage> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          
+
                           // Changement de couleur
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(20),
@@ -567,7 +583,7 @@ class _BetterPageState extends State<BetterPage> {
                                     Colors.yellow,
                                     Colors.cyan,
                                   ];
-                                  
+
                                   return GestureDetector(
                                     onTap: () {
                                       HapticFeedback.selectionClick();
@@ -576,7 +592,9 @@ class _BetterPageState extends State<BetterPage> {
                                       });
                                     },
                                     child: Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                      ),
                                       width: 25,
                                       height: 25,
                                       decoration: BoxDecoration(
@@ -588,10 +606,12 @@ class _BetterPageState extends State<BetterPage> {
                                               : Colors.transparent,
                                           width: 2,
                                         ),
-                                        boxShadow: _selectedColor == colors[index]
+                                        boxShadow:
+                                            _selectedColor == colors[index]
                                             ? [
                                                 BoxShadow(
-                                                  color: Colors.white.withOpacity(0.5),
+                                                  color: Colors.white
+                                                      .withOpacity(0.5),
                                                   blurRadius: 8,
                                                   spreadRadius: 1,
                                                 ),
@@ -604,27 +624,26 @@ class _BetterPageState extends State<BetterPage> {
                               ],
                             ),
                           ),
-                          
+
                           const SizedBox(width: 16),
-                          
+
                           // Bouton pour vérifier
                           IconButton(
                             onPressed: _checkDrawing,
-                            icon: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            ),
+                            icon: const Icon(Icons.check, color: Colors.white),
                             tooltip: 'Vérifier le dessin',
                             style: IconButton.styleFrom(
-                              backgroundColor: _hasDrawnSmile ? Colors.green : Colors.orange,
+                              backgroundColor: _hasDrawnSmile
+                                  ? Colors.green
+                                  : Colors.orange,
                               padding: const EdgeInsets.all(12),
                             ),
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Citation inspirante
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -670,7 +689,7 @@ class _BetterPageState extends State<BetterPage> {
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -690,24 +709,23 @@ class _BetterPageState extends State<BetterPage> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _hasDrawnSmile
-                    ? () {
-        
-                        // Navigation vers la page suivante
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HappyPage(),
-                          ),
-                        );
-                      }
-                    : () {
-      
-                        
-                        // Inciter à dessiner un sourire valide
-                        _checkDrawing();
-                      },
+                      ? () {
+                          // Navigation vers la page de validation au lieu de HappyPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ValidationPage(),
+                            ),
+                          );
+                        }
+                      : () {
+                          // Inciter à dessiner un sourire valide
+                          _checkDrawing();
+                        },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _hasDrawnSmile ? Colors.green : secondaryColor,
+                    backgroundColor: _hasDrawnSmile
+                        ? Colors.green
+                        : secondaryColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -719,7 +737,10 @@ class _BetterPageState extends State<BetterPage> {
                     children: [
                       const Text(
                         'Je m\'engage à aller mieux',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Container(
@@ -750,16 +771,16 @@ class _BetterPageState extends State<BetterPage> {
 class DrawingPoint {
   final Offset offset;
   final Paint paint;
-  
+
   DrawingPoint(this.offset, this.paint);
 }
 
 // Painter personnalisé pour le dessin
 class DrawingPainter extends CustomPainter {
   final List<DrawingPoint?> points;
-  
+
   DrawingPainter(this.points);
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < points.length - 1; i++) {
@@ -770,25 +791,24 @@ class DrawingPainter extends CustomPainter {
           points[i]!.paint,
         );
       } else if (points[i] != null && points[i + 1] == null) {
-        canvas.drawPoints(
-          ui.PointMode.points,
-          [points[i]!.offset],
-          points[i]!.paint,
-        );
+        canvas.drawPoints(ui.PointMode.points, [
+          points[i]!.offset,
+        ], points[i]!.paint);
       }
     }
   }
-  
+
   @override
-  bool shouldRepaint(DrawingPainter oldDelegate) => oldDelegate.points != points;
+  bool shouldRepaint(DrawingPainter oldDelegate) =>
+      oldDelegate.points != points;
 }
 
 // Guide visuel pour montrer comment dessiner un sourire
 class SmileGuidePainter extends CustomPainter {
   final Color color;
-  
+
   SmileGuidePainter(this.color);
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -796,49 +816,54 @@ class SmileGuidePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
-    
+
     // Dessiner une courbe de sourire
     final path = Path();
     path.moveTo(size.width * 0.2, size.height * 0.6);
     path.quadraticBezierTo(
-      size.width * 0.5, size.height, 
-      size.width * 0.8, size.height * 0.6
+      size.width * 0.5,
+      size.height,
+      size.width * 0.8,
+      size.height * 0.6,
     );
-    
+
     canvas.drawPath(path, paint);
   }
-  
+
   @override
-  bool shouldRepaint(SmileGuidePainter oldDelegate) => color != oldDelegate.color;
+  bool shouldRepaint(SmileGuidePainter oldDelegate) =>
+      color != oldDelegate.color;
 }
 
 // Painter pour debugging (visualiser la détection)
 class DebugPainter extends CustomPainter {
   final double minX, maxX, minY, maxY;
   final bool isSmile;
-  
+
   DebugPainter(this.minX, this.maxX, this.minY, this.maxY, this.isSmile);
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     // Désactiver pour la production
     // return;
-    
+
     final paint = Paint()
-      ..color = isSmile ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3)
+      ..color = isSmile
+          ? Colors.green.withOpacity(0.3)
+          : Colors.red.withOpacity(0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    
+
     // Dessiner un rectangle autour du dessin détecté
     final rect = Rect.fromLTRB(minX, minY, maxX, maxY);
     canvas.drawRect(rect, paint);
   }
-  
+
   @override
-  bool shouldRepaint(DebugPainter oldDelegate) => 
-      minX != oldDelegate.minX || 
-      maxX != oldDelegate.maxX || 
-      minY != oldDelegate.minY || 
+  bool shouldRepaint(DebugPainter oldDelegate) =>
+      minX != oldDelegate.minX ||
+      maxX != oldDelegate.maxX ||
+      minY != oldDelegate.minY ||
       maxY != oldDelegate.maxY ||
       isSmile != oldDelegate.isSmile;
 }

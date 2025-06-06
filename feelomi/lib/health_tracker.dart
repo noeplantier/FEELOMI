@@ -24,7 +24,7 @@ class _HealthTrackerState extends State<HealthTracker> {
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -56,10 +56,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -81,7 +78,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                           ),
                         ],
                       ),
-            TextButton(
+                      TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +105,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.25, // 25% de progression
+                    value: 0.13,
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
@@ -117,7 +114,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
@@ -125,7 +122,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    
+
                     // Titre principal en violet
                     Text(
                       'Quel est ton objectif de santé pour aujourd\'hui ?',
@@ -135,14 +132,14 @@ class _HealthTrackerState extends State<HealthTracker> {
                         color: primaryColor,
                       ),
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Options de santé (boutons radio)
                     ...List.generate(_healthOptions.length, (index) {
                       final option = _healthOptions[index];
                       final isSelected = _selectedOption == option['text'];
-                      
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: GestureDetector(
@@ -227,13 +224,13 @@ class _HealthTrackerState extends State<HealthTracker> {
                         ),
                       );
                     }),
-                    
+
                     const SizedBox(height: 40),
                   ],
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -252,10 +249,9 @@ class _HealthTrackerState extends State<HealthTracker> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                 onPressed: _selectedOption == null
+                  onPressed: _selectedOption == null
                       ? null // Désactivé si aucune option sélectionnée
                       : () {
-                    
                           // Navigation vers la page de sélection du genre
                           Navigator.push(
                             context,
@@ -278,7 +274,10 @@ class _HealthTrackerState extends State<HealthTracker> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),
