@@ -423,10 +423,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                  onPressed: _selectedOption == null
         ? null // Désactivé si aucune option sélectionnée
         : () {
-            // Enregistrer l'option sélectionnée
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Réponse : $_selectedOption')),
-            );
+
             // Navigation vers la page de détresse physique
             Navigator.push(
               context,

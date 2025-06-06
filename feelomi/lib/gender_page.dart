@@ -254,10 +254,7 @@ class _GenderPageState extends State<GenderPage> {
                   onPressed: _selectedGender == null
                       ? null // Désactivé si aucune option sélectionnée
                       : () {
-                          // Action pour continuer
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Genre choisi : $_selectedGender')),
-                          );
+                         
                           // Navigation vers la page d'âge
                           Navigator.push(
                             context,

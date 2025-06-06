@@ -200,10 +200,7 @@ class _AgePageState extends State<AgePage> {
                 child: ElevatedButton(
                   
                 onPressed: () {
-                    // Enregistrer l'âge sélectionné
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Âge choisi : $_selectedAge ans')),
-                    );
+                   
                     // Navigation vers la page de poids
                     Navigator.push(
                       context,

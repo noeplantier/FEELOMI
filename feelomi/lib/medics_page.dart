@@ -314,10 +314,7 @@ class _MedicsPageState extends State<MedicsPage> {
             onPressed: _selectedOption == null
         ? null // Désactivé si aucune option sélectionnée
         : () {
-            // Enregistrer l'option sélectionnée
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Réponse : $_selectedOption')),
-            );
+       
             
             // Si l'utilisateur a choisi des médicaments ou suppléments, on va à la page de détails
             if (_selectedOption == 'prescrits' || _selectedOption == 'supplements') {

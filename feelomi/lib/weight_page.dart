@@ -332,11 +332,7 @@ class _WeightPageState extends State<WeightPage> {
                 height: 55,
                 child: ElevatedButton(
            onPressed: () {
-      // Enregistrer le poids sélectionné
-      final String formattedWeight = '$_selectedWeight,$_selectedDecimal';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Poids choisi : $formattedWeight kg')),
-      );
+   
       // Navigation vers la page d'aide professionnelle
       Navigator.push(
         context,

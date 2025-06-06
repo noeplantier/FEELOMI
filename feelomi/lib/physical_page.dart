@@ -232,10 +232,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                   onPressed: _selectedOption == null
                     ? null // Désactivé si aucune option sélectionnée
                     : () {
-                        // Enregistrer l'option sélectionnée
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Réponse : $_selectedOption')),
-                        );
+                
                         // Navigation vers la page des médicaments
                         Navigator.push(
                           context,

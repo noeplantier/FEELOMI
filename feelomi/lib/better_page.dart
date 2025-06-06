@@ -141,24 +141,7 @@ class _BetterPageState extends State<BetterPage> {
       HapticFeedback.heavyImpact();
       
       // Message de félicitations après un délai
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Superbe sourire! 😊'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Hmm, ça ne ressemble pas à un sourire. Essaie encore!'),
-          backgroundColor: Colors.amber,
-        ),
-      );
+
     }
   }
 

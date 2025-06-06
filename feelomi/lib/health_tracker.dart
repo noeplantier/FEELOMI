@@ -255,10 +255,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                  onPressed: _selectedOption == null
                       ? null // Désactivé si aucune option sélectionnée
                       : () {
-                          // Enregistrer l'option sélectionnée
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Option choisie : $_selectedOption')),
-                          );
+                    
                           // Navigation vers la page de sélection du genre
                           Navigator.push(
                             context,
