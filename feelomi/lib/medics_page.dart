@@ -1,7 +1,6 @@
 import 'package:feelomi/specify_page.dart';
 import 'package:flutter/material.dart';
 
-
 class MedicsPage extends StatefulWidget {
   const MedicsPage({super.key});
 
@@ -102,8 +101,7 @@ class _MedicsPageState extends State<MedicsPage> {
                           ),
                         ],
                       ),
-
-                          TextButton(
+                      TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -125,8 +123,6 @@ class _MedicsPageState extends State<MedicsPage> {
                           ),
                         ),
                       ),
-
-
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -311,25 +307,36 @@ class _MedicsPageState extends State<MedicsPage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-            onPressed: _selectedOption == null
-        ? null // Désactivé si aucune option sélectionnée
-        : () {
-       
-            
-            // Si l'utilisateur a choisi des médicaments ou suppléments, on va à la page de détails
-            if (_selectedOption == 'prescrits' || _selectedOption == 'supplements') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SpecifyPage(medicType: _selectedOption!),
-                ),
-              );
-            } else {
-              // Sinon, on pourrait naviguer vers une page finale
-              // Ici vous pourriez ajouter votre logique de navigation pour les options
-              // "Je n'en prends pas" ou "Je préfère ne pas en parler"
-            }
-          },
+                  onPressed: _selectedOption == null
+                    ? null // Désactivé si aucune option sélectionnée
+                    : () {
+                        // Navigation en fonction de l'option sélectionnée
+                        if (_selectedOption == 'prescrits' || _selectedOption == 'supplements') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SpecifyPage(medicType: _selectedOption!),
+                            ),
+                          );
+                        } else if (_selectedOption == 'aucun') {
+                          // Pour l'option "Je n'en prends pas", on peut naviguer vers une page spécifique
+                          // ou vers la page suivante du workflow
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SpecifyPage(medicType: 'none'),
+                            ),
+                          );
+                        } else if (_selectedOption == 'prive') {
+                          // Pour l'option "Je préfère ne pas en parler"
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SpecifyPage(medicType: 'private'),
+                            ),
+                          );
+                        }
+                      },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,

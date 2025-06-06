@@ -1,3 +1,4 @@
+import 'package:feelomi/better_page.dart';
 import 'package:flutter/material.dart';
 
 class HappyPage extends StatefulWidget {
@@ -10,7 +11,7 @@ class HappyPage extends StatefulWidget {
 class _HappyPageState extends State<HappyPage> {
   // Contrôleur pour la barre de recherche
   final TextEditingController _searchController = TextEditingController();
-  
+
   // Liste de tous les items disponibles
   final List<Map<String, dynamic>> _allItems = [
     {'text': 'Voyages', 'icon': Icons.flight, 'color': Colors.blue},
@@ -25,41 +26,75 @@ class _HappyPageState extends State<HappyPage> {
     {'text': 'Technologie', 'icon': Icons.computer, 'color': Colors.grey},
     {'text': 'Famille', 'icon': Icons.family_restroom, 'color': Colors.teal},
     {'text': 'Amis', 'icon': Icons.people, 'color': Colors.indigo},
-    {'text': 'Shopping', 'icon': Icons.shopping_bag, 'color': Colors.deepOrange},
-    {'text': 'Méditation', 'icon': Icons.self_improvement, 'color': Colors.cyan},
+    {
+      'text': 'Shopping',
+      'icon': Icons.shopping_bag,
+      'color': Colors.deepOrange,
+    },
+    {
+      'text': 'Méditation',
+      'icon': Icons.self_improvement,
+      'color': Colors.cyan,
+    },
     {'text': 'Nature', 'icon': Icons.forest, 'color': Colors.green.shade800},
     {'text': 'Dialogues', 'icon': Icons.chat, 'color': Colors.blueGrey},
-    {'text': 'Évolution', 'icon': Icons.trending_up, 'color': Colors.deepPurple},
+    {
+      'text': 'Évolution',
+      'icon': Icons.trending_up,
+      'color': Colors.deepPurple,
+    },
     {'text': 'Danse', 'icon': Icons.nightlife, 'color': Colors.pinkAccent},
-    {'text': 'Théâtre', 'icon': Icons.theater_comedy, 'color': Colors.amber.shade700},
-    {'text': 'Sport nautique', 'icon': Icons.sailing, 'color': Colors.lightBlue},
-    {'text': 'Jeux vidéo', 'icon': Icons.sports_esports, 'color': Colors.redAccent},
+    {
+      'text': 'Théâtre',
+      'icon': Icons.theater_comedy,
+      'color': Colors.amber.shade700,
+    },
+    {
+      'text': 'Sport nautique',
+      'icon': Icons.sailing,
+      'color': Colors.lightBlue,
+    },
+    {
+      'text': 'Jeux vidéo',
+      'icon': Icons.sports_esports,
+      'color': Colors.redAccent,
+    },
     {'text': 'Photographie', 'icon': Icons.camera_alt, 'color': Colors.black87},
     {'text': 'Éducation', 'icon': Icons.school, 'color': Colors.blue.shade900},
-    {'text': 'Yoga', 'icon': Icons.fitness_center, 'color': Colors.teal.shade300},
+    {
+      'text': 'Yoga',
+      'icon': Icons.fitness_center,
+      'color': Colors.teal.shade300,
+    },
     {'text': 'Astronomie', 'icon': Icons.star, 'color': Colors.indigo.shade900},
-    {'text': 'Design', 'icon': Icons.design_services, 'color': Colors.deepPurple.shade300},
+    {
+      'text': 'Design',
+      'icon': Icons.design_services,
+      'color': Colors.deepPurple.shade300,
+    },
   ];
-  
+
   // Liste des items filtrés par la recherche
   List<Map<String, dynamic>> _filteredItems = [];
-  
+
   // Liste des items sélectionnés
   final List<Map<String, dynamic>> _selectedItems = [];
+
+  Route<Object?>? get route => null;
 
   @override
   void initState() {
     super.initState();
     _filteredItems = List.from(_allItems);
-    
+
     // Écouter les changements dans le champ de recherche
     _searchController.addListener(_filterItems);
   }
-  
+
   // Filtrer les items selon le texte de recherche
   void _filterItems() {
     final query = _searchController.text.toLowerCase();
-    
+
     setState(() {
       if (query.isEmpty) {
         _filteredItems = List.from(_allItems);
@@ -70,14 +105,18 @@ class _HappyPageState extends State<HappyPage> {
       }
     });
   }
-  
+
   // Ajouter ou supprimer un item de la sélection
   void _toggleItem(Map<String, dynamic> item) {
     setState(() {
-      final isSelected = _selectedItems.any((element) => element['text'] == item['text']);
-      
+      final isSelected = _selectedItems.any(
+        (element) => element['text'] == item['text'],
+      );
+
       if (isSelected) {
-        _selectedItems.removeWhere((element) => element['text'] == item['text']);
+        _selectedItems.removeWhere(
+          (element) => element['text'] == item['text'],
+        );
       } else {
         _selectedItems.add(item);
       }
@@ -89,12 +128,12 @@ class _HappyPageState extends State<HappyPage> {
     _searchController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -126,14 +165,11 @@ class _HappyPageState extends State<HappyPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
-                                '11',
+                                '12',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold,
@@ -182,7 +218,7 @@ class _HappyPageState extends State<HappyPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: Column(
                 children: [
@@ -193,7 +229,7 @@ class _HappyPageState extends State<HappyPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 20),
-                        
+
                         // Titre principal en violet
                         Text(
                           'Quelles sont les choses qui te rendent heureux ?',
@@ -204,9 +240,9 @@ class _HappyPageState extends State<HappyPage> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Sous-titre explicatif
                         Text(
                           'Sélectionne tout ce qui te fait du bien au quotidien.',
@@ -216,9 +252,9 @@ class _HappyPageState extends State<HappyPage> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Barre de recherche
                         Container(
                           decoration: BoxDecoration(
@@ -253,12 +289,15 @@ class _HappyPageState extends State<HappyPage> {
                       ],
                     ),
                   ),
-                  
+
                   // Liste des éléments sélectionnés
                   if (_selectedItems.isNotEmpty)
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       color: Colors.grey.shade50,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,26 +314,32 @@ class _HappyPageState extends State<HappyPage> {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: _selectedItems.map((item) => Chip(
-                              avatar: Icon(
-                                item['icon'],
-                                color: item['color'],
-                                size: 18,
-                              ),
-                              backgroundColor: item['color'].withOpacity(0.1),
-                              labelStyle: TextStyle(
-                                color: item['color'],
-                                fontWeight: FontWeight.w500,
-                              ),
-                              label: Text(item['text']),
-                              deleteIconColor: item['color'],
-                              onDeleted: () => _toggleItem(item),
-                            )).toList(),
+                            children: _selectedItems
+                                .map(
+                                  (item) => Chip(
+                                    avatar: Icon(
+                                      item['icon'],
+                                      color: item['color'],
+                                      size: 18,
+                                    ),
+                                    backgroundColor: item['color'].withOpacity(
+                                      0.1,
+                                    ),
+                                    labelStyle: TextStyle(
+                                      color: item['color'],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    label: Text(item['text']),
+                                    deleteIconColor: item['color'],
+                                    onDeleted: () => _toggleItem(item),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ],
                       ),
                     ),
-                  
+
                   // Liste des éléments disponibles
                   Expanded(
                     child: _filteredItems.isEmpty
@@ -319,22 +364,27 @@ class _HappyPageState extends State<HappyPage> {
                             ),
                           )
                         : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
                             child: GridView.builder(
-                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                childAspectRatio: 1.1,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16.0,
                               ),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    childAspectRatio: 1.1,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
                               itemCount: _filteredItems.length,
                               itemBuilder: (context, index) {
                                 final item = _filteredItems[index];
                                 final isSelected = _selectedItems.any(
                                   (element) => element['text'] == item['text'],
                                 );
-                                
+
                                 return GestureDetector(
                                   onTap: () => _toggleItem(item),
                                   child: Container(
@@ -355,7 +405,8 @@ class _HappyPageState extends State<HappyPage> {
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Icon(
                                                 item['icon'],
@@ -408,7 +459,7 @@ class _HappyPageState extends State<HappyPage> {
                 ],
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -429,19 +480,17 @@ class _HappyPageState extends State<HappyPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Enregistrer les choix sélectionnés
-                    final happyThings = _selectedItems.map((item) => item['text']).toList();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          happyThings.isEmpty
-                              ? 'Aucun élément sélectionné'
-                              : 'Éléments enregistrés: ${happyThings.join(", ")}',
-                        ),
+                    final happyThings = _selectedItems
+                        .map((item) => item['text'])
+                        .toList();
+
+                    // Navigation vers BetterPage sans fermer la page actuelle
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BetterPage(),
                       ),
                     );
-                    // Navigation vers la page finale
-                    Navigator.pop(context);
-                    // Ici vous pourriez naviguer vers une page suivante
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -456,7 +505,10 @@ class _HappyPageState extends State<HappyPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       const Icon(Icons.arrow_forward),

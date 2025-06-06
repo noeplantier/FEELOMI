@@ -13,14 +13,15 @@ class StressPage extends StatefulWidget {
   State<StressPage> createState() => _StressPageState();
 }
 
-class _StressPageState extends State<StressPage> with SingleTickerProviderStateMixin {
+class _StressPageState extends State<StressPage>
+    with SingleTickerProviderStateMixin {
   // Niveau de stress (0: Inexistant, 1: Faible, 2: Modéré, 3: Important)
   int _stressLevel = 1; // Par défaut à "Faible"
-  
+
   // Animation controller pour l'animation de la jauge
   late AnimationController _animationController;
   late Animation<double> _animation;
-  
+
   // Niveaux de stress disponibles
   final List<Map<String, dynamic>> _stressLevels = [
     {
@@ -60,52 +61,58 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-    
-    _animation = Tween<double>(
-      begin: 0,
-      end: _stressLevel / (_stressLevels.length - 1),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-    
+
+    _animation =
+        Tween<double>(
+          begin: 0,
+          end: _stressLevel / (_stressLevels.length - 1),
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
     _animationController.forward();
   }
-  
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-  
+
   // Fonction pour changer le niveau de stress
   void _setStressLevel(int level) {
     if (level == _stressLevel) return;
-    
+
     HapticFeedback.lightImpact();
-    
+
     setState(() {
-      _animation = Tween<double>(
-        begin: _stressLevel / (_stressLevels.length - 1),
-        end: level / (_stressLevels.length - 1),
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutCubic,
-      ));
-      
+      _animation =
+          Tween<double>(
+            begin: _stressLevel / (_stressLevels.length - 1),
+            end: level / (_stressLevels.length - 1),
+          ).animate(
+            CurvedAnimation(
+              parent: _animationController,
+              curve: Curves.easeOutCubic,
+            ),
+          );
+
       _stressLevel = level;
     });
-    
+
     _animationController.reset();
     _animationController.forward();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
     final deviceWidth = MediaQuery.of(context).size.width;
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -137,14 +144,11 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
-                                '10',
+                                '11',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold,
@@ -170,7 +174,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                           );
                           // Navigation vers la page du bonheur
                           Navigator.push(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => const HappyPage(),
                             ),
@@ -198,7 +202,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -210,7 +214,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 10),
-                          
+
                           // Titre principal en violet
                           Text(
                             'Comment évalues-tu ton niveau de stress ?',
@@ -221,9 +225,9 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          
+
                           const SizedBox(height: 10),
-                          
+
                           // Sous-titre explicatif
                           Text(
                             'Le stress peut avoir un impact sur ton bien-être au quotidien.',
@@ -236,7 +240,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                         ],
                       ),
                     ),
-                    
+
                     // Jauge circulaire digitalisée avec taille réduite
                     SizedBox(
                       height: 250, // Taille réduite de 340 à 250
@@ -262,7 +266,10 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                               animation: _animation,
                               builder: (context, child) {
                                 return CustomPaint(
-                                  size: const Size(160, 160), // Réduit de 220 à 160
+                                  size: const Size(
+                                    160,
+                                    160,
+                                  ), // Réduit de 220 à 160
                                   painter: CircleGaugePainter(
                                     progress: _animation.value,
                                     color: _stressLevels[_stressLevel]['color'],
@@ -273,7 +280,9 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                             ),
                             // Contenu au centre du cercle
                             Container(
-                              padding: const EdgeInsets.all(8), // Réduit de 16 à 8
+                              padding: const EdgeInsets.all(
+                                8,
+                              ), // Réduit de 16 à 8
                               width: 140, // Ajout d'une largeur fixe
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
@@ -283,19 +292,25 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                                   children: [
                                     Icon(
                                       _stressLevels[_stressLevel]['icon'],
-                                      color: _stressLevels[_stressLevel]['color'],
+                                      color:
+                                          _stressLevels[_stressLevel]['color'],
                                       size: 28, // Réduit de 40 à 28
                                     ),
-                                    const SizedBox(height: 6), // Réduit de 10 à 6
+                                    const SizedBox(
+                                      height: 6,
+                                    ), // Réduit de 10 à 6
                                     Text(
                                       _stressLevels[_stressLevel]['title'],
                                       style: TextStyle(
                                         fontSize: 18, // Réduit de 22 à 18
                                         fontWeight: FontWeight.bold,
-                                        color: _stressLevels[_stressLevel]['color'],
+                                        color:
+                                            _stressLevels[_stressLevel]['color'],
                                       ),
                                     ),
-                                    const SizedBox(height: 4), // Réduit de 8 à 4
+                                    const SizedBox(
+                                      height: 4,
+                                    ), // Réduit de 8 à 4
                                     Text(
                                       _stressLevels[_stressLevel]['description'],
                                       textAlign: TextAlign.center,
@@ -320,7 +335,9 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 CircleAvatar(
-                                  radius: isSelected ? 18 : 15, // Réduit de 22/18 à 18/15
+                                  radius: isSelected
+                                      ? 18
+                                      : 15, // Réduit de 22/18 à 18/15
                                   backgroundColor: isSelected
                                       ? _stressLevels[index]['color']
                                       : Colors.white,
@@ -329,7 +346,9 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                                     color: isSelected
                                         ? Colors.white
                                         : _stressLevels[index]['color'],
-                                    size: isSelected ? 22 : 18, // Réduit de 28/22 à 22/18
+                                    size: isSelected
+                                        ? 22
+                                        : 18, // Réduit de 28/22 à 22/18
                                   ),
                                 ),
                               ],
@@ -338,18 +357,21 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                         }),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 10), // Réduit de 20 à 10
-                    
                     // Niveau actuel avec description
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       child: Container(
                         key: ValueKey<int>(_stressLevel),
                         margin: const EdgeInsets.symmetric(horizontal: 24),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Réduit vertical de 12 à 10
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ), // Réduit vertical de 12 à 10
                         decoration: BoxDecoration(
-                          color: _stressLevels[_stressLevel]['color'].withOpacity(0.1),
+                          color: _stressLevels[_stressLevel]['color']
+                              .withOpacity(0.1),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
                             color: _stressLevels[_stressLevel]['color'],
@@ -379,7 +401,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                         ),
                       ),
                     ),
-                    
+
                     // Message informatif
                     Padding(
                       padding: const EdgeInsets.all(16), // Réduit de 24 à 16
@@ -420,10 +442,13 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16), // Réduit vertical de 24 à 16
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ), // Réduit vertical de 24 à 16
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -437,17 +462,17 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
               ),
               child: SizedBox(
                 width: double.infinity,
-                height: 50, // Réduit de 55 à 50
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     // Enregistrer le niveau de stress
                     final stressTitle = _stressLevels[_stressLevel]['title'];
-                    
+
                     // Navigation vers la page d'engagement
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const BetterPage(),
+                        builder: (context) => const HappyPage(),
                       ),
                     );
                   },
@@ -464,13 +489,13 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit de 18 à 16
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
-                      Icon(
-                        Icons.arrow_forward,
-                        size: 18, // Ajout d'une taille réduite pour l'icône
-                      ),
+                      Icon(Icons.arrow_forward, size: 15),
                     ],
                   ),
                 ),
@@ -481,8 +506,12 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
       ),
     );
   }
-  
-  CircleProgressPainter({required double progress, required Color color, required int strokeWidth}) {
+
+  CircleProgressPainter({
+    required double progress,
+    required Color color,
+    required int strokeWidth,
+  }) {
     return CircleGaugePainter(
       progress: progress,
       color: color,
@@ -496,13 +525,13 @@ class CircleGaugePainter extends CustomPainter {
   final double progress;
   final Color color;
   final double strokeWidth;
-  
+
   CircleGaugePainter({
     required this.progress,
     required this.color,
     this.strokeWidth = 10,
   });
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -510,17 +539,17 @@ class CircleGaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth;
-    
+
     // Centre et rayon du cercle
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width, size.height) / 2 - (strokeWidth / 2);
-    
+
     // Angle de départ (-90 degrés = haut du cercle)
     const startAngle = -math.pi / 2;
-    
+
     // Angle de fin basé sur la progression (2*pi = tour complet)
     final sweepAngle = 2 * math.pi * progress;
-    
+
     // Dessiner l'arc de cercle
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -529,30 +558,30 @@ class CircleGaugePainter extends CustomPainter {
       false, // Ne pas remplir le centre
       paint,
     );
-    
+
     // Ajouter des segments pour un effet numérique
     if (progress > 0) {
       const segmentCount = 40; // Nombre de segments pour un cercle complet
       final segmentsToShow = (segmentCount * progress).floor();
-      
+
       // Calculer l'angle entre chaque segment
       final segmentAngle = 2 * math.pi / segmentCount;
-      
+
       // Espace entre les segments
       const segmentGap = 0.05;
-      
+
       // Modifier la couleur et l'épaisseur pour les segments
       final segmentPaint = Paint()
         ..color = color
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeWidth = strokeWidth * 1.2; // Légèrement plus épais
-      
+
       for (int i = 0; i < segmentsToShow; i++) {
         // Calculer l'angle de début et de fin de ce segment
         final segStart = startAngle + i * segmentAngle;
         final segEnd = segStart + segmentAngle * (1 - segmentGap);
-        
+
         // Dessiner ce segment
         canvas.drawArc(
           Rect.fromCircle(center: center, radius: radius),
@@ -564,11 +593,11 @@ class CircleGaugePainter extends CustomPainter {
       }
     }
   }
-  
+
   @override
   bool shouldRepaint(covariant CircleGaugePainter oldDelegate) {
-    return progress != oldDelegate.progress || 
-           color != oldDelegate.color ||
-           strokeWidth != oldDelegate.strokeWidth;
+    return progress != oldDelegate.progress ||
+        color != oldDelegate.color ||
+        strokeWidth != oldDelegate.strokeWidth;
   }
 }

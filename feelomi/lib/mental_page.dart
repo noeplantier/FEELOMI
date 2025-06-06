@@ -12,7 +12,7 @@ class MentalPage extends StatefulWidget {
 class _MentalPageState extends State<MentalPage> {
   // Contrôleur pour la barre de recherche
   final TextEditingController _searchController = TextEditingController();
-  
+
   // Liste de tous les symptômes disponibles
   final List<Map<String, dynamic>> _allSymptoms = [
     {'text': 'Tristesse', 'color': Colors.blue.shade700},
@@ -44,26 +44,26 @@ class _MentalPageState extends State<MentalPage> {
     {'text': 'Troubles de l\'humeur', 'color': Colors.brown.shade800},
     {'text': 'Perfectionnisme', 'color': Colors.deepPurple.shade800},
   ];
-  
+
   // Liste des symptômes filtrés
   List<Map<String, dynamic>> _filteredSymptoms = [];
-  
+
   // Liste des symptômes sélectionnés
   final List<Map<String, dynamic>> _selectedSymptoms = [];
-  
+
   @override
   void initState() {
     super.initState();
     _filteredSymptoms = List.from(_allSymptoms);
-    
+
     // Écouter les changements dans le champ de recherche
     _searchController.addListener(_filterSymptoms);
   }
-  
+
   // Filtrer les symptômes selon le texte de recherche
   void _filterSymptoms() {
     final query = _searchController.text.toLowerCase();
-    
+
     setState(() {
       if (query.isEmpty) {
         _filteredSymptoms = List.from(_allSymptoms);
@@ -74,14 +74,18 @@ class _MentalPageState extends State<MentalPage> {
       }
     });
   }
-  
+
   // Ajouter ou supprimer un symptôme de la sélection
   void _toggleSymptom(Map<String, dynamic> symptom) {
     setState(() {
-      final isSelected = _selectedSymptoms.any((element) => element['text'] == symptom['text']);
-      
+      final isSelected = _selectedSymptoms.any(
+        (element) => element['text'] == symptom['text'],
+      );
+
       if (isSelected) {
-        _selectedSymptoms.removeWhere((element) => element['text'] == symptom['text']);
+        _selectedSymptoms.removeWhere(
+          (element) => element['text'] == symptom['text'],
+        );
       } else {
         _selectedSymptoms.add(symptom);
       }
@@ -93,12 +97,12 @@ class _MentalPageState extends State<MentalPage> {
     _searchController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -130,14 +134,11 @@ class _MentalPageState extends State<MentalPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
-                                '9',
+                                '10',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold,
@@ -163,7 +164,7 @@ class _MentalPageState extends State<MentalPage> {
                           );
                           // Navigation vers la page du bonheur
                           Navigator.push(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => const HappyPage(),
                             ),
@@ -191,7 +192,7 @@ class _MentalPageState extends State<MentalPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: Column(
                 children: [
@@ -202,7 +203,7 @@ class _MentalPageState extends State<MentalPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 20),
-                        
+
                         // Titre principal en violet
                         Text(
                           'As-tu d\'autres symptômes de santé mentale ?',
@@ -213,9 +214,9 @@ class _MentalPageState extends State<MentalPage> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Sous-titre explicatif
                         Text(
                           'Aide-nous à mieux comprendre tes défis pour te proposer un accompagnement adapté.',
@@ -225,9 +226,9 @@ class _MentalPageState extends State<MentalPage> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Barre de recherche
                         Container(
                           decoration: BoxDecoration(
@@ -265,12 +266,15 @@ class _MentalPageState extends State<MentalPage> {
                       ],
                     ),
                   ),
-                  
+
                   // Liste des symptômes sélectionnés
                   if (_selectedSymptoms.isNotEmpty)
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       color: Colors.grey.shade50,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,21 +291,26 @@ class _MentalPageState extends State<MentalPage> {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: _selectedSymptoms.map((symptom) => Chip(
-                              backgroundColor: symptom['color'].withOpacity(0.1),
-                              labelStyle: TextStyle(
-                                color: symptom['color'],
-                                fontWeight: FontWeight.w500,
-                              ),
-                              label: Text(symptom['text']),
-                              deleteIconColor: symptom['color'],
-                              onDeleted: () => _toggleSymptom(symptom),
-                            )).toList(),
+                            children: _selectedSymptoms
+                                .map(
+                                  (symptom) => Chip(
+                                    backgroundColor: symptom['color']
+                                        .withOpacity(0.1),
+                                    labelStyle: TextStyle(
+                                      color: symptom['color'],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    label: Text(symptom['text']),
+                                    deleteIconColor: symptom['color'],
+                                    onDeleted: () => _toggleSymptom(symptom),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ],
                       ),
                     ),
-                  
+
                   // Liste des symptômes disponibles
                   Expanded(
                     child: _filteredSymptoms.isEmpty
@@ -326,15 +335,18 @@ class _MentalPageState extends State<MentalPage> {
                             ),
                           )
                         : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0,
+                            ),
                             child: Wrap(
                               spacing: 8,
                               runSpacing: 12,
                               children: _filteredSymptoms.map((symptom) {
                                 final isSelected = _selectedSymptoms.any(
-                                  (element) => element['text'] == symptom['text'],
+                                  (element) =>
+                                      element['text'] == symptom['text'],
                                 );
-                                
+
                                 return GestureDetector(
                                   onTap: () => _toggleSymptom(symptom),
                                   child: Container(
@@ -359,7 +371,9 @@ class _MentalPageState extends State<MentalPage> {
                                       children: [
                                         if (isSelected)
                                           Padding(
-                                            padding: const EdgeInsets.only(right: 6.0),
+                                            padding: const EdgeInsets.only(
+                                              right: 6.0,
+                                            ),
                                             child: Icon(
                                               Icons.check_circle,
                                               color: symptom['color'],
@@ -389,9 +403,7 @@ class _MentalPageState extends State<MentalPage> {
                 ],
               ),
             ),
-            
 
-            
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -410,32 +422,34 @@ class _MentalPageState extends State<MentalPage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                                onPressed: () {
-                        // Enregistrer les symptômes sélectionnés
-                        final symptoms = _selectedSymptoms.map((item) => item['text']).toList();
-                        
-                        // Message selon le cas
-                        String message;
-                        if (symptoms.isEmpty) {
-                          message = 'Aucun symptôme sélectionné';
-                        } else if (symptoms.length == 1) {
-                          message = 'Symptôme enregistré: ${symptoms[0]}';
-                        } else {
-                          message = '${symptoms.length} symptômes enregistrés';
-                        }
-                        
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(message)),
-                        );
-                        
-                        // Navigation vers la page de stress au lieu de happy_page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const StressPage(),
-                          ),
-                        );
-                      },
+                  onPressed: () {
+                    // Enregistrer les symptômes sélectionnés
+                    final symptoms = _selectedSymptoms
+                        .map((item) => item['text'])
+                        .toList();
+
+                    // Message selon le cas
+                    String message;
+                    if (symptoms.isEmpty) {
+                      message = 'Aucun symptôme sélectionné';
+                    } else if (symptoms.length == 1) {
+                      message = 'Symptôme enregistré: ${symptoms[0]}';
+                    } else {
+                      message = '${symptoms.length} symptômes enregistrés';
+                    }
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(message)));
+
+                    // Navigation vers la page de stress au lieu de happy_page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StressPage(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -449,7 +463,10 @@ class _MentalPageState extends State<MentalPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),
