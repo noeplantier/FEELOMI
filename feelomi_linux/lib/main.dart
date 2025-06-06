@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page.dart';
 import 'health_tracker.dart';
-import 'gender_page.dart';
-
 
 void main() {
   runApp(const MyApp());

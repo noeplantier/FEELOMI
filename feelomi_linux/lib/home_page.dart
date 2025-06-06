@@ -1,5 +1,5 @@
+import 'package:feelomi_linux/health_tracker.dart';
 import 'package:feelomi_linux/login_page.dart';
-import 'package:feelomi_linux/main.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,6 +7,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
+    final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -25,7 +28,7 @@ class HomePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 150, 95, 186),
+                    color: primaryColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -46,27 +49,30 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 50),
                 
                 // Image circulaire de l'écureuil avec des lunettes
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
+                Hero(
+                  tag: 'feelomi_mascot',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                        image: const DecorationImage(
+                          image: NetworkImage(
+                            'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                      image: const DecorationImage(
-                        image: NetworkImage(
-                          'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                        ),
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -74,21 +80,19 @@ class HomePage extends StatelessWidget {
                 
                 const SizedBox(height: 60),
                 
-                // Bouton "Commencer"
+                // Bouton "Commencer" modifié pour naviguer directement vers HealthTracker
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Navigation vers la page de connexion
-                      // Remplacez par votre logique de navigation
                       Navigator.push(
                         context, 
-                        MaterialPageRoute(builder: (context) => const MoodTrackerPage(title: 'Journal Émotionnel Feelomi')),
+                        MaterialPageRoute(builder: (context) => const HealthTracker()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 150, 95, 186),
+                      backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -112,7 +116,7 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 40),
                 
                 // Texte pour la connexion
-                Text(
+                const Text(
                   'Vous avez déjà un compte ?',
                   style: TextStyle(
                     fontSize: 20,
@@ -125,16 +129,16 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 
                 // Bouton de connexion
-          TextButton(
-  onPressed: () {
-    // Navigation vers la page de connexion
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
-  },
+                TextButton(
+                  onPressed: () {
+                    // Navigation vers la page de connexion
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color.fromARGB(255, 90, 0, 150),
+                    foregroundColor: secondaryColor,
                   ),
                   child: const Text(
                     'Connectez-vous',

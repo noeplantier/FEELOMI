@@ -414,7 +414,10 @@ class _BetterPageState extends State<BetterPage> {
                         child: Stack(
                           children: [
                             // Zone de dessin
-                            GestureDetector(
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
                               onPanStart: (details) {
                                 setState(() {
                                   _points.add(
@@ -472,6 +475,7 @@ class _BetterPageState extends State<BetterPage> {
                                 ),
                               ),
                             ),
+                        ),  
                             
                             // Exemple de sourire (afficher un guide discret)
                             if (_points.isEmpty)

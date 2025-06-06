@@ -1,5 +1,8 @@
 import 'package:feelomi_linux/sleeping_page.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'dart:async';
 
 class SpecifyPage extends StatefulWidget {
   final String medicType;
@@ -14,40 +17,230 @@ class _SpecifyPageState extends State<SpecifyPage> {
   // Contrôleur pour le champ de texte
   final TextEditingController _medicController = TextEditingController();
   
-  // État de l'enregistrement vocal
+  // Instance de Speech to Text
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _speechEnabled = false;
   bool _isRecording = false;
+  String _lastWords = '';
   
-  // Méthode pour simuler un enregistrement vocal
-  void _toggleRecording() {
+  // Base de données simulée de médicaments pour l'auto-suggestion
+  final List<String> _medicDatabase = [
+    'Doliprane 500mg',
+    'Doliprane 1000mg',
+    'Efferalgan',
+    'Dafalgan',
+    'Xanax',
+    'Levothyrox',
+    'Spasfon',
+    'Aspégic',
+    'Ventoline',
+    'Smecta',
+    'Vitamine D',
+    'Magnésium',
+    'Omega 3',
+    'Zinc',
+    'Aspirine',
+    'Imodium',
+    'Gaviscon',
+    'Ibuprofène',
+    'Paracétamol',
+  ];
+  
+  // Liste de suggestions
+  List<String> _suggestions = [];
+  Timer? _debounceTimer;
+  
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  // Initialisation de la reconnaissance vocale
+  void _initSpeech() async {
+    _speechEnabled = await _speech.initialize(
+      onStatus: _onSpeechStatus,
+      onError: _onSpeechError,
+    );
+    setState(() {});
+  }
+  
+  // Démarrage de l'écoute vocale
+  void _startListening() async {
+    if (!_speechEnabled) {
+      _initSpeech();
+    }
+    
     setState(() {
-      _isRecording = !_isRecording;
+      _isRecording = true;
+      _lastWords = '';
     });
     
-    // Simulation d'enregistrement vocal
+    await _speech.listen(
+      onResult: _onSpeechResult,
+      localeId: 'fr_FR', // Langue française
+      listenFor: const Duration(seconds: 30), // Durée maximale d'écoute
+      pauseFor: const Duration(seconds: 3), // Pause automatique après silence
+    );
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Écoute active, parlez maintenant...')),
+    );
+  }
+  
+  // Arrêt de l'écoute vocale
+  void _stopListening() {
+    _speech.stop();
+    setState(() {
+      _isRecording = false;
+    });
+  }
+  
+  // Bascule de l'état d'enregistrement
+  void _toggleRecording() {
     if (_isRecording) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enregistrement en cours...')),
-      );
-      
-      // Après 3 secondes, annule l'enregistrement
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            _isRecording = false;
-          });
-          
-          // Supposons qu'on a reconnu un médicament
-          _medicController.text += _medicController.text.isEmpty 
-              ? 'Doliprane 1000mg'
-              : ', Doliprane 1000mg';
-        }
+      _stopListening();
+    } else {
+      _startListening();
+    }
+  }
+  
+  // Traitement du résultat de la reconnaissance vocale
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+    
+    if (result.finalResult) {
+      // Ajout du texte reconnu au champ de médicaments
+      if (_lastWords.isNotEmpty) {
+        _processRecognizedText(_lastWords);
+      }
+    }
+  }
+  
+  // Traitement du statut de la reconnaissance vocale
+  void _onSpeechStatus(String status) {
+    if (status == 'done' || status == 'notListening') {
+      setState(() {
+        _isRecording = false;
       });
     }
+  }
+  
+  // Gestion des erreurs de reconnaissance vocale
+  void _onSpeechError(dynamic error) {
+    setState(() {
+      _isRecording = false;
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Erreur de reconnaissance vocale: ${error.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+  
+  // Traitement du texte reconnu pour identifier les médicaments
+  void _processRecognizedText(String text) {
+    // Convertir en minuscules pour la recherche
+    final lowerText = text.toLowerCase();
+    
+    // Rechercher des correspondances dans la base de données
+    List<String> foundMeds = _medicDatabase
+        .where((med) => lowerText.contains(med.toLowerCase()))
+        .toList();
+    
+    // Si aucun médicament trouvé, utiliser le texte brut
+    if (foundMeds.isEmpty) {
+      // Diviser le texte en mots potentiels pour les médicaments
+      final words = lowerText.split(' ');
+      
+      // Recherche plus avancée
+      for (final word in words) {
+        if (word.length >= 4) { // Ignorer les mots trop courts
+          final possibleMeds = _medicDatabase
+              .where((med) => med.toLowerCase().contains(word))
+              .toList();
+          
+          foundMeds.addAll(possibleMeds);
+        }
+      }
+      
+      // Si toujours rien trouvé, utiliser le texte brut
+      if (foundMeds.isEmpty) {
+        foundMeds = [text];
+      }
+    }
+    
+    // Ajouter les médicaments identifiés au champ de texte
+    final currentText = _medicController.text;
+    String newText = foundMeds.join(', ');
+    
+    if (currentText.isNotEmpty) {
+      newText = '$currentText, $newText';
+    }
+    
+    setState(() {
+      _medicController.text = newText;
+    });
+  }
+  
+  // Recherche de suggestions basée sur le texte saisi
+  void _onTextChanged() {
+    final text = _medicController.text;
+    
+    // Annuler le timer précédent s'il est actif
+    _debounceTimer?.cancel();
+    
+    // Créer un nouveau timer pour éviter les recherches trop fréquentes
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      // Obtenir le dernier mot saisi
+      final words = text.split(',');
+      if (words.isNotEmpty) {
+        final lastWord = words.last.trim().toLowerCase();
+        
+        if (lastWord.isNotEmpty) {
+          // Rechercher des correspondances dans la base de données
+          setState(() {
+            _suggestions = _medicDatabase
+                .where((med) => med.toLowerCase().contains(lastWord))
+                .take(5)
+                .toList();
+          });
+        } else {
+          setState(() {
+            _suggestions = [];
+          });
+        }
+      }
+    });
+  }
+  
+  // Sélection d'une suggestion
+  void _selectSuggestion(String suggestion) {
+    final words = _medicController.text.split(',');
+    words.removeLast();
+    
+    String newText = words.join(',');
+    if (newText.isNotEmpty) {
+      newText = '$newText, $suggestion';
+    } else {
+      newText = suggestion;
+    }
+    
+    setState(() {
+      _medicController.text = newText;
+      _suggestions = [];
+    });
   }
 
   @override
   void dispose() {
     _medicController.dispose();
+    _debounceTimer?.cancel();
+    _speech.cancel();
     super.dispose();
   }
   
@@ -146,7 +339,6 @@ class _SpecifyPageState extends State<SpecifyPage> {
                           );
                           // Navigation vers la page finale
                           Navigator.pop(context);
-                          // Ici on pourrait naviguer vers une page finale
                         },
                         child: Text(
                           'Passer cette étape',
@@ -250,6 +442,9 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                     child: TextField(
                                       controller: _medicController,
+                                      onChanged: (value) {
+                                        _onTextChanged();
+                                      },
                                       decoration: InputDecoration(
                                         hintText: placeholderText,
                                         border: InputBorder.none,
@@ -274,14 +469,107 @@ class _SpecifyPageState extends State<SpecifyPage> {
                                   ),
                                   child: IconButton(
                                     onPressed: _toggleRecording,
-                                    icon: Icon(
-                                      _isRecording ? Icons.mic : Icons.mic_none,
-                                      color: Colors.white,
+                                    icon: AnimatedSwitcher(
+                                      duration: const Duration(milliseconds: 200),
+                                      transitionBuilder: (Widget child, Animation<double> animation) {
+                                        return ScaleTransition(scale: animation, child: child);
+                                      },
+                                      child: Icon(
+                                        _isRecording ? Icons.stop : Icons.mic_none,
+                                        key: ValueKey<bool>(_isRecording),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
+                            
+                            // Affichage de la reconnaissance en cours
+                            if (_isRecording && _lastWords.isNotEmpty)
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.withOpacity(0.1),
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: Colors.grey.shade200,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 12,
+                                      height: 12,
+                                      margin: const EdgeInsets.only(right: 8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.mic,
+                                          size: 8,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        _lastWords,
+                                        style: TextStyle(
+                                          color: Colors.blue.shade800,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            
+                            // Affichage des suggestions
+                            if (_suggestions.isNotEmpty)
+                              Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: Colors.grey.shade200,
+                                    ),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 16, top: 8),
+                                      child: Text(
+                                        'Suggestions:',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ),
+                                    ..._suggestions.map((suggestion) => InkWell(
+                                      onTap: () => _selectSuggestion(suggestion),
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                        child: Text(
+                                          suggestion,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    )),
+                                  ],
+                                ),
+                              ),
+                            
+                            // Affichage des médicaments identifiés
                             if (_medicController.text.isNotEmpty)
                               Container(
                                 width: double.infinity,
@@ -405,26 +693,26 @@ class _SpecifyPageState extends State<SpecifyPage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                          onPressed: () {
-                      // Enregistrer les médicaments spécifiés
-                      final meds = _medicController.text;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            meds.isEmpty
-                                ? 'Aucun médicament spécifié'
-                                : 'Médicaments enregistrés: $meds',
-                          ),
+                  onPressed: () {
+                    // Enregistrer les médicaments spécifiés
+                    final meds = _medicController.text;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          meds.isEmpty
+                              ? 'Aucun médicament spécifié'
+                              : 'Médicaments enregistrés: $meds',
                         ),
-                      );
+                      ),
+                    );
                     // Navigation vers la page finale
-                     Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const SleepingPage(),
                       ),
                     );
-    },
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,

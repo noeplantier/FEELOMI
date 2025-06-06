@@ -390,19 +390,7 @@ class _MentalPageState extends State<MentalPage> {
               ),
             ),
             
-            // Note informative
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Text(
-                'Tes réponses restent confidentielles et nous aident à comprendre ta situation',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ),
+
             
             // Bouton Continuer en bas
             Container(

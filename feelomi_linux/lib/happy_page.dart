@@ -133,7 +133,7 @@ class _HappyPageState extends State<HappyPage> {
                             ),
                             child: Center(
                               child: Text(
-                                '10',
+                                '11',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold,

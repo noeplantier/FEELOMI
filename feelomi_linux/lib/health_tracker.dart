@@ -1,7 +1,5 @@
 import 'package:feelomi_linux/gender_page.dart';
 import 'package:flutter/material.dart';
-import 'gender_page.dart';
-// ...existing code...
 
 class HealthTracker extends StatefulWidget {
   const HealthTracker({super.key});
@@ -83,9 +81,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                           ),
                         ],
                       ),
-                        
-                        
-                        TextButton(
+            TextButton(
                         onPressed: () {
                           // Action pour passer l'étape
                           ScaffoldMessenger.of(context).showSnackBar(

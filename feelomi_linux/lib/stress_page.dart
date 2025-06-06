@@ -57,7 +57,7 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 800),
     );
     
     _animation = Tween<double>(
@@ -235,107 +235,112 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                     ),
                   ),
                   
-                  // Nouvelle jauge verticale, moins volumineuse
+                  // Jauge circulaire digitalisée
                   SizedBox(
                     height: 230,
-                    width: deviceWidth * 0.85, // Réduire la largeur pour s'adapter à tous les appareils
+                    width: deviceWidth * 0.80,
                     child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        // Ligne de progression en arrière-plan (grise)
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 40, // Espace pour les étiquettes de texte
-                          top: 0,
+                        // Cercle en arrière-plan (gris)
+                        SizedBox(
+                          width: 200,
+                          height: 200,
                           child: CustomPaint(
-                            size: Size(deviceWidth * 0.85, 190),
-                            painter: CurvePainter(
-                              progress: 1.0, // Toujours 100% pour la ligne de fond
+                            painter: CircleGaugePainter(
+                              progress: 1.0,
                               color: Colors.grey.shade300,
-                              strokeWidth: 8,
+                              strokeWidth: 12,
                             ),
                           ),
                         ),
                         
-                        // Ligne de progression animée (colorée)
+                        // Cercle animé (coloré)
                         AnimatedBuilder(
                           animation: _animation,
                           builder: (context, child) {
-                            return Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 40,
-                              top: 0,
+                            return SizedBox(
+                              width: 200,
+                              height: 200,
                               child: CustomPaint(
-                                size: Size(deviceWidth * 0.85, 190),
-                                painter: CurvePainter(
+                                painter: CircleGaugePainter(
                                   progress: _animation.value,
                                   color: _stressLevels[_stressLevel]['color'],
-                                  strokeWidth: 8,
+                                  strokeWidth: 12,
                                 ),
                               ),
                             );
                           },
                         ),
                         
-                        // Points de niveau sur la courbe
+                        // Repères numériques du cercle avec indications
                         ...List.generate(_stressLevels.length, (index) {
-                          // Calculer la position horizontale pour chaque niveau
-                          final position = index / (_stressLevels.length - 1);
-                          final point = _getCurvePoint(position, Size(deviceWidth * 0.85, 190));
+                          // Calculer la position angulaire pour chaque niveau
+                          final angle = -math.pi / 2 + (2 * math.pi * index / _stressLevels.length);
+                          
+                          // Ajouter un décalage pour ne pas avoir de points à 12h, 3h, 6h et 9h exactement
+                          // mais décalés d'un petit angle pour mieux visualiser
+                          final adjustedAngle = angle + (math.pi / 8);
+                          
+                          // Rayon du cercle
+                          final radius = 100.0;
+                          
+                          // Position du point
+                          final x = radius * math.cos(adjustedAngle);
+                          final y = radius * math.sin(adjustedAngle);
+                          
                           final isSelected = index == _stressLevel;
                           
-                          return Positioned(
-                            left: point.dx - 15, // Centrer sur le point
-                            top: point.dy - 15, // Centrer sur le point
-                            child: GestureDetector(
-                              onTap: () => _setStressLevel(index),
-                              child: Container(
-                                width: isSelected ? 40 : 30,
-                                height: isSelected ? 40 : 30,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? _stressLevels[index]['color']
-                                      : Colors.white,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: _stressLevels[index]['color'],
-                                    width: 2,
+                          // Position pour le texte (légèrement plus éloignée)
+                          final textRadius = radius + 45;
+                          final textX = textRadius * math.cos(adjustedAngle);
+                          final textY = textRadius * math.sin(adjustedAngle);
+                          
+                          return Stack(
+                            children: [
+                              // Point sur le cercle
+                              Positioned(
+                                left: x + 100 - 15, // Centrer
+                                top: y + 100 - 15,  // Centrer
+                                child: GestureDetector(
+                                  onTap: () => _setStressLevel(index),
+                                  child: Container(
+                                    width: isSelected ? 40 : 30,
+                                    height: isSelected ? 40 : 30,
+                                    decoration: BoxDecoration(
+                                      color: isSelected 
+                                          ? _stressLevels[index]['color']
+                                          : Colors.white,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: _stressLevels[index]['color'],
+                                        width: 2,
+                                      ),
+                                      boxShadow: isSelected 
+                                          ? [
+                                              BoxShadow(
+                                                color: _stressLevels[index]['color'].withOpacity(0.3),
+                                                blurRadius: 8,
+                                                spreadRadius: 2,
+                                              )
+                                            ] 
+                                          : null,
+                                    ),
+                                    child: Icon(
+                                      _stressLevels[index]['icon'],
+                                      color: isSelected ? Colors.white : _stressLevels[index]['color'],
+                                      size: isSelected ? 20 : 16,
+                                    ),
                                   ),
-                                  boxShadow: isSelected 
-                                      ? [
-                                          BoxShadow(
-                                            color: _stressLevels[index]['color'].withOpacity(0.3),
-                                            blurRadius: 8,
-                                            spreadRadius: 2,
-                                          )
-                                        ] 
-                                      : null,
-                                ),
-                                child: Icon(
-                                  _stressLevels[index]['icon'],
-                                  color: isSelected ? Colors.white : _stressLevels[index]['color'],
-                                  size: isSelected ? 20 : 16,
                                 ),
                               ),
-                            ),
-                          );
-                        }),
-                        
-                        // Étiquettes de niveau en bas
-                        ...List.generate(_stressLevels.length, (index) {
-                          // Calculer la position horizontale pour chaque niveau
-                          final position = index / (_stressLevels.length - 1);
-                          final curvePoint = _getCurvePoint(position, Size(deviceWidth * 0.85, 190));
-                          final isSelected = index == _stressLevel;
-                          
-                          return Positioned(
-                            left: curvePoint.dx - 40, // Centrer sous le point
-                            top: 190, // Position en bas
-                            width: 80, // Largeur fixe pour le texte
-                            child: Column(
-                              children: [
-                                Text(
+                              
+                              // Texte autour du cercle
+                              Positioned(
+                                left: textX + 100 - 40, // Centrer
+                                top: textY + 100 - 10,  // Centrer
+                                width: 80,
+                                child: Text(
                                   _stressLevels[index]['title'],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -346,10 +351,49 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
                                         : Colors.grey.shade700,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         }),
+                        
+                        // Valeur au centre du cercle
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              )
+                            ],
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${(_stressLevel / (_stressLevels.length - 1) * 100).toInt()}%',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: _stressLevels[_stressLevel]['color'],
+                                  ),
+                                ),
+                                Text(
+                                  'Stress',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -497,30 +541,18 @@ class _StressPageState extends State<StressPage> with SingleTickerProviderStateM
       ),
     );
   }
-  
-  // Méthode pour calculer la position d'un point sur la courbe
-  Offset _getCurvePoint(double position, Size size) {
-    // Calculer la position horizontale (x)
-    final x = position * size.width;
-    
-    // Calculer la position verticale (y) avec une courbe quadratique
-    // La courbe monte du bas vers le haut, avec une légère courbure
-    final y = size.height - (size.height * math.pow(position, 0.9));
-    
-    return Offset(x, y);
-  }
 }
 
-// Nouveau painter personnalisé pour dessiner une courbe ascendante
-class CurvePainter extends CustomPainter {
+// Painter personnalisé pour dessiner une jauge circulaire
+class CircleGaugePainter extends CustomPainter {
   final double progress;
   final Color color;
   final double strokeWidth;
   
-  CurvePainter({
+  CircleGaugePainter({
     required this.progress,
     required this.color,
-    this.strokeWidth = 8,
+    this.strokeWidth = 10,
   });
   
   @override
@@ -531,29 +563,62 @@ class CurvePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth;
     
-    final path = Path();
+    // Centre et rayon du cercle
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = math.min(size.width, size.height) / 2 - (strokeWidth / 2);
     
-    // Démarrer depuis le coin bas gauche
-    path.moveTo(0, size.height);
+    // Angle de départ (-90 degrés = haut du cercle)
+    const startAngle = -math.pi / 2;
     
-    // Dessiner une série de points pour créer une courbe douce
-    // qui monte progressivement de gauche à droite
-    final totalPoints = 100;
-    for (int i = 1; i <= totalPoints * progress; i++) {
-      final t = i / totalPoints;
-      // Calculer le point sur une courbe légèrement exponentielle
-      final point = Offset(
-        t * size.width,
-        size.height - (size.height * math.pow(t, 0.9)), // Ajuster l'exposant pour changer la forme
-      );
-      path.lineTo(point.dx, point.dy);
+    // Angle de fin basé sur la progression (2*pi = tour complet)
+    final sweepAngle = 2 * math.pi * progress;
+    
+    // Dessiner l'arc de cercle
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false, // Ne pas remplir le centre
+      paint,
+    );
+    
+    // Ajouter des segments pour un effet numérique
+    if (progress > 0) {
+      const segmentCount = 40; // Nombre de segments pour un cercle complet
+      final segmentsToShow = (segmentCount * progress).floor();
+      
+      // Calculer l'angle entre chaque segment
+      final segmentAngle = 2 * math.pi / segmentCount;
+      
+      // Espace entre les segments
+      const segmentGap = 0.05;
+      
+      // Modifier la couleur et l'épaisseur pour les segments
+      final segmentPaint = Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = strokeWidth * 1.2; // Légèrement plus épais
+      
+      for (int i = 0; i < segmentsToShow; i++) {
+        // Calculer l'angle de début et de fin de ce segment
+        final segStart = startAngle + i * segmentAngle;
+        final segEnd = segStart + segmentAngle * (1 - segmentGap);
+        
+        // Dessiner ce segment
+        canvas.drawArc(
+          Rect.fromCircle(center: center, radius: radius),
+          segStart,
+          segmentAngle * (1 - segmentGap),
+          false,
+          segmentPaint,
+        );
+      }
     }
-    
-    canvas.drawPath(path, paint);
   }
   
   @override
-  bool shouldRepaint(covariant CurvePainter oldDelegate) {
+  bool shouldRepaint(covariant CircleGaugePainter oldDelegate) {
     return progress != oldDelegate.progress || 
            color != oldDelegate.color ||
            strokeWidth != oldDelegate.strokeWidth;
