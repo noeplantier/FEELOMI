@@ -1,3 +1,4 @@
+import 'package:feelomi/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,7 +12,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -26,14 +28,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Interval(0.0, 0.65, curve: Curves.easeOut),
       ),
     );
-    
+
     _animationController.forward();
   }
 
@@ -47,7 +49,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   // Fonction pour gérer la connexion
   Future<void> _handleLogin() async {
-    if (_emailController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
       _showSnackBar('Veuillez remplir tous les champs');
       return;
     }
@@ -64,7 +67,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     });
 
     if (!mounted) return;
-    
+
     // Pour démonstration, on considère la connexion réussie
     Navigator.pushReplacement(
       context,
@@ -77,9 +80,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -111,21 +112,21 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 40),
-                  
+
                   // Logo animé et titre
                   Center(
                     child: Hero(
                       tag: 'logo',
                       child: Image.network(
-                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg', 
+                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
                         height: 80,
                         width: 80,
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Titre principal en violet
                   Center(
                     child: Text(
@@ -137,9 +138,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Champ email
                   TextField(
                     controller: _emailController,
@@ -148,7 +149,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     decoration: InputDecoration(
                       labelText: 'Adresse Mail',
                       hintText: 'exemple@mail.com',
-                      prefixIcon: Icon(Icons.email_outlined, color: primaryColor),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: primaryColor,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -160,9 +164,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       fillColor: Colors.grey.shade50,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Champ mot de passe
                   TextField(
                     controller: _passwordController,
@@ -176,7 +180,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       prefixIcon: Icon(Icons.lock_outline, color: primaryColor),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: primaryColor,
                         ),
                         onPressed: () {
@@ -197,9 +203,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       fillColor: Colors.grey.shade50,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Bouton de connexion
                   SizedBox(
                     width: double.infinity,
@@ -215,31 +221,34 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         elevation: 3,
                         shadowColor: primaryColor.withOpacity(0.4),
                       ),
-                      child: _isLoading 
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2.5,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Se connecter',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(Icons.arrow_forward),
+                              ],
                             ),
-                          )
-                        : const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Se connecter',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward),
-                          ],
-                        ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Séparateur avec texte
                   Row(
                     children: [
@@ -267,9 +276,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Icônes de réseaux sociaux
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -279,23 +288,27 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         icon: FontAwesomeIcons.facebook,
                         color: const Color(0xFF3b5998),
                         onTap: () {
-                          _launchDeveloperProfile('https://www.facebook.com/zuck');
+                          _launchDeveloperProfile(
+                            'https://www.facebook.com/zuck',
+                          );
                         },
                       ),
-                      
+
                       const SizedBox(width: 24),
-                      
+
                       // Google (Sundar Pichai)
                       _socialButton(
                         icon: FontAwesomeIcons.google,
                         color: const Color(0xFFDB4437),
                         onTap: () {
-                          _launchDeveloperProfile('https://twitter.com/sundarpichai');
+                          _launchDeveloperProfile(
+                            'https://twitter.com/sundarpichai',
+                          );
                         },
                       ),
-                      
+
                       const SizedBox(width: 24),
-                      
+
                       // GitHub (Dan Abramov)
                       _socialButton(
                         icon: FontAwesomeIcons.github,
@@ -306,9 +319,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 50),
-                  
+
                   // Texte pour l'inscription
                   Center(
                     child: Text(
@@ -319,19 +332,26 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Lien vers inscription
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        // Navigation vers la page d'inscription
-                        _showSnackBar('Inscription temporairement indisponible');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
+                        );
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: secondaryColor,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                       ),
                       child: Text(
                         'Inscris-toi',
@@ -343,15 +363,17 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Mot de passe oublié
                   Center(
                     child: TextButton(
                       onPressed: () {
                         // Navigation vers la page de récupération de mot de passe
-                        _showSnackBar('Récupération de mot de passe indisponible');
+                        _showSnackBar(
+                          'Récupération de mot de passe indisponible',
+                        );
                       },
                       child: Text(
                         'Mot de passe oublié ?',
@@ -370,7 +392,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       ),
     );
   }
-  
+
   // Widget pour les boutons de réseaux sociaux avec effet de rebond
   Widget _socialButton({
     required IconData icon,
@@ -398,13 +420,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             ),
           ],
         ),
-        child: Center(
-          child: FaIcon(
-            icon,
-            color: color,
-            size: 28,
-          ),
-        ),
+        child: Center(child: FaIcon(icon, color: color, size: 28)),
       ),
     );
   }

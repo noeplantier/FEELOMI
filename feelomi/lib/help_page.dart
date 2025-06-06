@@ -8,10 +8,11 @@ class HelpPage extends StatefulWidget {
   State<HelpPage> createState() => _HelpPageState();
 }
 
-class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin {
+class _HelpPageState extends State<HelpPage>
+    with SingleTickerProviderStateMixin {
   // Option sélectionnée (null, 'oui', 'non')
   String? _selectedOption;
-  
+
   // Animation controller pour les points d'interrogation
   late AnimationController _animationController;
   late Animation<double> _animation1;
@@ -21,36 +22,36 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    
+
     // Configure l'animation
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     // Différentes animations pour les points d'interrogation
     _animation1 = Tween<double>(begin: -10, end: 10).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _animation2 = Tween<double>(begin: 5, end: -5).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _animation3 = Tween<double>(begin: 0, end: 15).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
-  
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -82,10 +83,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -107,28 +105,28 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                           ),
                         ],
                       ),
-               TextButton(
-      onPressed: () {
-        // Action pour passer l'étape
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Étape ignorée')),
-        );
-        // Navigation vers la page de détresse physique
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const PhysicalPage(),
-          ),
-        );
-      },
-      child: Text(
-        'Passer cette étape',
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 12,
-        ),
-      ),
-    ),
+                      TextButton(
+                        onPressed: () {
+                          // Action pour passer l'étape
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Étape ignorée')),
+                          );
+                          // Navigation vers la page de détresse physique
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PhysicalPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Passer cette étape',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -143,7 +141,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -153,7 +151,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal en violet
                       Text(
                         'As-tu déjà demandé de l\'aide professionnelle ?',
@@ -164,9 +162,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Sous-titre explicatif
                       Text(
                         'Cette information nous aide à mieux comprendre ton parcours.',
@@ -176,9 +174,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Image de Feelo avec des points d'interrogation animés
                       SizedBox(
                         height: 220,
@@ -211,7 +209,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                                 ),
                               ),
                             ),
-                            
+
                             // Points d'interrogation animés
                             Positioned(
                               top: 20,
@@ -276,9 +274,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Options Oui/Non
                       Row(
                         children: [
@@ -291,7 +289,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 decoration: BoxDecoration(
                                   color: _selectedOption == 'oui'
                                       ? primaryColor.withOpacity(0.2)
@@ -330,9 +330,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                               ),
                             ),
                           ),
-                          
+
                           const SizedBox(width: 16),
-                          
+
                           // Option Non
                           Expanded(
                             child: GestureDetector(
@@ -342,7 +342,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 decoration: BoxDecoration(
                                   color: _selectedOption == 'non'
                                       ? primaryColor.withOpacity(0.2)
@@ -383,9 +385,9 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Message informatif
                       Text(
                         'Ces informations restent confidentielles et nous aident à personnaliser ton expérience.',
@@ -401,7 +403,7 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -420,18 +422,17 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                 onPressed: _selectedOption == null
-        ? null // Désactivé si aucune option sélectionnée
-        : () {
-
-            // Navigation vers la page de détresse physique
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PhysicalPage(),
-              ),
-            );
-          },
+                  onPressed: _selectedOption == null
+                      ? null // Désactivé si aucune option sélectionnée
+                      : () {
+                          // Navigation vers la page de détresse physique
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PhysicalPage(),
+                            ),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -446,7 +447,10 @@ class _HelpPageState extends State<HelpPage> with SingleTickerProviderStateMixin
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),
