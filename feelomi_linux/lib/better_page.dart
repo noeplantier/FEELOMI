@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'happy_page.dart';
 import 'dart:ui' as ui;
+import 'dart:math' as math;
 
 class BetterPage extends StatefulWidget {
   const BetterPage({super.key});
@@ -18,19 +19,119 @@ class _BetterPageState extends State<BetterPage> {
   bool _showCompletionMessage = false;
   bool _hasDrawnSmile = false;
   
+  // Pour la détection de sourire
+  double? _minX, _maxX, _minY, _maxY;
+  bool _isCurveUp = false;
+  
   // Méthode pour effacer le dessin
   void _clearDrawing() {
     setState(() {
       _points.clear();
       _showCompletionMessage = false;
       _hasDrawnSmile = false;
+      _resetDetectionValues();
     });
     HapticFeedback.mediumImpact();
   }
   
-  // Méthode pour vérifier si un visage souriant a été dessiné (simulation)
+  // Réinitialiser les valeurs de détection
+  void _resetDetectionValues() {
+    _minX = null;
+    _maxX = null;
+    _minY = null;
+    _maxY = null;
+    _isCurveUp = false;
+  }
+  
+  // Analyser les points de dessin pour déterminer si c'est un sourire
+  void _analyzeDrawing() {
+    if (_points.isEmpty) return;
+    
+    // Récupérer les points valides (non null)
+    final validPoints = _points.whereType<DrawingPoint>().toList();
+    
+    // Besoin d'au moins quelques points pour analyser
+    if (validPoints.length < 10) return;
+    
+    // Trouver les extrémités du dessin
+    double minX = double.infinity;
+    double maxX = -double.infinity;
+    double minY = double.infinity;
+    double maxY = -double.infinity;
+    
+    // Calculer les limites du dessin
+    for (var point in validPoints) {
+      if (point.offset.dx < minX) minX = point.offset.dx;
+      if (point.offset.dx > maxX) maxX = point.offset.dx;
+      if (point.offset.dy < minY) minY = point.offset.dy;
+      if (point.offset.dy > maxY) maxY = point.offset.dy;
+    }
+    
+    // Vérifier si le dessin forme une courbe ascendante (sourire)
+    // Pour cela, on divise le dessin en segments horizontaux et on vérifie les directions
+    
+    // Largeur du dessin
+    final width = maxX - minX;
+    if (width < 50) return; // Le dessin est trop petit
+    
+    // Diviser en 10 segments horizontaux
+    final segmentWidth = width / 10;
+    
+    // Points intéressants pour détecter une courbe de sourire
+    List<double> yValues = [];
+    
+    for (int i = 0; i < 10; i++) {
+      final segmentStart = minX + i * segmentWidth;
+      final segmentEnd = minX + (i + 1) * segmentWidth;
+      
+      // Trouver les points dans ce segment
+      final segmentPoints = validPoints.where(
+        (p) => p.offset.dx >= segmentStart && p.offset.dx < segmentEnd
+      ).toList();
+      
+      // S'il y a des points, prendre leur hauteur moyenne
+      if (segmentPoints.isNotEmpty) {
+        double sum = segmentPoints.fold(0, (sum, p) => sum + p.offset.dy);
+        yValues.add(sum / segmentPoints.length);
+      }
+    }
+    
+    // Un sourire typique aura des valeurs y qui descendent puis remontent
+    // (en partant du milieu, car les gens dessinent souvent du centre vers les côtés)
+    if (yValues.length > 5) {
+      bool hasDownCurve = false;
+      bool hasUpCurve = false;
+      
+      // Vérifier si les points du milieu sont plus bas que les extrémités
+      double left = yValues.take(2).reduce((a, b) => a + b) / 2;
+      double right = yValues.skip(yValues.length - 2).take(2).reduce((a, b) => a + b) / 2;
+      double middle = yValues.skip(yValues.length ~/ 2 - 1).take(3).reduce((a, b) => a + b) / 3;
+      
+      // Dans un sourire, le milieu est plus bas que les extrémités
+      if (middle > left && middle > right) {
+        hasUpCurve = true;
+      }
+      
+      // Aspect ratio - un sourire est généralement plus large que haut
+      double aspectRatio = width / (maxY - minY);
+      
+      // Définir si c'est un sourire
+      _isCurveUp = hasUpCurve && aspectRatio > 1.5;
+      
+      // Stocker les valeurs pour affichage de debug
+      _minX = minX;
+      _maxX = maxX;
+      _minY = minY;
+      _maxY = maxY;
+    }
+  }
+  
+  // Méthode pour vérifier si un visage souriant a été dessiné
   void _checkDrawing() {
-    if (_points.length > 10) {
+    // Analyser le dessin
+    _analyzeDrawing();
+    
+    if (_isCurveUp) {
       setState(() {
         _hasDrawnSmile = true;
         _showCompletionMessage = true;
@@ -54,7 +155,7 @@ class _BetterPageState extends State<BetterPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Essaie de dessiner un visage souriant plus complet'),
+          content: Text('Hmm, ça ne ressemble pas à un sourire. Essaie encore!'),
           backgroundColor: Colors.amber,
         ),
       );
@@ -286,7 +387,7 @@ class _BetterPageState extends State<BetterPage> {
                             ),
                             const SizedBox(height: 12),
                             const Text(
-                              'Pour symboliser ton engagement, dessine un simple visage souriant ci-dessous. Ce petit geste représente ton premier pas vers un mieux-être.',
+                              'Pour symboliser ton engagement, dessine un simple sourire ci-dessous. La courbe doit être orientée vers le haut comme un sourire "U" pour valider ton engagement.',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -326,6 +427,8 @@ class _BetterPageState extends State<BetterPage> {
                                         ..strokeCap = StrokeCap.round,
                                     ),
                                   );
+                                  _showCompletionMessage = false;
+                                  _hasDrawnSmile = false;
                                 });
                               },
                               onPanUpdate: (details) {
@@ -346,17 +449,31 @@ class _BetterPageState extends State<BetterPage> {
                                 setState(() {
                                   _points.add(null); // Marquer la fin d'une ligne
                                 });
+                                
+                                // Auto-vérification après chaque trait terminé
+                                _analyzeDrawing();
+                                if (_isCurveUp) {
+                                  setState(() {
+                                    _hasDrawnSmile = true;
+                                    _showCompletionMessage = true;
+                                  });
+                                  
+                                  // Vibration pour feedback positif
+                                  HapticFeedback.mediumImpact();
+                                }
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: CustomPaint(
                                   painter: DrawingPainter(_points),
                                   size: Size.infinite,
+                                  foregroundPainter: _minX != null && _maxX != null ? 
+                                    DebugPainter(_minX!, _maxX!, _minY!, _maxY!, _isCurveUp) : null,
                                 ),
                               ),
                             ),
                             
-                            // Instructions au centre si vide
+                            // Exemple de sourire (afficher un guide discret)
                             if (_points.isEmpty)
                               Center(
                                 child: Column(
@@ -374,6 +491,11 @@ class _BetterPageState extends State<BetterPage> {
                                         color: Colors.white.withOpacity(0.6),
                                         fontSize: 16,
                                       ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    CustomPaint(
+                                      painter: SmileGuidePainter(Colors.white.withOpacity(0.2)),
+                                      size: const Size(120, 60),
                                     ),
                                   ],
                                 ),
@@ -507,7 +629,7 @@ class _BetterPageState extends State<BetterPage> {
                             ),
                             tooltip: 'Vérifier le dessin',
                             style: IconButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor: _hasDrawnSmile ? Colors.green : Colors.orange,
                               padding: const EdgeInsets.all(12),
                             ),
                           ),
@@ -580,35 +702,40 @@ class _BetterPageState extends State<BetterPage> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Vérifier si l'utilisateur a dessiné quelque chose
-                    if (_points.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Dessine un sourire pour symboliser ton engagement'),
-                          backgroundColor: Colors.amber,
-                        ),
-                      );
-                      return;
-                    }
-                    
-                    // Animation de succès
-                    HapticFeedback.heavyImpact();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Félicitations pour ton engagement! 🎉'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    
-                    // Navigation vers la page suivante
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HappyPage(),
-                      ),
-                    );
-                  },
+                  onPressed: _hasDrawnSmile
+                    ? () {
+                        // Animation de succès
+                        HapticFeedback.heavyImpact();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Félicitations pour ton engagement! 🎉'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        
+                        // Navigation vers la page suivante
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HappyPage(),
+                          ),
+                        );
+                      }
+                    : () {
+                        // Vérifier si l'utilisateur a dessiné quelque chose
+                        if (_points.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Dessine un sourire pour symboliser ton engagement'),
+                              backgroundColor: Colors.amber,
+                            ),
+                          );
+                          return;
+                        }
+                        
+                        // Inciter à dessiner un sourire valide
+                        _checkDrawing();
+                      },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _hasDrawnSmile ? Colors.green : secondaryColor,
                     foregroundColor: Colors.white,
@@ -684,4 +811,64 @@ class DrawingPainter extends CustomPainter {
   
   @override
   bool shouldRepaint(DrawingPainter oldDelegate) => oldDelegate.points != points;
+}
+
+// Guide visuel pour montrer comment dessiner un sourire
+class SmileGuidePainter extends CustomPainter {
+  final Color color;
+  
+  SmileGuidePainter(this.color);
+  
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    
+    // Dessiner une courbe de sourire
+    final path = Path();
+    path.moveTo(size.width * 0.2, size.height * 0.6);
+    path.quadraticBezierTo(
+      size.width * 0.5, size.height, 
+      size.width * 0.8, size.height * 0.6
+    );
+    
+    canvas.drawPath(path, paint);
+  }
+  
+  @override
+  bool shouldRepaint(SmileGuidePainter oldDelegate) => color != oldDelegate.color;
+}
+
+// Painter pour debugging (visualiser la détection)
+class DebugPainter extends CustomPainter {
+  final double minX, maxX, minY, maxY;
+  final bool isSmile;
+  
+  DebugPainter(this.minX, this.maxX, this.minY, this.maxY, this.isSmile);
+  
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Désactiver pour la production
+    // return;
+    
+    final paint = Paint()
+      ..color = isSmile ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    
+    // Dessiner un rectangle autour du dessin détecté
+    final rect = Rect.fromLTRB(minX, minY, maxX, maxY);
+    canvas.drawRect(rect, paint);
+  }
+  
+  @override
+  bool shouldRepaint(DebugPainter oldDelegate) => 
+      minX != oldDelegate.minX || 
+      maxX != oldDelegate.maxX || 
+      minY != oldDelegate.minY || 
+      maxY != oldDelegate.maxY ||
+      isSmile != oldDelegate.isSmile;
 }

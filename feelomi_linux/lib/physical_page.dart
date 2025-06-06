@@ -41,6 +41,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // Numéro d'étape et titre
                       Row(
                         children: [
                           Container(
@@ -73,31 +74,32 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                           ),
                         ],
                       ),
-                TextButton(
-      onPressed: () {
-        // Action pour passer l'étape
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Étape ignorée')),
-        );
-        // Navigation vers la page des médicaments
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MedicsPage(),
-          ),
-        );
-      },
-      child: Text(
-        'Passer cette étape',
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 12,
-        ),
-      ),
-    ),
+                      
+                      // Bouton pour passer l'étape
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Étape ignorée')),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MedicsPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Passer cette étape',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
+                  
                   // Barre de progression
                   LinearProgressIndicator(
                     value: 0.98, // 98% de progression
@@ -110,6 +112,7 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
               ),
             ),
             
+            // Contenu principal
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -146,133 +149,26 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                       const SizedBox(height: 40),
                       
                       // Options avec leur description
-                      Column(
-                        children: [
-                          // Option Oui
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedOption = 'oui';
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              decoration: BoxDecoration(
-                                color: _selectedOption == 'oui'
-                                    ? primaryColor.withOpacity(0.2)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color: _selectedOption == 'oui'
-                                      ? primaryColor
-                                      : Colors.grey.shade300,
-                                  width: _selectedOption == 'oui' ? 2 : 1,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.check_circle_outline,
-                                        color: _selectedOption == 'oui'
-                                            ? primaryColor
-                                            : Colors.grey.shade600,
-                                        size: 28,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'Oui une ou plusieurs',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: _selectedOption == 'oui'
-                                              ? secondaryColor
-                                              : Colors.black87,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 40.0),
-                                    child: Text(
-                                      'Je ressens une douleur physique à différents endroits sur mon corps.',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          
-                          // Option Non
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedOption = 'non';
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: _selectedOption == 'non'
-                                    ? primaryColor.withOpacity(0.2)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color: _selectedOption == 'non'
-                                      ? primaryColor
-                                      : Colors.grey.shade300,
-                                  width: _selectedOption == 'non' ? 2 : 1,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.cancel_outlined,
-                                        color: _selectedOption == 'non'
-                                            ? primaryColor
-                                            : Colors.grey.shade600,
-                                        size: 28,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'Pas de douleur physique du tout',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: _selectedOption == 'non'
-                                              ? secondaryColor
-                                              : Colors.black87,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 40.0),
-                                    child: Text(
-                                      'Je me sens bien physiquement, pas de douleur particulière.',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      // Option Oui
+                      _buildOptionCard(
+                        title: 'Oui une ou plusieurs',
+                        description: 'Je ressens une douleur physique à différents endroits sur mon corps.',
+                        icon: Icons.check_circle_outline,
+                        option: 'oui',
+                        primaryColor: primaryColor,
+                        secondaryColor: secondaryColor,
+                      ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // Option Non
+                      _buildOptionCard(
+                        title: 'Pas de douleur physique du tout',
+                        description: 'Je me sens bien physiquement, pas de douleur particulière.',
+                        icon: Icons.cancel_outlined,
+                        option: 'non',
+                        primaryColor: primaryColor,
+                        secondaryColor: secondaryColor,
                       ),
                       
                       const SizedBox(height: 40),
@@ -334,20 +230,20 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _selectedOption == null
-        ? null // Désactivé si aucune option sélectionnée
-        : () {
-            // Enregistrer l'option sélectionnée
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Réponse : $_selectedOption')),
-            );
-            // Navigation vers la page des médicaments
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MedicsPage(),
-              ),
-            );
-          },
+                    ? null // Désactivé si aucune option sélectionnée
+                    : () {
+                        // Enregistrer l'option sélectionnée
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Réponse : $_selectedOption')),
+                        );
+                        // Navigation vers la page des médicaments
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MedicsPage(),
+                          ),
+                        );
+                      },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -368,6 +264,87 @@ class _PhysicalPageState extends State<PhysicalPage> with SingleTickerProviderSt
                       Icon(Icons.arrow_forward),
                     ],
                   ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  // Widget pour construire une carte d'option réutilisable
+  Widget _buildOptionCard({
+    required String title, 
+    required String description,
+    required IconData icon,
+    required String option,
+    required Color primaryColor,
+    required Color secondaryColor,
+  }) {
+    final bool isSelected = _selectedOption == option;
+    
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedOption = option;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? primaryColor.withOpacity(0.2)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isSelected
+                ? primaryColor
+                : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Titre et icône
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  color: isSelected
+                      ? primaryColor
+                      : Colors.grey.shade600,
+                  size: 28,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected
+                          ? secondaryColor
+                          : Colors.black87,
+                    ),
+                    // Empêcher le débordement du texte
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // Description
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0),
+              child: Text(
+                description,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade700,
                 ),
               ),
             ),
