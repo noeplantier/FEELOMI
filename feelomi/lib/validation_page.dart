@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:feelomi/home_page.dart';
-import 'package:lottie/lottie.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -205,7 +205,7 @@ class _ValidationPageState extends State<ValidationPage>
                   if (_showConfetti)
                     Positioned.fill(
                       child: IgnorePointer(
-                        child: Lottie.network(
+                        child: lottie.Lottie.network(
                           'https://assets2.lottiefiles.com/packages/lf20_fcfjwiyb.json',
                           fit: BoxFit.cover,
                         ),

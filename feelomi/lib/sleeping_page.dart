@@ -354,28 +354,40 @@ class _SleepingPageState extends State<SleepingPage>
                                     clipBehavior: Clip.none,
                                     children: [
                                       // Ligne verticale du curseur
+                                      // Bouton de validation - version sans animation
                                       Positioned(
-                                        left:
-                                            35, // Centré dans la largeur du container
-                                        top: 20,
-                                        bottom: 20,
-                                        width: 8,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.green.shade500,
-                                                Colors.lightGreen.shade400,
-                                                Colors.amber.shade400,
-                                                Colors.orange.shade400,
-                                                Colors.red.shade400,
-                                              ],
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              4,
-                                            ),
+                                        top:
+                                            (4 - _selectedLevel) * itemHeight +
+                                            20 +
+                                            (itemHeight / 2) -
+                                            24,
+                                        right: -16,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            // Enregistrer la qualité de sommeil sélectionnée
+                                            final sleepQuality =
+                                                _sleepLevels[_selectedLevel]['title'];
+
+                                            // Navigation vers la page des symptômes de santé mentale
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const MentalPage(),
+                                              ),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                _sleepLevels[_selectedLevel]['color'],
+                                            foregroundColor: Colors.white,
+                                            shape: const CircleBorder(),
+                                            padding: const EdgeInsets.all(16),
+                                            elevation: 4,
+                                          ),
+                                          child: const Icon(
+                                            Icons.arrow_forward,
+                                            size: 24,
                                           ),
                                         ),
                                       ),
