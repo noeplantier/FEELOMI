@@ -1,3 +1,4 @@
+import 'package:feelomi/happy_page.dart';
 import 'package:feelomi/sleeping_page.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -331,20 +332,15 @@ class _SpecifyPageState extends State<SpecifyPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
+                          // Navigation vers la page du bonheur
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SleepingPage(),
+                            ),
                           );
-                          // Navigation vers la page finale
-                          Navigator.pop(context);
                         },
-                        child: Text(
-                          'Passer cette étape',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
+                        child: const Text('Passer cette étape'),
                       ),
                     ],
                   ),

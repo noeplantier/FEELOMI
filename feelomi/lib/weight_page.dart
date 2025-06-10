@@ -76,10 +76,6 @@ class _WeightPageState extends State<WeightPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page d'aide professionnelle
                           Navigator.push(
                             context,

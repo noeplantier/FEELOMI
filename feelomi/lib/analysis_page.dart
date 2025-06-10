@@ -12,40 +12,41 @@ class AnalysisPage extends StatefulWidget {
 class _AnalysisPageState extends State<AnalysisPage> {
   // Contrôleur pour le champ de texte
   final TextEditingController _thoughtsController = TextEditingController();
-  
+
   // État de l'enregistrement vocal
   bool _isRecording = false;
-  
+
   // Méthode pour simuler un enregistrement vocal
   void _toggleRecording() {
     // Vibration pour améliorer l'expérience utilisateur
     HapticFeedback.mediumImpact();
-    
+
     setState(() {
       _isRecording = !_isRecording;
     });
-    
+
     // Simulation d'enregistrement vocal
     if (_isRecording) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enregistrement en cours...'))
+        const SnackBar(content: Text('Enregistrement en cours...')),
       );
-      
+
       // Après 3 secondes, arrête l'enregistrement et ajoute du texte
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
             _isRecording = false;
           });
-          
+
           // Ajouter le texte reconnu
           final existingText = _thoughtsController.text;
-          final newText = "Aujourd'hui je me sens un peu stressé(e) mais j'essaie de rester positif(ve).";
-          
-          _thoughtsController.text = existingText.isEmpty 
-              ? newText 
+          final newText =
+              "Aujourd'hui je me sens un peu stressé(e) mais j'essaie de rester positif(ve).";
+
+          _thoughtsController.text = existingText.isEmpty
+              ? newText
               : "$existingText\n\n$newText";
-          
+
           // Place le curseur à la fin du texte
           _thoughtsController.selection = TextSelection.fromPosition(
             TextPosition(offset: _thoughtsController.text.length),
@@ -60,12 +61,12 @@ class _AnalysisPageState extends State<AnalysisPage> {
     _thoughtsController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -97,10 +98,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                             height: 30,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 2,
-                              ),
+                              border: Border.all(color: primaryColor, width: 2),
                             ),
                             child: Center(
                               child: Text(
@@ -124,13 +122,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page du bonheur
                           Navigator.push(
-                            context, 
+                            context,
                             MaterialPageRoute(
                               builder: (context) => const HappyPage(),
                             ),
@@ -158,7 +152,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -168,7 +162,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      
+
                       // Titre principal en violet
                       Text(
                         'Analyse personnelle',
@@ -178,9 +172,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                           color: primaryColor,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Sous-titre explicatif
                       Text(
                         'Cet espace est entièrement privé. Exprime-toi librement pour mieux te comprendre.',
@@ -189,9 +183,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                           color: Colors.grey.shade700,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Sous-titre H2
                       Text(
                         'Écris librement tout ce qui te traverse l\'esprit. Je suis là pour t\'écouter.',
@@ -201,9 +195,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                           color: secondaryColor,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Champ de texte avec microphone
                       Container(
                         decoration: BoxDecoration(
@@ -229,11 +223,15 @@ class _AnalysisPageState extends State<AnalysisPage> {
                               children: [
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                      vertical: 8.0,
+                                    ),
                                     child: TextField(
                                       controller: _thoughtsController,
                                       decoration: InputDecoration(
-                                        hintText: 'Partage tes pensées, sentiments ou réflexions...',
+                                        hintText:
+                                            'Partage tes pensées, sentiments ou réflexions...',
                                         border: InputBorder.none,
                                         hintStyle: TextStyle(
                                           color: Colors.grey.shade400,
@@ -253,7 +251,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                                   margin: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _isRecording ? Colors.red : primaryColor,
+                                    color: _isRecording
+                                        ? Colors.red
+                                        : primaryColor,
                                   ),
                                   child: IconButton(
                                     onPressed: _toggleRecording,
@@ -268,9 +268,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Conseils et astuces
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -304,24 +304,27 @@ class _AnalysisPageState extends State<AnalysisPage> {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            
+
                             // Liste de conseils
                             ...List.generate(3, (index) {
                               List<Map<String, dynamic>> tips = [
                                 {
-                                  'text': 'Exprime-toi sans filtrer tes pensées, personne ne te jugera',
+                                  'text':
+                                      'Exprime-toi sans filtrer tes pensées, personne ne te jugera',
                                   'icon': Icons.sentiment_satisfied,
                                 },
                                 {
-                                  'text': 'Sois honnête avec toi-même, c\'est la clé pour progresser',
+                                  'text':
+                                      'Sois honnête avec toi-même, c\'est la clé pour progresser',
                                   'icon': Icons.verified_user,
                                 },
                                 {
-                                  'text': 'Tes données restent confidentielles et sécurisées',
+                                  'text':
+                                      'Tes données restent confidentielles et sécurisées',
                                   'icon': Icons.lock,
                                 },
                               ];
-                              
+
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
                                 child: Row(
@@ -349,9 +352,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // Message sur la confidentialité
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -378,7 +381,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                 ),
               ),
             ),
-            
+
             // Bouton Continuer en bas
             Container(
               padding: const EdgeInsets.all(24.0),
@@ -402,14 +405,18 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     final thoughts = _thoughtsController.text;
                     if (thoughts.isNotEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Analyse enregistrée avec succès')),
+                        const SnackBar(
+                          content: Text('Analyse enregistrée avec succès'),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Aucune analyse à enregistrer')),
+                        const SnackBar(
+                          content: Text('Aucune analyse à enregistrer'),
+                        ),
                       );
                     }
-                    
+
                     // Navigation vers la page du bonheur
                     Navigator.push(
                       context,
@@ -431,7 +438,10 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     children: [
                       Text(
                         'Continuer',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward),

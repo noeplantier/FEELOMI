@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/validation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -183,6 +184,7 @@ class _BetterPageState extends State<BetterPage> {
                     children: [
                       Row(
                         children: [
+                          const CustomBackButton(iconColor: Colors.white),
                           Container(
                             width: 30,
                             height: 30,
@@ -200,6 +202,7 @@ class _BetterPageState extends State<BetterPage> {
                               ),
                             ),
                           ),
+
                           const SizedBox(width: 8),
                           const Text(
                             'Engagement',
@@ -212,15 +215,11 @@ class _BetterPageState extends State<BetterPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page du bonheur
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const HappyPage(),
+                              builder: (context) => const ValidationPage(),
                             ),
                           );
                         },

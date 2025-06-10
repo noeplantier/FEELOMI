@@ -1,4 +1,5 @@
 import 'package:feelomi/better_page.dart';
+import 'package:feelomi/stress_page.dart';
 import 'package:flutter/material.dart';
 import 'package:feelomi/custom_back.dart';
 
@@ -191,20 +192,15 @@ class _HappyPageState extends State<HappyPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
+                          // Navigation vers la page du bonheur
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BetterPage(),
+                            ),
                           );
-                          // Navigation vers la page finale
-                          Navigator.pop(context);
                         },
-                        child: Text(
-                          'Passer cette étape',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
+                        child: const Text('Passer cette étape'),
                       ),
                     ],
                   ),
@@ -355,13 +351,6 @@ class _HappyPageState extends State<HappyPage> {
                                   color: Colors.grey,
                                 ),
                                 const SizedBox(height: 16),
-                                Text(
-                                  'Aucun résultat trouvé',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
                               ],
                             ),
                           )

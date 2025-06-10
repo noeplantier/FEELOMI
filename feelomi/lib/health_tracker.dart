@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/gender_page.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,8 @@ class _HealthTrackerState extends State<HealthTracker> {
       body: SafeArea(
         child: Column(
           children: [
+            const CustomBackButton(iconColor: Colors.white),
+
             // Barre chronologique en haut
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -58,6 +61,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                               shape: BoxShape.circle,
                               border: Border.all(color: primaryColor, width: 2),
                             ),
+
                             child: Center(
                               child: Text(
                                 '1',
@@ -80,10 +84,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Redirection vers la page de sélection du genre
                           Navigator.push(
                             context,

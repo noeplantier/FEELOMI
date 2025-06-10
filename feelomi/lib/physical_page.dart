@@ -76,9 +76,6 @@ class _PhysicalPageState extends State<PhysicalPage>
                       // Bouton pour passer l'étape
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(

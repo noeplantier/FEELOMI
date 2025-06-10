@@ -159,15 +159,11 @@ class _MentalPageState extends State<MentalPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page du bonheur
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const HappyPage(),
+                              builder: (context) => const StressPage(),
                             ),
                           );
                         },
@@ -327,13 +323,6 @@ class _MentalPageState extends State<MentalPage> {
                                 const SizedBox(height: 16),
                                 const CustomBackButton(),
                                 const SizedBox(width: 8),
-                                Text(
-                                  'Aucun symptôme correspondant',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
                               ],
                             ),
                           )

@@ -107,10 +107,6 @@ class _HelpPageState extends State<HelpPage>
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page de détresse physique
                           Navigator.push(
                             context,
@@ -423,7 +419,7 @@ class _HelpPageState extends State<HelpPage>
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _selectedOption == null
-                      ? null // Désactivé si aucune option sélectionnée
+                      ? null
                       : () {
                           // Navigation vers la page de détresse physique
                           Navigator.push(

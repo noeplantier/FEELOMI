@@ -166,10 +166,6 @@ class _SleepingPageState extends State<SleepingPage>
                       ),
                       TextButton(
                         onPressed: () {
-                          // Action pour passer l'étape
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Étape ignorée')),
-                          );
                           // Navigation vers la page finale
                           Navigator.push(
                             context,
