@@ -4,6 +4,9 @@ import 'package:feelomi/home_page.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'dart:async';
 import 'dart:math' as math;
+import 'custom_back.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ValidationPage extends StatefulWidget {
   const ValidationPage({super.key});
@@ -24,6 +27,47 @@ class _ValidationPageState extends State<ValidationPage>
   bool _showConfetti = false;
   bool _showQuote = false;
   bool _isExitReady = false;
+
+  // État pour la prise de rendez-vous
+  bool _showAppointmentOptions = false;
+  bool _showWebView = false;
+  String _selectedSpecialty = '';
+  String _doctolibUrl = '';
+  WebViewController? _webViewController;
+
+  // Liste des spécialités médicales
+  final List<Map<String, dynamic>> _specialties = [
+    {
+      'name': 'Psychologue',
+      'icon': Icons.psychology,
+      'url': 'https://www.doctolib.fr/psychologue',
+      'color': const Color(0xFF5F93E5),
+    },
+    {
+      'name': 'Psychiatre',
+      'icon': Icons.medical_services,
+      'url': 'https://www.doctolib.fr/psychiatre',
+      'color': const Color(0xFF6C63FF),
+    },
+    {
+      'name': 'Médecin généraliste',
+      'icon': Icons.local_hospital,
+      'url': 'https://www.doctolib.fr/medecin-generaliste',
+      'color': const Color(0xFF4CAF50),
+    },
+    {
+      'name': 'Nutritionniste',
+      'icon': Icons.restaurant_menu,
+      'url': 'https://www.doctolib.fr/nutritionniste',
+      'color': const Color(0xFFFF9800),
+    },
+    {
+      'name': 'Coach bien-être',
+      'icon': Icons.self_improvement,
+      'url': 'https://www.doctolib.fr/osteopathe',
+      'color': const Color(0xFFE91E63),
+    },
+  ];
 
   // Liste de citations positives
   final List<String> _zenQuotes = [
@@ -118,6 +162,22 @@ class _ValidationPageState extends State<ValidationPage>
     });
   }
 
+  // Méthode pour ouvrir Doctolib avec le spécialiste choisi
+  void _openDoctolibAppointment(String specialty, String url) {
+    setState(() {
+      _selectedSpecialty = specialty;
+      _doctolibUrl = url;
+      _showWebView = true;
+    });
+  }
+
+  // Fermer la WebView
+  void _closeWebView() {
+    setState(() {
+      _showWebView = false;
+    });
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -126,6 +186,10 @@ class _ValidationPageState extends State<ValidationPage>
 
   @override
   Widget build(BuildContext context) {
+    if (_showWebView) {
+      return _buildDoctolibWebView();
+    }
+
     return Scaffold(
       backgroundColor: _backgroundColor,
       body: SafeArea(
@@ -152,6 +216,8 @@ class _ValidationPageState extends State<ValidationPage>
                     children: [
                       Row(
                         children: [
+                          const CustomBackButton(iconColor: Colors.white),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,
@@ -354,40 +420,81 @@ class _ValidationPageState extends State<ValidationPage>
                                   width: 1,
                                 ),
                               ),
-                              child: Row(
+                              child: Column(
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _primaryColor.withOpacity(0.2),
-                                    ),
-                                    child: Icon(
-                                      Icons.calendar_today_rounded,
-                                      color: _primaryColor,
-                                      size: 24,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _primaryColor.withOpacity(0.2),
+                                        ),
+                                        child: Icon(
+                                          Icons.calendar_today_rounded,
+                                          color: _primaryColor,
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Prends rendez-vous',
+                                              style: TextStyle(
+                                                color: _accentColor,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              'Pour aller plus loin, consulte un spécialiste',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showAppointmentOptions =
+                                            !_showAppointmentOptions;
+                                      });
+                                      HapticFeedback.lightImpact();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _primaryColor,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        const Icon(Icons.search, size: 20),
+                                        const SizedBox(width: 8),
                                         Text(
-                                          'Ton prochain rendez-vous',
-                                          style: TextStyle(
-                                            color: _accentColor,
+                                          _showAppointmentOptions
+                                              ? 'Masquer les spécialistes'
+                                              : 'Chercher un spécialiste',
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          'Reviens demain pour continuer ton parcours zen avec Feelo',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade700,
-                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
@@ -396,6 +503,14 @@ class _ValidationPageState extends State<ValidationPage>
                                 ],
                               ),
                             ),
+                          ),
+
+                          // Options de spécialistes via Doctolib
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: _showAppointmentOptions
+                                ? _buildSpecialistOptions()
+                                : const SizedBox.shrink(),
                           ),
                         ],
                       ),
@@ -448,7 +563,7 @@ class _ValidationPageState extends State<ValidationPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
+                      const Text(
                         'Commencer l\'aventure',
                         style: TextStyle(
                           fontSize: 18,
@@ -480,7 +595,152 @@ class _ValidationPageState extends State<ValidationPage>
     );
   }
 
-  // Widget animé pour Feelo
+  // Widget pour la WebView de Doctolib
+  Widget _buildDoctolibWebView() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Rendez-vous $_selectedSpecialty'),
+        backgroundColor: _primaryColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _closeWebView,
+        ),
+        actions: [
+          // Bouton pour rafraîchir la page
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              _webViewController?.reload();
+            },
+          ),
+          // Bouton pour ouvrir dans le navigateur externe
+          IconButton(
+            icon: const Icon(Icons.open_in_browser),
+            onPressed: () async {
+              final Uri url = Uri.parse(_doctolibUrl);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              }
+            },
+          ),
+        ],
+      ),
+      body: WebView(
+        initialUrl: _doctolibUrl,
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (controller) {
+          _webViewController = controller;
+        },
+        onProgress: (progress) {
+          // Vous pourriez ajouter un indicateur de progression ici
+        },
+        navigationDelegate: (request) {
+          // Vous pouvez gérer les redirections ici si nécessaire
+          return NavigationDecision.navigate;
+        },
+      ),
+    );
+  }
+
+  // Liste des spécialistes disponibles
+  Widget _buildSpecialistOptions() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              'Spécialistes disponibles via Doctolib',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: _accentColor,
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _specialties.length,
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.grey.withOpacity(0.1),
+                indent: 70,
+              ),
+              itemBuilder: (context, index) {
+                final specialty = _specialties[index];
+                return ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: specialty['color'].withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      specialty['icon'],
+                      color: specialty['color'],
+                      size: 24,
+                    ),
+                  ),
+                  title: Text(
+                    specialty['name'],
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    color: _primaryColor,
+                    size: 16,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    _openDoctolibAppointment(
+                      specialty['name'],
+                      specialty['url'],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          Center(
+            child: Text(
+              'Powered by Doctolib',
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget animé pour Feelo avec image ronde
   Widget _buildFeeloAnimation() {
     return Container(
       height: 200,
@@ -499,12 +759,15 @@ class _ValidationPageState extends State<ValidationPage>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Base de l'écureuil
-          Image.network(
-            'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-            height: 150,
-            width: 150,
-            fit: BoxFit.contain,
+          // Base de l'écureuil avec borderRadius à 50%
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100), // 50% de 200
+            child: Image.network(
+              'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+              height: 150,
+              width: 150,
+              fit: BoxFit.cover,
+            ),
           ),
 
           // Animation de particules/étoiles autour de Feelo
@@ -524,11 +787,14 @@ class _ValidationPageState extends State<ValidationPage>
                   child: child,
                 );
               },
-              child: Image.network(
-                'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                height: 150,
-                width: 150,
-                fit: BoxFit.contain,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100), // 50% de 200
+                child: Image.network(
+                  'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
         ],
@@ -572,4 +838,24 @@ class _ValidationPageState extends State<ValidationPage>
       );
     });
   }
+
+  WebView({
+    required String initialUrl,
+    required javascriptMode,
+    required Null Function(dynamic controller) onWebViewCreated,
+    required Null Function(dynamic progress) onProgress,
+    required NavigationDecision Function(dynamic request) navigationDelegate,
+  }) {}
 }
+
+class JavascriptMode {
+  static const JavascriptMode unrestricted = JavascriptMode._();
+
+  const JavascriptMode._();
+}
+
+extension on WebViewController? {
+  void reload() {}
+}
+
+class WebViewController {}

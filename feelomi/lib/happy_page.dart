@@ -1,5 +1,6 @@
 import 'package:feelomi/better_page.dart';
 import 'package:flutter/material.dart';
+import 'package:feelomi/custom_back.dart';
 
 class HappyPage extends StatefulWidget {
   const HappyPage({super.key});
@@ -177,6 +178,7 @@ class _HappyPageState extends State<HappyPage> {
                               ),
                             ),
                           ),
+                          const CustomBackButton(),
                           const SizedBox(width: 8),
                           Text(
                             'Bonheur',

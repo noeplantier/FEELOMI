@@ -350,6 +350,30 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "webview_flutter",
+      "rootUri": "file:///home/noe/.pub-cache/hosted/pub.dev/webview_flutter-4.13.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "webview_flutter_android",
+      "rootUri": "file:///home/noe/.pub-cache/hosted/pub.dev/webview_flutter_android-4.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "webview_flutter_platform_interface",
+      "rootUri": "file:///home/noe/.pub-cache/hosted/pub.dev/webview_flutter_platform_interface-2.13.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "webview_flutter_wkwebview",
+      "rootUri": "file:///home/noe/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.22.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "feelomi",
       "rootUri": "../",
       "packageUri": "lib/",

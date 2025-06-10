@@ -1,6 +1,7 @@
 import 'package:feelomi/stress_page.dart';
 import 'package:flutter/material.dart';
 import 'happy_page.dart';
+import 'package:feelomi/custom_back.dart';
 
 class MentalPage extends StatefulWidget {
   const MentalPage({super.key});
@@ -324,6 +325,8 @@ class _MentalPageState extends State<MentalPage> {
                                   color: Colors.grey.shade400,
                                 ),
                                 const SizedBox(height: 16),
+                                const CustomBackButton(),
+                                const SizedBox(width: 8),
                                 Text(
                                   'Aucun symptôme correspondant',
                                   style: TextStyle(

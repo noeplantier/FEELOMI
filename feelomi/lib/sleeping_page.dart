@@ -2,6 +2,7 @@ import 'package:feelomi/happy_page.dart';
 import 'package:feelomi/mental_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:feelomi/custom_back.dart';
 
 class SleepingPage extends StatefulWidget {
   const SleepingPage({super.key});
@@ -133,6 +134,9 @@ class _SleepingPageState extends State<SleepingPage>
                     children: [
                       Row(
                         children: [
+                          // Ajout du bouton de retour
+                          const CustomBackButton(),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,
@@ -457,32 +461,6 @@ class _SleepingPageState extends State<SleepingPage>
                                               20 +
                                               (itemHeight / 2) -
                                               24;
-
-                                          // Animation de transition entre les positions
-                                          if (_animController.isAnimating) {
-                                            int prevReverseIndex =
-                                                4 -
-                                                int.parse(
-                                                  _buttonAnimation.value
-                                                      .toStringAsFixed(0),
-                                                );
-                                            double prevTopPosition =
-                                                (prevReverseIndex *
-                                                    itemHeight) +
-                                                20 +
-                                                (itemHeight / 2) -
-                                                24;
-                                            double nextTopPosition =
-                                                (reverseIndex * itemHeight) +
-                                                20 +
-                                                (itemHeight / 2) -
-                                                24;
-                                            topPosition =
-                                                prevTopPosition +
-                                                (nextTopPosition -
-                                                        prevTopPosition) *
-                                                    _animController.value;
-                                          }
 
                                           return Positioned(
                                             top: topPosition,
