@@ -1,3 +1,4 @@
+import 'package:feelomi/sad_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -256,164 +257,177 @@ class _EmotionsTrackerState extends State<EmotionsTracker>
       ),
       body: _registrationDate == null
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Header avec la mascotte Feelo
-                  Container(
-                    color: _primaryColor,
-                    padding: const EdgeInsets.only(bottom: 30, top: 20),
-                    child: Column(
-                      children: [
-                        // Image de Feelo avec animation
-                        Center(
-                          child: AnimatedBuilder(
-                            animation: _animationController,
-                            builder: (context, child) {
-                              return Transform.scale(
-                                scale: _scaleAnimation.value,
-                                child: Hero(
-                                  tag: 'logo',
-                                  child: Container(
-                                    width: 120,
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 10,
-                                          spreadRadius: 1,
+          : GestureDetector(
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity! < 0) {
+                  // Glissement vers la gauche, ouvre la page de tristesse
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const SadTracker()),
+                  );
+                }
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Header avec la mascotte Feelo
+                    Container(
+                      color: _primaryColor,
+                      padding: const EdgeInsets.only(bottom: 30, top: 20),
+                      child: Column(
+                        children: [
+                          // Image de Feelo avec animation
+                          Center(
+                            child: AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _scaleAnimation.value,
+                                  child: Hero(
+                                    tag: 'logo',
+                                    child: Container(
+                                      width: 120,
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
+                                            blurRadius: 10,
+                                            spreadRadius: 1,
+                                          ),
+                                        ],
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(60),
+                                        child: Image.network(
+                                          'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+                                          fit: BoxFit.cover,
                                         ),
-                                      ],
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(60),
-                                      child: Image.network(
-                                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Jour $_daysSinceRegistration',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'de ton voyage bien-être',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Traceur d'émotions hebdomadaire
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Ton historique',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: _accentColor,
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: _openEmotionSelector,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: _primaryColor,
-                                    shape: const CircleBorder(),
-                                    padding: const EdgeInsets.all(12),
-                                  ),
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                            const SizedBox(height: 24),
-                            _buildWeeklyEmotionsChart(),
-                            const SizedBox(height: 16),
-                            const Divider(),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Tendance de la semaine',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: _accentColor,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Jour $_daysSinceRegistration',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'de ton voyage bien-être',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Traceur d'émotions hebdomadaire
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Ton historique',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: _accentColor,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: _openEmotionSelector,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _primaryColor,
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            _buildWeeklyTrend(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Statistiques et conseils
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Conseils du jour',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: _accentColor,
+                              const SizedBox(height: 24),
+                              _buildWeeklyEmotionsChart(),
+                              const SizedBox(height: 16),
+                              const Divider(),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Tendance de la semaine',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: _accentColor,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            _buildDailyTip(),
-                          ],
+                              const SizedBox(height: 16),
+                              _buildWeeklyTrend(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 16),
-                ],
+                    // Statistiques et conseils
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Conseils du jour',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: _accentColor,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              _buildDailyTip(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _openEmotionSelector,
         backgroundColor: _primaryColor,
