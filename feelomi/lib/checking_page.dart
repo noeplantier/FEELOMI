@@ -253,7 +253,9 @@ class _CheckingPageState extends State<CheckingPage>
                                 width: double.infinity,
                                 height: 55,
                                 child: ElevatedButton(
-                                  onPressed: _navigateToNextScreen,
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed('/mood');
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: _primaryColor,
                                     foregroundColor: Colors.white,

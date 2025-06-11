@@ -383,7 +383,9 @@ class _SadTrackerState extends State<SadTracker>
                       width: double.infinity,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: _continueToNextScreen,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/emotions');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _primaryColor,
                           foregroundColor: Colors.white,

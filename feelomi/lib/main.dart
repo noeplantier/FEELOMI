@@ -1,8 +1,14 @@
+import 'package:feelomi/checking_page.dart';
+import 'package:feelomi/emotions_page.dart';
+import 'package:feelomi/feeling_page.dart';
+import 'package:feelomi/login_page.dart';
+import 'package:feelomi/sad_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page.dart';
 import 'health_tracker.dart';
+import 'mood_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,10 +27,21 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 150, 95, 186),
           secondary: const Color.fromARGB(255, 90, 0, 150),
         ),
+
         fontFamily: 'Poppins',
         useMaterial3: true,
       ),
       home: const HomePage(),
+
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/emotions': (context) => const EmotionsTracker(),
+        '/sad': (context) => const SadTracker(),
+        '/feeling': (context) => const FeelingTracker(),
+        '/checking': (context) => const CheckingPage(),
+        '/mood': (context) => const MoodPage(),
+      },
     );
   }
 }
@@ -45,7 +62,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   final TextEditingController _notesController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
-  
+
   // Liste des émotions avec émojis
   final List<Map<String, dynamic>> _moods = const [
     {'name': 'Joyeux', 'emoji': '😄'},
@@ -56,15 +73,27 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
     {'name': 'Anxieux', 'emoji': '😰'},
     {'name': 'En colère', 'emoji': '😡'},
   ];
-  
+
   // Liste des mots-clés émotionnels
   final List<String> _keywords = const [
-    'Reconnaissant', 'Dépassé', 'Inspiré', 'Frustré', 
-    'Solitaire', 'Productif', 'Confiant', 'Confus',
-    'Nostalgique', 'Enthousiaste', 'Apaisé', 'Stressé',
-    'Mélancolique', 'Épanoui', 'Vulnérable', 'Déterminé'
+    'Reconnaissant',
+    'Dépassé',
+    'Inspiré',
+    'Frustré',
+    'Solitaire',
+    'Productif',
+    'Confiant',
+    'Confus',
+    'Nostalgique',
+    'Enthousiaste',
+    'Apaisé',
+    'Stressé',
+    'Mélancolique',
+    'Épanoui',
+    'Vulnérable',
+    'Déterminé',
   ];
-  
+
   // Enregistrement de l'état émotionnel avec API
   Future<void> _saveMoodEntry() async {
     // Vérification de la sélection d'humeur
@@ -81,32 +110,36 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       'keywords': _selectedKeywords,
       'notes': _notesController.text,
       'timestamp': DateTime.now().toString(),
-      'userId': 'user123', // À remplacer par l'ID utilisateur réel
+      'userId': 'user123',
     };
-    
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    
+
     try {
       // Envoi des données à l'API Node.js/Express
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/api/mood-entries'), // URL à configurer
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer token123', // À remplacer par JWT réel
-        },
-        body: jsonEncode(moodEntry),
-      ).timeout(const Duration(seconds: 10));
-      
+      final response = await http
+          .post(
+            Uri.parse(
+              'http://localhost:3000/api/mood-entries',
+            ), // URL à configurer
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer token123', // À remplacer par JWT réel
+            },
+            body: jsonEncode(moodEntry),
+          )
+          .timeout(const Duration(seconds: 10));
+
       if (response.statusCode == 201 || response.statusCode == 200) {
         // Succès
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Enregistré : $_selectedMood')),
           );
-          
+
           // Redirection vers HealthTracker
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
@@ -120,17 +153,19 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       } else {
         // Gestion des erreurs HTTP
         setState(() {
-          _errorMessage = 'Erreur ${response.statusCode}: ${response.reasonPhrase}';
+          _errorMessage =
+              'Erreur ${response.statusCode}: ${response.reasonPhrase}';
         });
         _showErrorSnackbar();
       }
     } catch (e) {
       // Gestion des exceptions
       setState(() {
-        _errorMessage = 'Impossible de se connecter au serveur. Mode hors-ligne activé.';
+        _errorMessage =
+            'Impossible de se connecter au serveur. Mode hors-ligne activé.';
       });
       _showErrorSnackbar();
-      
+
       // Mode hors-ligne: Sauvegarde locale et navigation
       if (mounted) {
         // Simuler la sauvegarde locale puis naviguer
@@ -154,12 +189,12 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       }
     }
   }
-  
+
   void _showErrorSnackbar() {
     if (mounted && _errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_errorMessage!)));
     }
   }
 
@@ -169,12 +204,13 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       if (_selectedKeywords.contains(keyword)) {
         _selectedKeywords.remove(keyword);
       } else {
-        if (_selectedKeywords.length < 5) { // Limite à 5 mots-clés
+        if (_selectedKeywords.length < 5) {
+          // Limite à 5 mots-clés
           _selectedKeywords.add(keyword);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Maximum 5 mots-clés')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Maximum 5 mots-clés')));
         }
       }
     });
@@ -183,7 +219,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -264,9 +300,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                         const SizedBox(width: 8),
                         Text(
                           'Objectif',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                          ),
+                          style: TextStyle(color: Colors.grey.shade600),
                         ),
                       ],
                     ),
@@ -302,7 +336,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
               ],
             ),
           ),
-          
+
           // Contenu scrollable
           Expanded(
             child: SingleChildScrollView(
@@ -313,12 +347,15 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                   const Center(
                     child: Text(
                       "Comment vous sentez-vous aujourd'hui ?",
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: 30),
-                  
+
                   // Sélection d'émotions avec émojis
                   SizedBox(
                     height: 100,
@@ -328,7 +365,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       itemBuilder: (context, index) {
                         final mood = _moods[index];
                         final isSelected = _selectedMood == mood['name'];
-                        
+
                         return GestureDetector(
                           onTap: () {
                             setState(() {
@@ -339,15 +376,19 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                             width: 80,
                             margin: const EdgeInsets.symmetric(horizontal: 8.0),
                             decoration: BoxDecoration(
-                              color: isSelected 
-                                  ? Theme.of(context).colorScheme.primaryContainer 
+                              color: isSelected
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer
                                   : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(16),
-                              border: isSelected 
+                              border: isSelected
                                   ? Border.all(
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
                                       width: 2,
-                                    ) 
+                                    )
                                   : null,
                             ),
                             child: Column(
@@ -362,8 +403,8 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                                   mood['name'],
                                   style: TextStyle(
                                     fontSize: 12,
-                                    fontWeight: isSelected 
-                                        ? FontWeight.bold 
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
                                         : FontWeight.normal,
                                   ),
                                 ),
@@ -374,16 +415,16 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       },
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Sélection de mots-clés
                   const Text(
                     "Sélectionnez jusqu'à 5 mots-clés :",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -392,26 +433,29 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       return FilterChip(
                         label: Text(keyword),
                         selected: isSelected,
-                        selectedColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+                        selectedColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withOpacity(0.3),
                         onSelected: (_) => _toggleKeyword(keyword),
                       );
                     }).toList(),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Notes personnelles
                   const Text(
                     "Décrivez votre journée (optionnel) :",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   TextField(
                     controller: _notesController,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: "Qu'est-ce qui a influencé votre humeur aujourd'hui ?",
+                      hintText:
+                          "Qu'est-ce qui a influencé votre humeur aujourd'hui ?",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -424,9 +468,9 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Indicateur de chargement
                   if (_isLoading)
                     const Center(
@@ -435,7 +479,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  
+
                   // Bouton d'enregistrement
                   if (!_isLoading)
                     Center(
@@ -443,14 +487,19 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                         onPressed: _saveMoodEntry,
                         icon: const Icon(Icons.save_outlined),
                         label: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
                           child: Text(
                             "Enregistrer mon humeur",
                             style: TextStyle(fontSize: 18),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -466,7 +515,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       ),
     );
   }
-  
+
   @override
   void dispose() {
     _notesController.dispose();

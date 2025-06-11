@@ -195,8 +195,8 @@ class _FeelingTrackerState extends State<FeelingTracker>
                                 children: [
                                   // Cercle de fond
                                   Container(
-                                    width: 140,
-                                    height: 140,
+                                    width: 100,
+                                    height: 100,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.white,

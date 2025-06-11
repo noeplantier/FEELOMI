@@ -437,59 +437,158 @@ class _EmotionsTrackerState extends State<EmotionsTracker>
     );
   }
 
+  // Remplace la méthode _buildWeeklyEmotionsChart() par celle-ci
+
   // Construit le graphique des émotions de la semaine
   Widget _buildWeeklyEmotionsChart() {
     final now = DateTime.now();
     final dateFormat = DateFormat('E'); // Format court du jour (Lun, Mar, etc.)
 
-    return SizedBox(
-      height: 120,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(7, (index) {
-          final date = now.subtract(Duration(days: 6 - index));
-          final dateStr = DateFormat('yyyy-MM-dd').format(date);
-          final dayName = dateFormat.format(date);
-          final emotionValue = _weeklyEmotions[dateStr] ?? 0;
-          final isToday = index == 6;
+    // Catégories d'émotions pour le graphique
+    final emotionCategories = [
+      {
+        "name": "Heureux",
+        "values": [4, 5],
+        "color": Colors.green,
+      },
+      {
+        "name": "Neutre",
+        "values": [3],
+        "color": Colors.amber,
+      },
+      {
+        "name": "Déprimé",
+        "values": [1, 2],
+        "color": Colors.red,
+      },
+    ];
 
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isToday
-                      ? _getEmotionColor(emotionValue).withOpacity(0.3)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(12),
+    return Column(
+      children: [
+        // Graphique avec barres empilées
+        AspectRatio(
+          aspectRatio: 1.6,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16.0, right: 16.0),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final barWidth = constraints.maxWidth / 7 * 0.7;
+                return Stack(
+                  children: [
+                    // Lignes de grille horizontales
+                    ...List.generate(4, (index) {
+                      return Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: constraints.maxHeight * (index / 3),
+                        child: Container(
+                          height: 1,
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                      );
+                    }),
+
+                    // Jours de la semaine et barres
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: List.generate(7, (index) {
+                        final date = now.subtract(Duration(days: 6 - index));
+                        final dateStr = DateFormat('yyyy-MM-dd').format(date);
+                        final dayName = dateFormat.format(date);
+                        final emotionValue = _weeklyEmotions[dateStr] ?? 0;
+                        final isToday = index == 6;
+
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // La barre graphique
+                            Container(
+                              width: barWidth,
+                              height: emotionValue > 0
+                                  ? constraints.maxHeight *
+                                        0.8 *
+                                        (emotionValue / 5)
+                                  : 0,
+                              decoration: BoxDecoration(
+                                color: _getEmotionColor(emotionValue),
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+                            // Le jour
+                            Text(
+                              dayName,
+                              style: TextStyle(
+                                fontWeight: isToday
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isToday
+                                    ? _accentColor
+                                    : Colors.grey[600],
+                                fontSize: 12,
+                              ),
+                            ),
+                            // Indicateur pour aujourd'hui
+                            if (isToday)
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                width: 5,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _accentColor,
+                                ),
+                              ),
+                          ],
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+
+        // Légende du graphique
+        Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: emotionCategories.map((category) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: category["color"] as Color,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      category["name"] as String,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  _getEmotionEmoji(emotionValue),
-                  style: const TextStyle(fontSize: 24),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                dayName,
-                style: TextStyle(
-                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                  color: isToday ? _accentColor : Colors.grey[600],
-                ),
-              ),
-              if (isToday)
-                Container(
-                  margin: const EdgeInsets.only(top: 4),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _primaryColor,
-                  ),
-                ),
-            ],
-          );
-        }),
-      ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
