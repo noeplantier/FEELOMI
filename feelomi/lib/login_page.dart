@@ -130,10 +130,13 @@ class _LoginPageState extends State<LoginPage>
                   Center(
                     child: Hero(
                       tag: 'logo',
-                      child: Image.network(
-                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                        height: 80,
-                        width: 80,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: Image.network(
+                          'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+                          height: 80,
+                          width: 80,
+                        ),
                       ),
                     ),
                   ),

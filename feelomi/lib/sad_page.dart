@@ -384,7 +384,7 @@ class _SadTrackerState extends State<SadTracker>
                       height: 55,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/emotions');
+                          Navigator.of(context).pushNamed('/feeling');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _primaryColor,
@@ -418,13 +418,6 @@ class _SadTrackerState extends State<SadTracker>
             ],
           ),
         ),
-      ),
-      // Bouton Flottant pour sauvegarder
-      floatingActionButton: FloatingActionButton(
-        onPressed: _saveTrackerData,
-        backgroundColor: _primaryColor,
-        child: const Icon(Icons.save),
-        tooltip: 'Sauvegarder les données',
       ),
     );
   }

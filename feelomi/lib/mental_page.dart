@@ -433,7 +433,6 @@ class _MentalPageState extends State<MentalPage> {
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(SnackBar(content: Text(message)));
-
                     // Navigation vers la page de stress au lieu de happy_page
                     Navigator.push(
                       context,
