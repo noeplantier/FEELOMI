@@ -1,3 +1,4 @@
+import 'package:feelomi/feeling_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -155,6 +156,11 @@ class _SadTrackerState extends State<SadTracker>
           if (details.primaryVelocity! > 0) {
             // Glissement vers la droite, retourne à la page précédente
             Navigator.of(context).pop();
+          } else if (details.primaryVelocity! < 0) {
+            // Glissement vers la gauche, ouvre la page de feeling
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const FeelingTracker()),
+            );
           }
         },
         child: SingleChildScrollView(
