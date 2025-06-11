@@ -1,3 +1,4 @@
+import 'package:feelomi/checking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -125,7 +126,9 @@ class _FeelingTrackerState extends State<FeelingTracker>
     // Navigation vers l'écran précédent après sauvegarde
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const CheckingPage()));
       }
     });
   }
