@@ -34,6 +34,8 @@ class _HomePageState extends State<HomePage>
   bool _showWelcomeText = false;
   bool _readyForInteraction = false;
 
+  get child => null;
+
   @override
   void initState() {
     super.initState();
@@ -336,7 +338,6 @@ class _HomePageState extends State<HomePage>
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Image de base de Feelo avec bordure ronde (50%)
             ClipRRect(
               borderRadius: BorderRadius.circular(100), // 50% de 200
               child: Image(
@@ -344,44 +345,11 @@ class _HomePageState extends State<HomePage>
                 width: 160,
                 height: 160,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.network(
-                    'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                    width: 160,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  );
-                },
+                color: primaryColor.withOpacity(0.1),
+                colorBlendMode: BlendMode.lighten,
+                alignment: Alignment.center,
               ),
             ),
-
-            // Animation d'étoiles/particules autour de l'écureuil
-            if (_showParticles) ..._buildStarParticles(),
-
-            // Animation de pulsation douce
-            if (_showParticles)
-              TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 1.0, end: 1.05),
-                duration: const Duration(milliseconds: 1200),
-                curve: Curves.easeInOut,
-                builder: (context, value, child) {
-                  return AnimatedScale(
-                    scale: value,
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeInOut,
-                    child: child,
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100), // 50% de 200
-                  child: Image(
-                    image: const AssetImage('images/hello.png'),
-                    width: 160,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
           ],
         ),
       ),

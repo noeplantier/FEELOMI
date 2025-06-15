@@ -1,4 +1,5 @@
 import 'package:feelomi/emotions_page.dart';
+import 'package:feelomi/profile_page.dart';
 import 'package:feelomi/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage>
         // Navigue vers la page des émotions
         if (mounted) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const EmotionsTracker()),
+            MaterialPageRoute(builder: (context) => const ProfilePage()),
           );
         }
       } catch (e) {

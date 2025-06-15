@@ -33,9 +33,10 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
 
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
         '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
         '/emotions': (context) => const EmotionsTracker(),
         '/sad': (context) => const SadTracker(),
         '/feeling': (context) => const FeelingTracker(),

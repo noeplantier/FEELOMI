@@ -1,0 +1,457 @@
+import 'package:flutter/material.dart';
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              const SizedBox(height: 24.0),
+              _buildSearchBar(),
+              const SizedBox(height: 24.0),
+              const Text(
+                "Comment te sens-tu aujourd'hui ?",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16.0),
+              _buildFeelingCard(),
+              const SizedBox(height: 24.0),
+              _buildFeeloAICard(),
+              const SizedBox(height: 24.0),
+              _buildHealthProfessionalsTitle(),
+              const SizedBox(height: 16.0),
+              Expanded(child: _buildHealthProfessionalsList()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CircleAvatar(
+          radius: 30.0,
+          backgroundImage: const AssetImage('assets/images/profile.png'),
+          backgroundColor: Colors.grey[300],
+        ),
+        Stack(
+          alignment: Alignment.topRight,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.notifications_outlined, size: 30.0),
+              onPressed: () {
+                // Action quand on clique sur la cloche de notification
+              },
+            ),
+            Container(
+              width: 10.0,
+              height: 10.0,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: "Recherche n'importe quoi",
+          border: InputBorder.none,
+          icon: Icon(Icons.search, color: Colors.grey[600]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeelingCard() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/images/thinking.png', width: 80.0, height: 80.0),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  "Comment te sens-tu aujourd'hui ?",
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  "Partage ton humeur avec tes amis",
+                  style: TextStyle(fontSize: 14.0, color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeeloAICard() {
+    return InkWell(
+      onTap: () {
+        // Action pour ouvrir la discussion avec Feelo.AI
+        _openFeeloAIChat();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.purple[50],
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(color: Colors.purple.shade200),
+        ),
+        child: Row(
+          children: [
+            Image.asset('assets/images/hello.png', width: 80.0, height: 80.0),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "Discutes avec Feelo.AI",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    "Une IA super performante pour t'accompagner",
+                    style: TextStyle(fontSize: 14.0, color: Colors.black54),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16.0,
+              color: Colors.purple[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openFeeloAIChat() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/hello.png',
+                        width: 30.0,
+                        height: 30.0,
+                      ),
+                      const SizedBox(width: 8.0),
+                      const Text(
+                        "Feelo.AI",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: const [
+                  _AIMessageBubble(
+                    message:
+                        "Bonjour ! Je suis Feelo.AI. Comment puis-je t'aider aujourd'hui ?",
+                    isUser: false,
+                  ),
+                  SizedBox(height: 16.0),
+                  _AIMessageBubble(
+                    message: "J'aimerais parler de mon stress au travail",
+                    isUser: true,
+                  ),
+                  SizedBox(height: 16.0),
+                  _AIMessageBubble(
+                    message:
+                        "Je comprends. Le stress au travail est très commun. Pourrais-tu me décrire ce qui te stresse particulièrement ?",
+                    isUser: false,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Écris ton message...",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.send, color: Colors.white),
+                      onPressed: () {
+                        // Envoyer le message
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHealthProfessionalsTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Professionnels de santé",
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        TextButton(
+          onPressed: () {
+            // Action pour voir tous les professionnels
+          },
+          child: const Text("Voir tous"),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHealthProfessionalsList() {
+    final professionals = [
+      {
+        'name': 'Dr. Sophie Martin',
+        'specialty': 'Psychologue',
+        'rating': 4.8,
+        'image': 'assets/images/profile.png',
+        'distance': '2.5 km',
+      },
+      {
+        'name': 'Dr. Jean Dupont',
+        'specialty': 'Psychiatre',
+        'rating': 4.5,
+        'image': 'assets/images/profile.png',
+        'distance': '3.8 km',
+      },
+      {
+        'name': 'Dr. Marie Robert',
+        'specialty': 'Thérapeute',
+        'rating': 5.0,
+        'image': 'assets/images/profile.png',
+        'distance': '1.2 km',
+      },
+    ];
+
+    return ListView.builder(
+      itemCount: professionals.length,
+      itemBuilder: (context, index) {
+        final professional = professionals[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16.0),
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16.0),
+            leading: CircleAvatar(
+              radius: 25.0,
+              backgroundImage: AssetImage(professional['image'] as String),
+            ),
+            title: Text(
+              professional['name'] as String,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4.0),
+                Text(professional['specialty'] as String),
+                const SizedBox(height: 4.0),
+                Row(
+                  children: [
+                    _buildRatingStars(professional['rating'] as double),
+                    const SizedBox(width: 8.0),
+                    Text('${professional['rating']}'),
+                  ],
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  'À ${professional['distance']}',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+                ),
+              ],
+            ),
+            trailing: ElevatedButton(
+              onPressed: () {
+                // Action pour contacter le professionnel
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              child: const Text('Contacter'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRatingStars(double rating) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        if (index < rating.floor()) {
+          // Étoile complète
+          return const Icon(Icons.star, color: Colors.amber, size: 16.0);
+        } else if (index == rating.floor() && rating % 1 > 0) {
+          // Étoile partielle
+          return const Icon(Icons.star_half, color: Colors.amber, size: 16.0);
+        } else {
+          // Étoile vide
+          return const Icon(Icons.star_border, color: Colors.amber, size: 16.0);
+        }
+      }),
+    );
+  }
+}
+
+class _AIMessageBubble extends StatelessWidget {
+  final String message;
+  final bool isUser;
+
+  const _AIMessageBubble({
+    Key? key,
+    required this.message,
+    required this.isUser,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: isUser
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
+      children: [
+        if (!isUser)
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.purple[100],
+            child: Image.asset(
+              'assets/images/hello.png',
+              width: 20,
+              height: 20,
+            ),
+          ),
+        const SizedBox(width: 8.0),
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          decoration: BoxDecoration(
+            color: isUser ? Colors.purple[100] : Colors.grey[200],
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Text(
+            message,
+            style: TextStyle(
+              color: isUser ? Colors.purple[900] : Colors.black87,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8.0),
+        if (isUser)
+          const CircleAvatar(
+            radius: 16,
+            backgroundImage: AssetImage('assets/images/profile.png'),
+          ),
+      ],
+    );
+  }
+}
