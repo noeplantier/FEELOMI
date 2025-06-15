@@ -131,11 +131,10 @@ class _LoginPageState extends State<LoginPage>
                     child: Hero(
                       tag: 'logo',
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
                         child: Image.asset(
                           ('assets/images/hello.png'),
-                          height: 80,
-                          width: 80,
+                          height: 100,
+                          width: 100,
                           fit: BoxFit.cover,
                         ),
                       ),
