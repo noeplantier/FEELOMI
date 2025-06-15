@@ -14,11 +14,20 @@ class _HealthTrackerState extends State<HealthTracker> {
   String? _selectedOption;
 
   // Options disponibles
-  final List<Map<String, String>> _healthOptions = [
-    {'emoji': '❤️', 'text': 'Je veux réduire mon stress'},
-    {'emoji': '🤖', 'text': 'Je veux essayer la thérapie IA'},
-    {'emoji': '🙂', 'text': 'Je veux être une meilleure personne'},
-    {'emoji': '🖱️', 'text': 'J\'essaye juste l\'application'},
+  final List<Map<String, dynamic>> _healthOptions = [
+    {'image': 'assets/images/chill.png', 'text': 'Je veux réduire mon stress'},
+    {
+      'image': 'assets/images/geek.png',
+      'text': 'Je veux essayer la thérapie IA',
+    },
+    {
+      'image': 'assets/images/happy.png',
+      'text': 'Je veux être une meilleure personne',
+    },
+    {
+      'image': 'assets/images/wink.png',
+      'text': 'J\'essaye juste l\'application',
+    },
   ];
 
   @override
@@ -196,9 +205,12 @@ class _HealthTrackerState extends State<HealthTracker> {
                                 Expanded(
                                   child: Row(
                                     children: [
-                                      Text(
-                                        option['emoji']!,
-                                        style: const TextStyle(fontSize: 24),
+                                      Image.asset(
+                                        option['image'],
+                                        width:
+                                            24, // Ajustez selon la taille que vous souhaitez
+                                        height:
+                                            24, // Même taille que l'emoji d'origine
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
