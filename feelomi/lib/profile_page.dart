@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'package:feelomi/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart' as charts;
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -8,32 +12,41 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String? _profileImagePath;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 24.0),
-              _buildSearchBar(),
-              const SizedBox(height: 24.0),
-              const Text(
-                "Comment te sens-tu aujourd'hui ?",
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              _buildFeelingCard(),
-              const SizedBox(height: 24.0),
-              _buildFeeloAICard(),
-              const SizedBox(height: 24.0),
-              _buildHealthProfessionalsTitle(),
-              const SizedBox(height: 16.0),
-              Expanded(child: _buildHealthProfessionalsList()),
-            ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                const SizedBox(height: 24.0),
+                _buildSearchBar(),
+                const SizedBox(height: 24.0),
+                const Text(
+                  "Comment te sens-tu aujourd'hui ?",
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16.0),
+                _buildFeelingCard(),
+                const SizedBox(height: 24.0),
+                _buildMentalHealthMetrics(),
+                const SizedBox(height: 24.0),
+                _buildFeeloAICard(),
+                const SizedBox(height: 24.0),
+                _buildHealthProfessionalsTitle(),
+                const SizedBox(height: 16.0),
+                SizedBox(height: 300, child: _buildHealthProfessionalsList()),
+              ],
+            ),
           ),
         ),
       ),
@@ -44,10 +57,19 @@ class _ProfilePageState extends State<ProfilePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CircleAvatar(
-          radius: 30.0,
-          backgroundImage: const AssetImage('assets/images/profile.png'),
-          backgroundColor: Colors.grey[300],
+        GestureDetector(
+          onTap: _pickProfileImage,
+          child: CircleAvatar(
+            radius: 30.0,
+            backgroundImage: _profileImagePath != null
+                ? FileImage(File(_profileImagePath!))
+                : const AssetImage('assets/images/profile.png')
+                      as ImageProvider,
+            backgroundColor: Colors.grey[300],
+            child: _profileImagePath == null
+                ? Icon(Icons.add_a_photo, color: Colors.grey[600])
+                : null,
+          ),
         ),
         Stack(
           alignment: Alignment.topRight,
@@ -70,6 +92,17 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ],
     );
+  }
+
+  Future<void> _pickProfileImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImagePath = pickedFile.path;
+      });
+    }
   }
 
   Widget _buildSearchBar() {
@@ -114,6 +147,193 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: TextStyle(fontSize: 14.0, color: Colors.black54),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMentalHealthMetrics() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Métriques de santé mentale",
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16.0),
+        Row(
+          children: [
+            Expanded(child: _buildStressCard()),
+            const SizedBox(width: 16.0),
+            Expanded(child: _buildSleepCard()),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+        _buildMentalHealthChart(),
+      ],
+    );
+  }
+
+  Widget _buildStressCard() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.orange[50],
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Stress",
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            "Niveau actuel",
+            style: TextStyle(fontSize: 14.0, color: Colors.black54),
+          ),
+          const SizedBox(height: 16.0),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: 0.7,
+                backgroundColor: Colors.orange[100],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              ),
+              const Text("70%", style: TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSleepCard() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Sommeil",
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            "Qualité",
+            style: TextStyle(fontSize: 14.0, color: Colors.black54),
+          ),
+          const SizedBox(height: 16.0),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: 0.5,
+                backgroundColor: Colors.blue[100],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              const Text("50%", style: TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMentalHealthChart() {
+    final data = [
+      _MentalHealthData('Lun', 60, 40),
+      _MentalHealthData('Mar', 70, 50),
+      _MentalHealthData('Mer', 80, 60),
+      _MentalHealthData('Jeu', 65, 55),
+      _MentalHealthData('Ven', 75, 70),
+      _MentalHealthData('Sam', 50, 80),
+      _MentalHealthData('Dim', 40, 90),
+    ];
+
+    return Container(
+      height: 250,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Évolution hebdomadaire",
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          Expanded(
+            child: charts.BarChart(
+              charts.BarChartData(
+                barGroups: [
+                  // Créer des groupes de barres à partir de vos données
+                  for (int i = 0; i < data.length; i++)
+                    charts.BarChartGroupData(
+                      x: i,
+                      barRods: [
+                        charts.BarChartRodData(
+                          toY: data[i].stress.toDouble(),
+                          color: const Color(0xFFFF9800), // Orange
+                          width: 15,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          ),
+                        ),
+                        charts.BarChartRodData(
+                          toY: data[i].sleep.toDouble(),
+                          color: const Color(0xFF2196F3), // Bleu
+                          width: 15,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+                titlesData: charts.FlTitlesData(
+                  bottomTitles: charts.AxisTitles(
+                    sideTitles: charts.SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(data[value.toInt()].day),
+                        );
+                      },
+                      reservedSize: 30,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -387,18 +607,25 @@ class _ProfilePageState extends State<ProfilePage> {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
         if (index < rating.floor()) {
-          // Étoile complète
           return const Icon(Icons.star, color: Colors.amber, size: 16.0);
         } else if (index == rating.floor() && rating % 1 > 0) {
-          // Étoile partielle
           return const Icon(Icons.star_half, color: Colors.amber, size: 16.0);
         } else {
-          // Étoile vide
           return const Icon(Icons.star_border, color: Colors.amber, size: 16.0);
         }
       }),
     );
   }
+}
+
+class Series {}
+
+class _MentalHealthData {
+  final String day;
+  final int stress;
+  final int sleep;
+
+  _MentalHealthData(this.day, this.stress, this.sleep);
 }
 
 class _AIMessageBubble extends StatelessWidget {

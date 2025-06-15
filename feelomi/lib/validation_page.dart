@@ -300,6 +300,7 @@ class _ValidationPageState extends State<ValidationPage>
                                 ),
                               );
                             },
+
                             child: Column(
                               children: [
                                 Text(
@@ -356,8 +357,6 @@ class _ValidationPageState extends State<ValidationPage>
                             child: Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: _accentColor.withOpacity(0.1),
@@ -763,15 +762,12 @@ class _ValidationPageState extends State<ValidationPage>
           ClipRRect(
             borderRadius: BorderRadius.circular(100), // 50% de 200
             child: Image.network(
-              'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+              '/assets/images/happy.png',
               height: 150,
               width: 150,
               fit: BoxFit.cover,
             ),
           ),
-
-          // Animation de particules/étoiles autour de Feelo
-          if (_showConfetti) ..._buildStarParticles(),
 
           // Animation de battement de coeur
           if (_showConfetti)
@@ -787,56 +783,10 @@ class _ValidationPageState extends State<ValidationPage>
                   child: child,
                 );
               },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100), // 50% de 200
-                child: Image.network(
-                  'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                  height: 150,
-                  width: 150,
-                  fit: BoxFit.cover,
-                ),
-              ),
             ),
         ],
       ),
     );
-  }
-
-  // Particules d'étoiles autour de Feelo
-  List<Widget> _buildStarParticles() {
-    final random = math.Random();
-    return List.generate(8, (index) {
-      final double angle = index * (math.pi * 2) / 8;
-      final double distance = 90.0 + random.nextDouble() * 20;
-      final double x = math.cos(angle) * distance;
-      final double y = math.sin(angle) * distance;
-
-      return Positioned(
-        left: 100 + x - 10,
-        top: 100 + y - 10,
-        child: TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 300 + random.nextInt(700)),
-          curve: Curves.easeOut,
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value,
-              child: Transform.scale(scale: value, child: child),
-            );
-          },
-          child: Icon(
-            Icons.star,
-            color: [
-              Colors.yellow,
-              Colors.amber,
-              _primaryColor,
-              Colors.pink.shade300,
-            ][random.nextInt(4)],
-            size: 10 + random.nextInt(15).toDouble(),
-          ),
-        ),
-      );
-    });
   }
 
   WebView({
@@ -853,9 +803,3 @@ class JavascriptMode {
 
   const JavascriptMode._();
 }
-
-extension on WebViewController? {
-  void reload() {}
-}
-
-class WebViewController {}

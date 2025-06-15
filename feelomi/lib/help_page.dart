@@ -181,31 +181,12 @@ class _HelpPageState extends State<HelpPage>
                           children: [
                             // Image de Feelo
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                width: 180,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                  image: const DecorationImage(
-                                    image: NetworkImage(
-                                      'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                              child: Image(
+                                image: const AssetImage('images/hello.png'),
+                                width: 160,
+                                height: 160,
                               ),
                             ),
-
                             // Points d'interrogation animés
                             Positioned(
                               top: 20,
@@ -461,3 +442,5 @@ class _HelpPageState extends State<HelpPage>
     );
   }
 }
+
+mixin child {}

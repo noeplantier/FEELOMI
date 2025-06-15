@@ -339,15 +339,10 @@ class _HomePageState extends State<HomePage>
           alignment: Alignment.center,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(100), // 50% de 200
               child: Image(
                 image: const AssetImage('images/hello.png'),
                 width: 160,
                 height: 160,
-                fit: BoxFit.cover,
-                color: primaryColor.withOpacity(0.1),
-                colorBlendMode: BlendMode.lighten,
-                alignment: Alignment.center,
               ),
             ),
           ],
