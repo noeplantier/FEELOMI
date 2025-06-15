@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage>
             ClipRRect(
               borderRadius: BorderRadius.circular(100), // 50% de 200
               child: Image(
-                image: const AssetImage('assets/images/feelo_mascot.png'),
+                image: const AssetImage('images/hello.png'),
                 width: 160,
                 height: 160,
                 fit: BoxFit.cover,
@@ -375,18 +375,10 @@ class _HomePageState extends State<HomePage>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100), // 50% de 200
                   child: Image(
-                    image: const AssetImage('assets/images/feelo_mascot.png'),
+                    image: const AssetImage('images/hello.png'),
                     width: 160,
                     height: 160,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                        width: 160,
-                        height: 160,
-                        fit: BoxFit.cover,
-                      );
-                    },
                   ),
                 ),
               ),

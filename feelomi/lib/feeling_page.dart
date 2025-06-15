@@ -1,454 +1,214 @@
-import 'package:feelomi/checking_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'dart:math' as math;
 
-class FeelingTracker extends StatefulWidget {
-  const FeelingTracker({Key? key}) : super(key: key);
+class FeelingPage extends StatefulWidget {
+  const FeelingPage({Key? key}) : super(key: key);
 
   @override
-  State<FeelingTracker> createState() => _FeelingTrackerState();
+  _FeelingPageState createState() => _FeelingPageState();
 }
 
-class _FeelingTrackerState extends State<FeelingTracker>
-    with SingleTickerProviderStateMixin {
-  // Couleurs thématiques
-  final Color _primaryColor = const Color.fromARGB(255, 150, 95, 186);
-  final Color _accentColor = const Color.fromARGB(255, 90, 0, 150);
-  final Color _backgroundColor = const Color.fromARGB(255, 250, 245, 255);
-
-  // Animations
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _smileAnimation;
-
-  // Valeur de l'humeur (entre 0.0 et 1.0)
+class _FeelingPageState extends State<FeelingPage> {
+  // État de l'humeur actuelle (0.0 à 1.0)
   double _feelingValue = 0.5;
 
-  // Données sauvegardées
-  Map<String, dynamic> _trackerData = {};
+  // Définition des niveaux d'humeur
+  final List<String> _moodLabels = [
+    'Terrible',
+    'Mauvais',
+    'Médiocre',
+    'Neutre',
+    'Bien',
+    'Très bien',
+    'Excellent',
+  ];
+  final List<Color> _moodColors = [
+    Colors.red[900]!,
+    Colors.red[400]!,
+    Colors.orange,
+    Colors.grey,
+    Colors.lightGreen,
+    Colors.green,
+    Colors.green[900]!,
+  ];
 
-  // Contrôleur pour le champ de notes
-  final TextEditingController _notesController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTrackerData();
-
-    // Initialisation de l'animation
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    // Animation pour l'échelle
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
-    );
-
-    // Animation pour le sourire de Feelo
-    _smileAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
-    // Démarrer l'animation après un court délai
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) {
-        _animationController.forward();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  // Charge les données sauvegardées
-  Future<void> _loadTrackerData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-    // Récupère les données du jour si elles existent
-    String? dataString = prefs.getString('feeling_tracker_$today');
-    if (dataString != null) {
-      setState(() {
-        _trackerData = json.decode(dataString);
-        _feelingValue = _trackerData['feeling_value'] ?? 0.5;
-        _notesController.text = _trackerData['notes'] ?? '';
-      });
+  // Fonction pour obtenir la couleur correspondant à l'humeur actuelle
+  Color _getFeelingColor() {
+    if (_feelingValue < 0.17) {
+      return _moodColors[0];
+    } else if (_feelingValue < 0.34) {
+      return _moodColors[1];
+    } else if (_feelingValue < 0.5) {
+      return _moodColors[2];
+    } else if (_feelingValue < 0.67) {
+      return _moodColors[3];
+    } else if (_feelingValue < 0.84) {
+      return _moodColors[4];
+    } else if (_feelingValue < 0.95) {
+      return _moodColors[5];
+    } else {
+      return _moodColors[6];
     }
   }
 
-  // Sauvegarde les données
-  Future<void> _saveTrackerData() async {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Mise à jour des données
-    _trackerData = {
-      'feeling_value': _feelingValue,
-      'notes': _notesController.text,
-      'date': today,
-    };
-
-    // Sauvegarde dans les préférences
-    await prefs.setString('feeling_tracker_$today', json.encode(_trackerData));
-
-    // Feedback haptique
-    HapticFeedback.mediumImpact();
-
-    // Affiche un message de confirmation
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Tes émotions ont été enregistrées !'),
-        backgroundColor: _primaryColor,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
-  // Méthode pour continuer vers l'écran suivant
-  void _continueToNextScreen() {
-    _saveTrackerData();
-
-    // Animation lors du clic
-    _animationController.reset();
-    _animationController.forward();
-
-    // Navigation vers l'écran précédent après sauvegarde
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const CheckingPage()));
-      }
-    });
-  }
-
-  // Description textuelle de l'humeur
+  // Fonction pour obtenir la description de l'humeur actuelle
   String _getFeelingDescription() {
-    if (_feelingValue < 0.2) return "Très mal";
-    if (_feelingValue < 0.4) return "Mal";
-    if (_feelingValue < 0.6) return "Neutre";
-    if (_feelingValue < 0.8) return "Bien";
-    return "Très bien";
-  }
-
-  // Couleur correspondant à l'humeur
-  Color _getFeelingColor() {
-    if (_feelingValue < 0.2) return Colors.red;
-    if (_feelingValue < 0.4) return Colors.orange;
-    if (_feelingValue < 0.6) return Colors.amber;
-    if (_feelingValue < 0.8) return Colors.lightGreen;
-    return Colors.green;
+    if (_feelingValue < 0.17) {
+      return _moodLabels[0];
+    } else if (_feelingValue < 0.34) {
+      return _moodLabels[1];
+    } else if (_feelingValue < 0.5) {
+      return _moodLabels[2];
+    } else if (_feelingValue < 0.67) {
+      return _moodLabels[3];
+    } else if (_feelingValue < 0.84) {
+      return _moodLabels[4];
+    } else if (_feelingValue < 0.95) {
+      return _moodLabels[5];
+    } else {
+      return _moodLabels[6];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _backgroundColor,
       appBar: AppBar(
-        title: const Text('Ton humeur aujourd\'hui'),
-        backgroundColor: _primaryColor,
-        foregroundColor: Colors.white,
+        title: const Text('Comment vous sentez-vous?'),
+        centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).primaryColor,
       ),
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          if (details.primaryVelocity! > 0) {
-            // Glissement vers la droite, retourne à la page précédente
-            Navigator.of(context).pop();
-          }
-        },
-        child: SingleChildScrollView(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Header avec la mascotte Feelo qui sourit
+              const SizedBox(height: 20),
+
+              // Feelo avec expression faciale qui change
               Container(
-                color: _primaryColor,
-                padding: const EdgeInsets.only(bottom: 40, top: 20),
-                child: Column(
+                height: 150,
+                alignment: Alignment.center,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    // Image de Feelo avec animation de sourire
-                    Center(
-                      child: AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _scaleAnimation.value,
-                            child: Hero(
-                              tag: 'feeling_logo',
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Cercle de fond
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 10,
-                                          spreadRadius: 1,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Visage de Feelo
-                                  CustomPaint(
-                                    size: const Size(120, 120),
-                                    painter: FeeloFacePainter(
-                                      smileFactor: _feelingValue,
-                                      color: _getFeelingColor(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      _getFeelingDescription(),
-                      style: const TextStyle(
+                    // Arrière-plan blanc avec ombre
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Comment te sens-tu aujourd\'hui ?',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: 16,
+                    // Visage de Feelo
+                    CustomPaint(
+                      size: const Size(120, 120),
+                      painter: FeeloFacePainter(
+                        smileFactor: _feelingValue,
+                        color: _getFeelingColor(),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 20),
+
+              // Description de l'humeur
+              Text(
+                _getFeelingDescription(),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: _getFeelingColor(),
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // Curseur d'humeur arqué
+              Container(
+                height: 110,
+                child: MoodArcSlider(
+                  value: _feelingValue,
+                  colors: _moodColors,
+                  onChange: (value) {
+                    setState(() {
+                      _feelingValue = value;
+                    });
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // Boutons de notes rapides sur l'humeur
+              const Text(
+                "Qu'est-ce qui vous fait vous sentir ainsi ?",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Grille de tags
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 2.5,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
                   children: [
-                    // Tracker d'humeur en arc de cercle
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Ton niveau de bien-être',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: _accentColor,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              height: 200,
-                              width: double.infinity,
-                              child: Column(
-                                children: [
-                                  Expanded(child: _buildEmotionArc()),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: const [
-                                      Text(
-                                        'Très mal',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      Text(
-                                        'Neutre',
-                                        style: TextStyle(color: Colors.amber),
-                                      ),
-                                      Text(
-                                        'Très bien',
-                                        style: TextStyle(color: Colors.green),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _getFeelingColor(),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  _getFeelingDescription(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Explications
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.info_outline,
-                                  color: _accentColor,
-                                  size: 24,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Pourquoi suivre tes émotions ?',
-                                  style: TextStyle(
-                                    color: _accentColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'Suivre tes émotions quotidiennement t\'aide à mieux comprendre tes variations d\'humeur et à identifier les facteurs qui influencent ton bien-être.',
-                              style: TextStyle(fontSize: 15, height: 1.4),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Notes supplémentaires
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Notes personnelles',
-                              style: TextStyle(
-                                color: _accentColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            TextField(
-                              controller: _notesController,
-                              maxLines: 4,
-                              decoration: InputDecoration(
-                                hintText:
-                                    'Qu\'est-ce qui influence ton humeur aujourd\'hui ?',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: _primaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    // Bouton Continuer
-                    SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: ElevatedButton(
-                        onPressed: _continueToNextScreen,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _primaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 2,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              'Enregistrer',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(Icons.check_circle_outline),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
+                    _buildMoodTag("Travail"),
+                    _buildMoodTag("Famille"),
+                    _buildMoodTag("Amis"),
+                    _buildMoodTag("Santé"),
+                    _buildMoodTag("Finances"),
+                    _buildMoodTag("Loisirs"),
+                    _buildMoodTag("Amour"),
+                    _buildMoodTag("Études"),
+                    _buildMoodTag("Autre"),
                   ],
+                ),
+              ),
+
+              // Bouton de sauvegarde
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Sauvegarder l'humeur
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Humeur enregistrée!')),
+                      );
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    child: const Text(
+                      'Enregistrer',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -458,302 +218,250 @@ class _FeelingTrackerState extends State<FeelingTracker>
     );
   }
 
-  // Construction de l'arc d'émotion
-  Widget _buildEmotionArc() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        final height = constraints.maxHeight * 0.8;
-
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            // Fond de l'arc
-            CustomPaint(
-              size: Size(width, height),
-              painter: EmotionArcBackgroundPainter(),
-            ),
-
-            // Arc de progression
-            CustomPaint(
-              size: Size(width, height),
-              painter: EmotionArcProgressPainter(_feelingValue),
-            ),
-
-            // Curseur interactif
-            GestureDetector(
-              onPanUpdate: (details) {
-                final RenderBox box = context.findRenderObject() as RenderBox;
-                final position = box.globalToLocal(details.globalPosition);
-                final dx = position.dx.clamp(0, width);
-
-                setState(() {
-                  _feelingValue = dx / width;
-                });
-              },
-              child: Container(
-                width: width,
-                height: height,
-                color: Colors.transparent,
-                child: CustomPaint(
-                  size: Size(width, height),
-                  painter: EmotionCursorPainter(_feelingValue),
-                ),
-              ),
-            ),
-          ],
-        );
+  Widget _buildMoodTag(String label) {
+    return FilterChip(
+      label: Text(label),
+      labelStyle: const TextStyle(fontSize: 14),
+      backgroundColor: Colors.grey[200],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      onSelected: (bool selected) {
+        // Gérer la sélection du tag
       },
     );
   }
 }
 
-// Peintre pour le visage de Feelo
+class MoodArcSlider extends StatefulWidget {
+  final double value;
+  final Function(double) onChange;
+  final List<Color> colors;
+
+  const MoodArcSlider({
+    Key? key,
+    required this.value,
+    required this.onChange,
+    required this.colors,
+  }) : super(key: key);
+
+  @override
+  _MoodArcSliderState createState() => _MoodArcSliderState();
+}
+
+class _MoodArcSliderState extends State<MoodArcSlider> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(MediaQuery.of(context).size.width, 100),
+      painter: MoodArcPainter(colors: widget.colors),
+      child: GestureDetector(
+        onPanUpdate: (details) {
+          RenderBox renderBox = context.findRenderObject() as RenderBox;
+          final position = renderBox.globalToLocal(details.globalPosition);
+          final width = renderBox.size.width;
+
+          double value = (position.dx / width).clamp(0.0, 1.0);
+          widget.onChange(value);
+        },
+        child: CustomPaint(
+          painter: MoodArcHandlePainter(
+            value: widget.value,
+            color: widget
+                .colors[((widget.value * (widget.colors.length - 1)).round())],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MoodArcPainter extends CustomPainter {
+  final List<Color> colors;
+
+  MoodArcPainter({required this.colors});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
+    final gradient = LinearGradient(
+      colors: colors,
+      stops: List.generate(
+        colors.length,
+        (index) => index / (colors.length - 1),
+      ),
+    );
+
+    final paint = Paint()
+      ..shader = gradient.createShader(rect)
+      ..strokeWidth = 15
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    // Dessiner un arc légèrement courbé
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(size.width / 2, size.height * 2),
+        width: size.width * 0.95,
+        height: size.height * 2,
+      ),
+      math.pi,
+      math.pi,
+      false,
+      paint,
+    );
+
+    // Ajouter des marqueurs pour les différents niveaux
+    final markerPaint = Paint()
+      ..color = Colors.white.withOpacity(0.7)
+      ..strokeWidth = 2;
+
+    for (int i = 0; i <= 6; i++) {
+      final angle = math.pi + (math.pi * i / 6);
+
+      final startPoint = Offset(
+        size.width / 2 + (size.width * 0.475 - 10) * math.cos(angle),
+        size.height * 2 + (size.height * 2) * math.sin(angle),
+      );
+
+      final endPoint = Offset(
+        size.width / 2 + (size.width * 0.475 + 5) * math.cos(angle),
+        size.height * 2 + (size.height * 2) * math.sin(angle),
+      );
+
+      canvas.drawLine(startPoint, endPoint, markerPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(MoodArcPainter oldDelegate) =>
+      colors != oldDelegate.colors;
+}
+
+class MoodArcHandlePainter extends CustomPainter {
+  final double value;
+  final Color color;
+
+  MoodArcHandlePainter({required this.value, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Position du curseur sur l'arc
+    final angle = math.pi + (math.pi * value);
+    final center = Offset(
+      size.width / 2 + (size.width * 0.475) * math.cos(angle),
+      size.height * 2 + (size.height * 2) * math.sin(angle),
+    );
+
+    // Dessiner le cercle du curseur
+    final handlePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    // Ombre
+    canvas.drawCircle(
+      center.translate(0, 2),
+      15,
+      Paint()..color = Colors.black.withOpacity(0.2),
+    );
+
+    // Cercle blanc extérieur
+    canvas.drawCircle(center, 14, Paint()..color = Colors.white);
+
+    // Cercle coloré intérieur
+    canvas.drawCircle(center, 10, handlePaint);
+  }
+
+  @override
+  bool shouldRepaint(MoodArcHandlePainter oldDelegate) =>
+      value != oldDelegate.value || color != oldDelegate.color;
+}
+
 class FeeloFacePainter extends CustomPainter {
-  final double smileFactor; // 0.0 = triste, 1.0 = très heureux
+  final double smileFactor; // 0.0 à 1.0 (triste à heureux)
   final Color color;
 
   FeeloFacePainter({required this.smileFactor, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
     final radius = size.width / 2;
-    final center = Offset(size.width / 2, size.height / 2);
 
-    // Visage
-    final paint = Paint()
+    // Dessiner le visage rond
+    final facePaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(Offset(centerX, centerY), radius, facePaint);
 
     // Dessiner les yeux
     final eyePaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
-
-    // Œil gauche
-    canvas.drawCircle(
-      Offset(center.dx - radius * 0.3, center.dy - radius * 0.1),
-      radius * 0.1,
-      eyePaint,
-    );
-
-    // Œil droit
-    canvas.drawCircle(
-      Offset(center.dx + radius * 0.3, center.dy - radius * 0.1),
-      radius * 0.1,
-      eyePaint,
-    );
-
-    // Dessiner la bouche (sourire ou tristesse en fonction de smileFactor)
-    final smilePaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
-
-    final smileControl = Offset(
-      center.dx,
-      center.dy + radius * 0.5 * (smileFactor * 2 - 1),
-    );
-
-    final path = Path()
-      ..moveTo(center.dx - radius * 0.4, center.dy + radius * 0.1)
-      ..quadraticBezierTo(
-        smileControl.dx,
-        smileControl.dy,
-        center.dx + radius * 0.4,
-        center.dy + radius * 0.1,
-      );
-
-    canvas.drawPath(path, smilePaint);
-
-    // Ajout des sourcils (qui changent avec l'humeur)
-    final eyebrowPaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 3.0;
-
-    // Sourcil gauche
-    final leftEyebrowStart = Offset(
-      center.dx - radius * 0.4,
-      center.dy - radius * 0.3,
-    );
-    final leftEyebrowEnd = Offset(
-      center.dx - radius * 0.2,
-      center.dy - radius * (0.3 + 0.1 * smileFactor),
-    );
-    canvas.drawLine(leftEyebrowStart, leftEyebrowEnd, eyebrowPaint);
-
-    // Sourcil droit
-    final rightEyebrowStart = Offset(
-      center.dx + radius * 0.2,
-      center.dy - radius * (0.3 + 0.1 * smileFactor),
-    );
-    final rightEyebrowEnd = Offset(
-      center.dx + radius * 0.4,
-      center.dy - radius * 0.3,
-    );
-    canvas.drawLine(rightEyebrowStart, rightEyebrowEnd, eyebrowPaint);
-  }
-
-  @override
-  bool shouldRepaint(FeeloFacePainter oldDelegate) {
-    return oldDelegate.smileFactor != smileFactor || oldDelegate.color != color;
-  }
-}
-
-// Peintre pour l'arrière-plan de l'arc d'émotion
-class EmotionArcBackgroundPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final width = size.width;
-    final height = size.height;
-
-    // Gradient linéaire pour l'arc
-    final gradient = LinearGradient(
-      colors: [
-        Colors.red,
-        Colors.orange,
-        Colors.amber,
-        Colors.lightGreen,
-        Colors.green,
-      ],
-      stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
-    );
-
-    // Création d'un rectangle avec le gradient
-    final rect = Rect.fromLTWH(0, height * 0.7, width, height * 0.1);
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.fill;
-
-    final arcRect = Rect.fromLTWH(
-      0,
-      -height * 2 + height * 0.8,
-      width,
-      height * 2.5,
-    );
-
-    // Dessin de l'arc de fond
-    canvas.drawArc(arcRect, math.pi, math.pi, true, paint);
-
-    // Ligne grise par-dessus pour délimiter
-    final linePaint = Paint()
-      ..color = Colors.white30
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    canvas.drawArc(arcRect, math.pi, math.pi, false, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// Peintre pour l'arc de progression
-class EmotionArcProgressPainter extends CustomPainter {
-  final double progress; // 0.0 à 1.0
-
-  EmotionArcProgressPainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final width = size.width;
-    final height = size.height;
-
-    // Récupère la couleur en fonction de la progression
-    Color color;
-    if (progress < 0.2)
-      color = Colors.red;
-    else if (progress < 0.4)
-      color = Colors.orange;
-    else if (progress < 0.6)
-      color = Colors.amber;
-    else if (progress < 0.8)
-      color = Colors.lightGreen;
-    else
-      color = Colors.green;
-
-    final paint = Paint()
-      ..color = color.withOpacity(0.3)
-      ..style = PaintingStyle.fill;
-
-    final arcRect = Rect.fromLTWH(
-      0,
-      -height * 2 + height * 0.8,
-      width,
-      height * 2.5,
-    );
-
-    // Dessin de l'arc progressif
-    canvas.drawArc(arcRect, math.pi, progress * math.pi, true, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant EmotionArcProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
-}
-
-// Peintre pour le curseur de l'arc
-class EmotionCursorPainter extends CustomPainter {
-  final double position; // 0.0 à 1.0
-
-  EmotionCursorPainter(this.position);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final width = size.width;
-    final height = size.height;
-
-    // Récupère la couleur en fonction de la progression
-    Color color;
-    if (position < 0.2)
-      color = Colors.red;
-    else if (position < 0.4)
-      color = Colors.orange;
-    else if (position < 0.6)
-      color = Colors.amber;
-    else if (position < 0.8)
-      color = Colors.lightGreen;
-    else
-      color = Colors.green;
-
-    // Cercle pour le curseur
-    final cursorPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    final borderPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+    // Yeux
+    final eyeRadius = radius * 0.15;
+    final eyeOffsetX = radius * 0.3;
+    final eyeOffsetY = radius * 0.1;
 
-    final arcRect = Rect.fromLTWH(
-      0,
-      -height * 2 + height * 0.8,
-      width,
-      height * 2.5,
+    canvas.drawCircle(
+      Offset(centerX - eyeOffsetX, centerY - eyeOffsetY),
+      eyeRadius,
+      eyePaint,
+    );
+    canvas.drawCircle(
+      Offset(centerX + eyeOffsetX, centerY - eyeOffsetY),
+      eyeRadius,
+      eyePaint,
     );
 
-    // Calculer la position du curseur sur l'arc
-    final angle = math.pi + position * math.pi;
-    final radius = height * 2.5 / 2;
-    final center = Offset(width / 2, -height * 2 + height * 0.8 + radius);
+    // Pupilles
+    final pupilPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
 
-    final cursorX = center.dx + radius * math.cos(angle);
-    final cursorY = center.dy + radius * math.sin(angle);
+    final pupilRadius = eyeRadius * 0.5;
+    canvas.drawCircle(
+      Offset(centerX - eyeOffsetX, centerY - eyeOffsetY),
+      pupilRadius,
+      pupilPaint,
+    );
+    canvas.drawCircle(
+      Offset(centerX + eyeOffsetX, centerY - eyeOffsetY),
+      pupilRadius,
+      pupilPaint,
+    );
 
-    // Dessiner le curseur (cercle avec bordure)
-    canvas.drawCircle(Offset(cursorX, cursorY), 15, cursorPaint);
-    canvas.drawCircle(Offset(cursorX, cursorY), 15, borderPaint);
+    // Dessiner la bouche (qui varie selon le niveau d'humeur)
+    final mouthPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.08
+      ..strokeCap = StrokeCap.round;
+
+    // Calculer le type de sourire basé sur le facteur de sourire
+    final mouthWidth = radius * 1.2;
+    final mouthHeight = radius * 0.6 * (smileFactor * 2 - 1); // -0.6 à +0.6
+
+    final mouthRect = Rect.fromCenter(
+      center: Offset(centerX, centerY + radius * 0.3),
+      width: mouthWidth,
+      height: mouthHeight.abs(),
+    );
+
+    final startAngle = mouthHeight > 0 ? 0.0 : math.pi;
+    final sweepAngle = math.pi;
+
+    canvas.drawArc(
+      mouthRect,
+      startAngle,
+      sweepAngle.toDouble(),
+      false,
+      mouthPaint,
+    );
   }
 
   @override
-  bool shouldRepaint(covariant EmotionCursorPainter oldDelegate) {
-    return oldDelegate.position != position;
-  }
+  bool shouldRepaint(FeeloFacePainter oldDelegate) =>
+      smileFactor != oldDelegate.smileFactor || color != oldDelegate.color;
 }

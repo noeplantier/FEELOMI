@@ -132,10 +132,11 @@ class _LoginPageState extends State<LoginPage>
                       tag: 'logo',
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(60),
-                        child: Image.network(
-                          'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
+                        child: Image.asset(
+                          ('assets/images/hello.png'),
                           height: 80,
                           width: 80,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

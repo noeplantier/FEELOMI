@@ -535,6 +535,24 @@ class _MoodPageState extends State<MoodPage>
   }
 }
 
+class FeelingTracker extends StatefulWidget {
+  const FeelingTracker({Key? key}) : super(key: key);
+
+  @override
+  State<FeelingTracker> createState() => _FeelingTrackerState();
+}
+
+class _FeelingTrackerState extends State<FeelingTracker> {
+  @override
+  Widget build(BuildContext context) {
+    // Return your feeling tracker widget UI here
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tracker d\'humeur')),
+      body: const Center(child: Text('Contenu du tracker d\'humeur')),
+    );
+  }
+}
+
 // Peintre personnalisé pour créer le graphique d'humeur
 class MoodChartPainter extends CustomPainter {
   final List<Map<String, dynamic>> moodData;
