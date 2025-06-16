@@ -1,5 +1,6 @@
+import 'package:feelomi/mental_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'physical_page.dart'; // Assurez-vous d'importer la page suivante
 
 class SleepingPage extends StatefulWidget {
   const SleepingPage({super.key});
@@ -40,44 +41,189 @@ class _SleepingPageState extends State<SleepingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Qualité de sommeil'),
-        backgroundColor: Colors.blue.shade700,
-      ),
-      body: SingleChildScrollView(
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
-            _buildSleepQualitySection(),
-            _buildSleepDurationSection(),
-            _buildFallingAsleepSection(),
-            _buildAdditionalQuestionsSection(),
-            _buildInfoCard(),
-            _buildSubmitButton(),
+            // Barre chronologique en haut avec le bouton "Passer cette étape"
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: primaryColor, width: 2),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '9',
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Qualité du sommeil',
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Navigation vers la page suivante
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MentalPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Passer cette étape',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // Barre de progression
+                  LinearProgressIndicator(
+                    value:
+                        0.75, // Ajustez selon la position dans votre workflow
+                    backgroundColor: Colors.grey.shade200,
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                    minHeight: 5,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ],
+              ),
+            ),
+
+            // Contenu principal avec défilement
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    _buildSleepQualitySection(),
+                    _buildSleepDurationSection(),
+                    _buildFallingAsleepSection(),
+                    _buildAdditionalQuestionsSection(),
+                    _buildInfoCard(),
+                  ],
+                ),
+              ),
+            ),
+
+            // Bouton Continuer en bas
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, -1),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigation vers la page suivante
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PhysicalPage(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Continuer',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
+  // Le reste de vos méthodes de construction de widgets reste inchangé
   Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16.0),
-      color: Colors.blue.shade100,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Comment as-tu dormi ?',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
           Text(
-            'Tes réponses nous aideront à personnaliser ton expérience',
-            style: TextStyle(fontSize: 16, color: Colors.blue.shade900),
+            'Comment as-tu dormi ?',
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            'Dis-nous en plus sur ta qualité de sommeil pour personnaliser ton expérience.',
+            style: TextStyle(fontSize: 16.0, color: Colors.grey),
           ),
         ],
       ),
@@ -85,132 +231,124 @@ class _SleepingPageState extends State<SleepingPage> {
   }
 
   Widget _buildSleepQualitySection() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Qualité du sommeil',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8.0,
-            children: _sleepQualityOptions.map((quality) {
-              return ChoiceChip(
-                label: Text(quality),
-                selected: _sleepQuality == quality,
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() {
-                      _sleepQuality = quality;
-                    });
-                  }
-                },
-              );
-            }).toList(),
-          ),
-        ],
+    return _buildSection(
+      title: 'Qualité du sommeil',
+      content: Column(
+        children: _sleepQualityOptions.map((option) {
+          return _buildRadioOption(
+            option,
+            _sleepQuality,
+            (value) => setState(() => _sleepQuality = value),
+          );
+        }).toList(),
       ),
     );
   }
 
   Widget _buildSleepDurationSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Durée du sommeil',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8.0,
-            children: _sleepDurationOptions.map((duration) {
-              return ChoiceChip(
-                label: Text(duration),
-                selected: _sleepDuration == duration,
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() {
-                      _sleepDuration = duration;
-                    });
-                  }
-                },
-              );
-            }).toList(),
-          ),
-        ],
+    return _buildSection(
+      title: 'Durée du sommeil',
+      content: Column(
+        children: _sleepDurationOptions.map((option) {
+          return _buildRadioOption(
+            option,
+            _sleepDuration,
+            (value) => setState(() => _sleepDuration = value),
+          );
+        }).toList(),
       ),
     );
   }
 
   Widget _buildFallingAsleepSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return _buildSection(
+      title: 'Temps pour s\'endormir',
+      content: Column(
+        children: _fallingAsleepTimeOptions.map((option) {
+          return _buildRadioOption(
+            option,
+            _fallingAsleepTime,
+            (value) => setState(() => _fallingAsleepTime = value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildAdditionalQuestionsSection() {
+    return _buildSection(
+      title: 'Questions complémentaires',
+      content: Column(
         children: [
-          const Text(
-            'Temps pour s\'endormir',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          _buildSwitchOption(
+            'As-tu fait des cauchemars ?',
+            _hasNightmares,
+            (value) => setState(() => _hasNightmares = value),
           ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8.0,
-            children: _fallingAsleepTimeOptions.map((time) {
-              return ChoiceChip(
-                label: Text(time),
-                selected: _fallingAsleepTime == time,
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() {
-                      _fallingAsleepTime = time;
-                    });
-                  }
-                },
-              );
-            }).toList(),
+          const SizedBox(height: 16),
+          _buildSwitchOption(
+            'T\'es-tu réveillé(e) pendant la nuit ?',
+            _wakesUpDuringNight,
+            (value) => setState(() => _wakesUpDuringNight = value),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAdditionalQuestionsSection() {
+  // Helper methods for building UI components
+  Widget _buildSection({required String title, required Widget content}) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Problèmes supplémentaires',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
-          CheckboxListTile(
-            title: const Text('J\'ai des cauchemars'),
-            value: _hasNightmares,
-            onChanged: (value) {
-              setState(() {
-                _hasNightmares = value ?? false;
-              });
-            },
-          ),
-          CheckboxListTile(
-            title: const Text('Je me réveille plusieurs fois dans la nuit'),
-            value: _wakesUpDuringNight,
-            onChanged: (value) {
-              setState(() {
-                _wakesUpDuringNight = value ?? false;
-              });
-            },
-          ),
+          const SizedBox(height: 16),
+          content,
         ],
       ),
+    );
+  }
+
+  Widget _buildRadioOption(
+    String text,
+    String groupValue,
+    Function(String) onChanged,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InkWell(
+        onTap: () => onChanged(text),
+        child: Row(
+          children: [
+            Radio<String>(
+              value: text,
+              groupValue: groupValue,
+              onChanged: (value) => onChanged(value!),
+              activeColor: Theme.of(context).primaryColor,
+            ),
+            Text(text, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchOption(String text, bool value, Function(bool) onChanged) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(text, style: const TextStyle(fontSize: 16)),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: Theme.of(context).primaryColor,
+        ),
+      ],
     );
   }
 
@@ -264,35 +402,6 @@ class _SleepingPageState extends State<SleepingPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue.shade700,
-            padding: const EdgeInsets.symmetric(vertical: 15.0),
-          ),
-          onPressed: () {
-            // Enregistrer les réponses et naviguer à la page suivante
-            Navigator.pop(context, {
-              'sleepQuality': _sleepQuality,
-              'sleepDuration': _sleepDuration,
-              'fallingAsleepTime': _fallingAsleepTime,
-              'hasNightmares': _hasNightmares,
-              'wakesUpDuringNight': _wakesUpDuringNight,
-            });
-          },
-          child: const Text(
-            'Valider',
-            style: TextStyle(fontSize: 18, color: Colors.white),
-          ),
         ),
       ),
     );

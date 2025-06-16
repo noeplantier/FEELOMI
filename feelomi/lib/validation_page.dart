@@ -268,15 +268,6 @@ class _ValidationPageState extends State<ValidationPage>
                 alignment: Alignment.center,
                 children: [
                   // Confetti animation en arrière-plan
-                  if (_showConfetti)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: lottie.Lottie.network(
-                          'https://assets2.lottiefiles.com/packages/lf20_fcfjwiyb.json',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
 
                   // Contenu
                   SingleChildScrollView(
@@ -357,6 +348,8 @@ class _ValidationPageState extends State<ValidationPage>
                             child: Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: _accentColor.withOpacity(0.1),
@@ -770,20 +763,6 @@ class _ValidationPageState extends State<ValidationPage>
           ),
 
           // Animation de battement de coeur
-          if (_showConfetti)
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 1.0, end: 1.1),
-              duration: const Duration(milliseconds: 800),
-              curve: Curves.easeInOut,
-              builder: (context, value, child) {
-                return AnimatedScale(
-                  scale: value,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  child: child,
-                );
-              },
-            ),
         ],
       ),
     );
