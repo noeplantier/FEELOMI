@@ -1,8 +1,5 @@
-import 'package:feelomi/happy_page.dart';
-import 'package:feelomi/mental_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:feelomi/custom_back.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SleepingPage extends StatefulWidget {
   const SleepingPage({super.key});
@@ -11,537 +8,291 @@ class SleepingPage extends StatefulWidget {
   State<SleepingPage> createState() => _SleepingPageState();
 }
 
-class _SleepingPageState extends State<SleepingPage>
-    with SingleTickerProviderStateMixin {
-  // Niveau de sommeil sélectionné (0-4)
-  int _selectedLevel = 2; // Par défaut à "Raisonnable"
+class _SleepingPageState extends State<SleepingPage> {
+  // Variables pour suivre les choix de l'utilisateur
+  String _sleepQuality = 'Bien'; // Valeur par défaut pour éviter le null
+  String _sleepDuration = '7-8 heures'; // Valeur par défaut pour éviter le null
+  String _fallingAsleepTime =
+      'Moins de 15 minutes'; // Valeur par défaut pour éviter le null
+  bool _hasNightmares = false;
+  bool _wakesUpDuringNight = false;
 
-  // Options de qualité de sommeil
-  final List<Map<String, dynamic>> _sleepLevels = [
-    {
-      'level': 0,
-      'title': 'Médiocre',
-      'description': '< 3h',
-      'color': Colors.red.shade400,
-    },
-    {
-      'level': 1,
-      'title': 'Nulle',
-      'description': '3 - 4h',
-      'color': Colors.orange.shade400,
-    },
-    {
-      'level': 2,
-      'title': 'Raisonnable',
-      'description': '5h',
-      'color': Colors.amber.shade400,
-    },
-    {
-      'level': 3,
-      'title': 'Bien',
-      'description': '6 - 7h',
-      'color': Colors.lightGreen.shade400,
-    },
-    {
-      'level': 4,
-      'title': 'Excellente',
-      'description': '7 - 9h',
-      'color': Colors.green.shade500,
-    },
+  // Listes d'options
+  final List<String> _sleepQualityOptions = [
+    'Très bien',
+    'Bien',
+    'Moyen',
+    'Mauvais',
+    'Très mauvais',
   ];
-
-  // Animation pour le déplacement du bouton
-  late AnimationController _animController;
-  late Animation<double> _buttonAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _buttonAnimation = Tween<double>(begin: 0, end: 0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animController.dispose();
-    super.dispose();
-  }
-
-  void _selectSleepLevel(int level) {
-    // Feedback haptique pour améliorer l'expérience utilisateur
-    HapticFeedback.lightImpact();
-
-    // Animer le déplacement du bouton
-    _animController.reset();
-    final prevLevel = _selectedLevel;
-    setState(() {
-      _selectedLevel = level;
-      // Configurer l'animation pour le déplacement
-      final startPos = _getPositionForLevel(prevLevel);
-      final endPos = _getPositionForLevel(level);
-      _buttonAnimation = Tween<double>(begin: startPos, end: endPos).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
-      );
-    });
-    _animController.forward();
-  }
-
-  // Calculer la position verticale pour le niveau de sommeil
-  double _getPositionForLevel(int level) {
-    // Conversion du niveau (0-4) vers une position (0-1)
-    // 0 = bas de l'échelle (médiocre), 1 = haut de l'échelle (excellente)
-    return 1.0 - (level / 4.0);
-  }
+  final List<String> _sleepDurationOptions = [
+    'Moins de 5 heures',
+    '5-6 heures',
+    '7-8 heures',
+    '9+ heures',
+  ];
+  final List<String> _fallingAsleepTimeOptions = [
+    'Moins de 15 minutes',
+    '15-30 minutes',
+    '30-60 minutes',
+    '60+ minutes',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
-    final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+      appBar: AppBar(
+        title: const Text('Qualité de sommeil'),
+        backgroundColor: Colors.blue.shade700,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            _buildSleepQualitySection(),
+            _buildSleepDurationSection(),
+            _buildFallingAsleepSection(),
+            _buildAdditionalQuestionsSection(),
+            _buildInfoCard(),
+            _buildSubmitButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      color: Colors.blue.shade100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Comment as-tu dormi ?',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Tes réponses nous aideront à personnaliser ton expérience',
+            style: TextStyle(fontSize: 16, color: Colors.blue.shade900),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSleepQualitySection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Qualité du sommeil',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8.0,
+            children: _sleepQualityOptions.map((quality) {
+              return ChoiceChip(
+                label: Text(quality),
+                selected: _sleepQuality == quality,
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _sleepQuality = quality;
+                    });
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSleepDurationSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Durée du sommeil',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8.0,
+            children: _sleepDurationOptions.map((duration) {
+              return ChoiceChip(
+                label: Text(duration),
+                selected: _sleepDuration == duration,
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _sleepDuration = duration;
+                    });
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFallingAsleepSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Temps pour s\'endormir',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8.0,
+            children: _fallingAsleepTimeOptions.map((time) {
+              return ChoiceChip(
+                label: Text(time),
+                selected: _fallingAsleepTime == time,
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _fallingAsleepTime = time;
+                    });
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdditionalQuestionsSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Problèmes supplémentaires',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          CheckboxListTile(
+            title: const Text('J\'ai des cauchemars'),
+            value: _hasNightmares,
+            onChanged: (value) {
+              setState(() {
+                _hasNightmares = value ?? false;
+              });
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Je me réveille plusieurs fois dans la nuit'),
+            value: _wakesUpDuringNight,
+            onChanged: (value) {
+              setState(() {
+                _wakesUpDuringNight = value ?? false;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
         child: Column(
           children: [
-            // Barre chronologique en haut
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Column(
+              width: double.infinity,
+              color: Colors.blue.shade50,
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          // Ajout du bouton de retour
-                          const CustomBackButton(),
-                          const SizedBox(width: 8),
-                          Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: primaryColor, width: 2),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '9',
-                                style: TextStyle(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Sommeil',
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Navigation vers la page finale
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MentalPage(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Passer cette étape',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Icon(
+                    Icons.info_outline,
+                    color: Colors.blue.shade700,
+                    size: 30,
                   ),
-                  const SizedBox(height: 8),
-                  // Barre de progression
-                  LinearProgressIndicator(
-                    value: 1.17,
-                    backgroundColor: Colors.grey.shade200,
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                    minHeight: 5,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ],
-              ),
-            ),
-
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
+                  const SizedBox(width: 10),
+                  Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
-
-                        // Titre principal en violet
                         Text(
-                          'Comment évaluerais-tu ta qualité de sommeil ?',
+                          'Le saviez-vous ?',
                           style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: primaryColor,
+                            color: Colors.blue.shade900,
                           ),
-                          textAlign: TextAlign.center,
                         ),
-
-                        const SizedBox(height: 16),
-
-                        // Sous-titre explicatif
-                        Text(
-                          'Ta qualité de sommeil a un impact important sur ta santé mentale.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade700,
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Text(
+                            'Un bon sommeil est fondamental pour ta santé mentale. '
+                            'Nous adapterons nos recommandations en fonction de ta qualité de sommeil.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.blue.shade900,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ],
-                    ),
-                  ),
-
-                  // Partie principale avec le curseur et les niveaux de sommeil
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // Calculer la hauteur disponible pour le placement des points
-                        final availableHeight = constraints.maxHeight - 40;
-                        final itemHeight = availableHeight / 5;
-
-                        return Row(
-                          children: [
-                            const SizedBox(width: 24),
-
-                            // Colonne des niveaux de sommeil (de haut en bas)
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                children: [
-                                  // Afficher les niveaux dans l'ordre inverse (excellente en haut)
-                                  ...List.generate(5, (index) {
-                                    final level =
-                                        4 -
-                                        index; // Inverser l'indice (0 = excellent, 4 = médiocre)
-                                    final sleepData = _sleepLevels[level];
-                                    final isSelected = level == _selectedLevel;
-                                    return Expanded(
-                                      child: GestureDetector(
-                                        onTap: () => _selectSleepLevel(level),
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? sleepData['color']
-                                                      .withOpacity(0.2)
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                            border: Border.all(
-                                              color: isSelected
-                                                  ? sleepData['color']
-                                                  : Colors.transparent,
-                                              width: 2,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // Emoji
-                                              Container(
-                                                width: 50,
-                                                height: 50,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: sleepData['color']
-                                                      .withOpacity(0.2),
-                                                ),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                    ),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  sleepData['emoji'],
-                                                  style: const TextStyle(
-                                                    fontSize: 24,
-                                                  ),
-                                                ),
-                                              ),
-                                              // Texte du niveau
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      sleepData['title'],
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: isSelected
-                                                            ? FontWeight.bold
-                                                            : FontWeight.normal,
-                                                        color: isSelected
-                                                            ? sleepData['color']
-                                                            : Colors.black87,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      sleepData['description'],
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors
-                                                            .grey
-                                                            .shade600,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            ),
-
-                            // Curseur vertical
-                            SizedBox(
-                              width: 80,
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  return Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      // Ligne verticale du curseur
-                                      // Bouton de validation - version sans animation
-                                      Positioned(
-                                        top:
-                                            (4 - _selectedLevel) * itemHeight +
-                                            20 +
-                                            (itemHeight / 2) -
-                                            24,
-                                        right: -16,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            // Enregistrer la qualité de sommeil sélectionnée
-                                            final sleepQuality =
-                                                _sleepLevels[_selectedLevel]['title'];
-
-                                            // Navigation vers la page des symptômes de santé mentale
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const MentalPage(),
-                                              ),
-                                            );
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                _sleepLevels[_selectedLevel]['color'],
-                                            foregroundColor: Colors.white,
-                                            shape: const CircleBorder(),
-                                            padding: const EdgeInsets.all(16),
-                                            elevation: 4,
-                                          ),
-                                          child: const Icon(
-                                            Icons.arrow_forward,
-                                            size: 24,
-                                          ),
-                                        ),
-                                      ),
-
-                                      // Points sur la ligne
-                                      ...List.generate(5, (index) {
-                                        final level =
-                                            4 -
-                                            index; // Inverser l'indice (0 = excellent, 4 = médiocre)
-                                        final isSelected =
-                                            level == _selectedLevel;
-
-                                        // Position précise calculée à partir de la hauteur disponible
-                                        final topPosition =
-                                            (index * itemHeight) +
-                                            20 +
-                                            (itemHeight / 2) -
-                                            8;
-
-                                        return Positioned(
-                                          top: topPosition,
-                                          left:
-                                              28, // Centrer le point sur la ligne
-                                          child: GestureDetector(
-                                            onTap: () =>
-                                                _selectSleepLevel(level),
-                                            child: Container(
-                                              width: isSelected ? 24 : 16,
-                                              height: isSelected ? 24 : 16,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: isSelected
-                                                    ? _sleepLevels[level]['color']
-                                                    : Colors.white,
-                                                border: Border.all(
-                                                  color:
-                                                      _sleepLevels[level]['color'],
-                                                  width: 2,
-                                                ),
-                                                boxShadow: isSelected
-                                                    ? [
-                                                        BoxShadow(
-                                                          color:
-                                                              _sleepLevels[level]['color']
-                                                                  .withOpacity(
-                                                                    0.3,
-                                                                  ),
-                                                          spreadRadius: 2,
-                                                          blurRadius: 4,
-                                                        ),
-                                                      ]
-                                                    : null,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-
-                                      // Bouton de validation animé - CORRECTION ICI
-                                      AnimatedBuilder(
-                                        animation: _animController,
-                                        builder: (context, child) {
-                                          // Calcul précis de la position du bouton en fonction du niveau
-                                          int reverseIndex = 4 - _selectedLevel;
-                                          double topPosition =
-                                              (reverseIndex * itemHeight) +
-                                              20 +
-                                              (itemHeight / 2) -
-                                              24;
-
-                                          return Positioned(
-                                            top: topPosition,
-                                            right: -16,
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                // Enregistrer la qualité de sommeil sélectionnée
-                                                final sleepQuality =
-                                                    _sleepLevels[_selectedLevel]['title'];
-
-                                                // Navigation vers la page des symptômes de santé mentale
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const MentalPage(),
-                                                  ),
-                                                );
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    _sleepLevels[_selectedLevel]['color'],
-                                                foregroundColor: Colors.white,
-                                                shape: const CircleBorder(),
-                                                padding: const EdgeInsets.all(
-                                                  16,
-                                                ),
-                                                elevation: 4,
-                                              ),
-                                              child: const Icon(
-                                                Icons.arrow_forward,
-                                                size: 24,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-
-                            const SizedBox(width: 24),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-
-                  // Message informatif en bas
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.blue.shade300,
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.lightbulb_outline,
-                            color: Colors.blue.shade700,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Un bon sommeil est fondamental pour ta santé mentale. '
-                              'Nous adapterons nos recommandations en fonction de ta qualité de sommeil.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.blue.shade900,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue.shade700,
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
+          ),
+          onPressed: () {
+            // Enregistrer les réponses et naviguer à la page suivante
+            Navigator.pop(context, {
+              'sleepQuality': _sleepQuality,
+              'sleepDuration': _sleepDuration,
+              'fallingAsleepTime': _fallingAsleepTime,
+              'hasNightmares': _hasNightmares,
+              'wakesUpDuringNight': _wakesUpDuringNight,
+            });
+          },
+          child: const Text(
+            'Valider',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
         ),
       ),
     );

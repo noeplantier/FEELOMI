@@ -14,9 +14,9 @@ class _GenderPageState extends State<GenderPage> {
 
   // Options disponibles pour le genre
   final List<Map<String, String>> _genderOptions = [
-    {'emoji': '👨', 'text': 'Je suis un homme'},
-    {'emoji': '👩', 'text': 'Je suis une femme'},
-    {'emoji': '🌟', 'text': 'Je suis non-binaire'},
+    {'image': 'assets/images/yes.png', 'text': 'Je suis un homme'},
+    {'image': 'assets/images/wink.png', 'text': 'Je suis une femme'},
+    {'image': 'assets/images/confident.png', 'text': 'Je suis non-binaire'},
   ];
 
   @override
@@ -191,9 +191,12 @@ class _GenderPageState extends State<GenderPage> {
                                 Expanded(
                                   child: Row(
                                     children: [
-                                      Text(
-                                        option['emoji']!,
-                                        style: const TextStyle(fontSize: 24),
+                                      Image.asset(
+                                        option['image']!,
+                                        width:
+                                            24, // Ajustez selon la taille que vous souhaitez
+                                        height:
+                                            24, // Même taille que l'emoji d'origine
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
