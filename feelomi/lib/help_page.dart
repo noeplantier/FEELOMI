@@ -182,7 +182,9 @@ class _HelpPageState extends State<HelpPage>
                             // Image de Feelo
                             ClipRRect(
                               child: Image(
-                                image: const AssetImage('images/hello.png'),
+                                image: const AssetImage(
+                                  'assets/images/hello.png',
+                                ),
                                 width: 160,
                                 height: 160,
                               ),

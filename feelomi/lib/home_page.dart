@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage>
           children: [
             ClipRRect(
               child: Image(
-                image: const AssetImage('images/hello.png'),
+                image: const AssetImage('assets/images/hello.png'),
                 width: 160,
                 height: 160,
               ),
