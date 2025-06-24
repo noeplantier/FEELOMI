@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:flutter/material.dart';
 import 'age_page.dart';
 
@@ -50,6 +51,10 @@ class _GenderPageState extends State<GenderPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

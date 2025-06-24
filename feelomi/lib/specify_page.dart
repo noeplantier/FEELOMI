@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/happy_page.dart';
 import 'package:feelomi/sleeping_page.dart';
 import 'package:flutter/material.dart';
@@ -303,6 +304,10 @@ class _SpecifyPageState extends State<SpecifyPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

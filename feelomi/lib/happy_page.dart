@@ -155,6 +155,7 @@ class _HappyPageState extends State<HappyPage> {
                   ),
                 ],
               ),
+
               child: Column(
                 children: [
                   Row(
@@ -162,6 +163,10 @@ class _HappyPageState extends State<HappyPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,
@@ -169,6 +174,7 @@ class _HappyPageState extends State<HappyPage> {
                               shape: BoxShape.circle,
                               border: Border.all(color: primaryColor, width: 2),
                             ),
+
                             child: Center(
                               child: Text(
                                 '12',
@@ -179,7 +185,6 @@ class _HappyPageState extends State<HappyPage> {
                               ),
                             ),
                           ),
-                          const CustomBackButton(),
                           const SizedBox(width: 8),
                           Text(
                             'Bonheur',

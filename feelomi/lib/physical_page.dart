@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:flutter/material.dart';
 import 'medics_page.dart';
 
@@ -45,6 +46,10 @@ class _PhysicalPageState extends State<PhysicalPage>
                       // Numéro d'étape et titre
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

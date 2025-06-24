@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/help_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,6 +48,10 @@ class _WeightPageState extends State<WeightPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

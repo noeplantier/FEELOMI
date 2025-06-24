@@ -130,6 +130,10 @@ class _MentalPageState extends State<MentalPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

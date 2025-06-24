@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/mental_page.dart';
 import 'package:flutter/material.dart';
 import 'physical_page.dart'; // Assurez-vous d'importer la page suivante
@@ -69,6 +70,10 @@ class _SleepingPageState extends State<SleepingPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

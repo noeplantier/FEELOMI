@@ -1,3 +1,4 @@
+import 'package:feelomi/custom_back.dart';
 import 'package:feelomi/specify_page.dart';
 import 'package:flutter/material.dart';
 
@@ -71,6 +72,10 @@ class _MedicsPageState extends State<MedicsPage> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,

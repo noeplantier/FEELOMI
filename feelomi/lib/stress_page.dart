@@ -1,5 +1,6 @@
 import 'package:feelomi/analysis_page.dart';
 import 'package:feelomi/better_page.dart';
+import 'package:feelomi/custom_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'happy_page.dart';
@@ -139,6 +140,10 @@ class _StressPageState extends State<StressPage>
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,
