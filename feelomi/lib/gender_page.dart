@@ -102,7 +102,6 @@ class _GenderPageState extends State<GenderPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
                     value: 0.26,

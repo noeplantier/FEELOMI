@@ -326,12 +326,14 @@ class _LoginPageState extends State<LoginPage>
 
                       const SizedBox(width: 24),
 
-                      // GitHub (Dan Abramov)
+                      // Instagram (Dan Abramov)
                       _socialButton(
-                        icon: FontAwesomeIcons.github,
+                        icon: FontAwesomeIcons.instagram,
                         color: const Color(0xFF333333),
                         onTap: () {
-                          _launchDeveloperProfile('https://github.com/gaearon');
+                          _launchDeveloperProfile(
+                            'https://www.instagram.com/awe_ase',
+                          );
                         },
                       ),
                     ],

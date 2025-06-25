@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'happy_page.dart';
 import 'dart:math' as math;
 import 'package:circle_list/circle_list.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StressPage extends StatefulWidget {
   const StressPage({super.key});
@@ -113,6 +114,9 @@ class _StressPageState extends State<StressPage>
     final primaryColor = const Color.fromARGB(255, 150, 95, 186);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
     final deviceWidth = MediaQuery.of(context).size.width;
+    // Define a stressLevel value to use in the chart
+    final stressLevel =
+        _stressLevel * 25.0; // Scale value appropriately for the chart
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -242,123 +246,54 @@ class _StressPageState extends State<StressPage>
                       ),
                     ),
 
-                    // Jauge circulaire digitalisée avec taille réduite
-                    SizedBox(
-                      height: 250, // Taille réduite de 340 à 250
-                      child: CircleList(
-                        origin: const Offset(0, 0),
-                        innerRadius: 80, // Réduit de 110 à 80
-                        outerRadius: 120, // Réduit de 160 à 120
-                        rotateMode: RotateMode.stopRotate,
-                        centerWidget: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Cercle de fond (gris)
-                            CustomPaint(
-                              size: const Size(160, 160), // Réduit de 220 à 160
-                              painter: CircleGaugePainter(
-                                progress: 1.0,
-                                color: Colors.grey.shade300,
-                                strokeWidth: 14, // Réduit de 18 à 14
+                    // Remplacer le widget CircularPercentIndicator par:
+                    Container(
+                      height: 200,
+                      padding: EdgeInsets.all(16),
+                      child: LineChart(
+                        LineChartData(
+                          gridData: FlGridData(show: false),
+                          titlesData: FlTitlesData(show: false),
+                          borderData: FlBorderData(show: false),
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: [
+                                FlSpot(
+                                  0,
+                                  stressLevel,
+                                ), // Utiliser la valeur existante
+                                FlSpot(1, stressLevel * 0.8),
+                                FlSpot(2, stressLevel * 0.9),
+                                FlSpot(3, stressLevel),
+                              ],
+                              isCurved: true,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF9C27B0), // Violet foncé
+                                  Color(0xFFE1BEE7), // Violet clair
+                                ],
                               ),
-                            ),
-                            // Cercle de progression animé (coloré)
-                            AnimatedBuilder(
-                              animation: _animation,
-                              builder: (context, child) {
-                                return CustomPaint(
-                                  size: const Size(
-                                    160,
-                                    160,
-                                  ), // Réduit de 220 à 160
-                                  painter: CircleGaugePainter(
-                                    progress: _animation.value,
-                                    color: _stressLevels[_stressLevel]['color'],
-                                    strokeWidth: 14, // Réduit de 18 à 14
-                                  ),
-                                );
-                              },
-                            ),
-                            // Contenu au centre du cercle
-                            Container(
-                              padding: const EdgeInsets.all(
-                                8,
-                              ), // Réduit de 16 à 8
-                              width: 140, // Ajout d'une largeur fixe
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                child: Column(
-                                  key: ValueKey<int>(_stressLevel),
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _stressLevels[_stressLevel]['icon'],
-                                      color:
-                                          _stressLevels[_stressLevel]['color'],
-                                      size: 28, // Réduit de 40 à 28
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ), // Réduit de 10 à 6
-                                    Text(
-                                      _stressLevels[_stressLevel]['title'],
-                                      style: TextStyle(
-                                        fontSize: 18, // Réduit de 22 à 18
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            _stressLevels[_stressLevel]['color'],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 4,
-                                    ), // Réduit de 8 à 4
-                                    Text(
-                                      _stressLevels[_stressLevel]['description'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 12, // Réduit de 14 à 12
-                                        color: Colors.grey.shade700,
-                                      ),
-                                      maxLines: 2, // Limiter à 2 lignes
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                              barWidth: 4,
+                              isStrokeCapRound: true,
+                              dotData: FlDotData(show: false),
+                              belowBarData: BarAreaData(
+                                show: true,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF9C27B0).withOpacity(0.3),
+                                    Color(0xFFE1BEE7).withOpacity(0.1),
                                   ],
                                 ),
                               ),
                             ),
                           ],
+                          minX: 0,
+                          maxX: 3,
+                          minY: 0,
+                          maxY: 100,
                         ),
-                        children: List.generate(_stressLevels.length, (index) {
-                          final isSelected = index == _stressLevel;
-                          return GestureDetector(
-                            onTap: () => _setStressLevel(index),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CircleAvatar(
-                                  radius: isSelected
-                                      ? 18
-                                      : 15, // Réduit de 22/18 à 18/15
-                                  backgroundColor: isSelected
-                                      ? _stressLevels[index]['color']
-                                      : Colors.white,
-                                  child: Icon(
-                                    _stressLevels[index]['icon'],
-                                    color: isSelected
-                                        ? Colors.white
-                                        : _stressLevels[index]['color'],
-                                    size: isSelected
-                                        ? 22
-                                        : 18, // Réduit de 28/22 à 22/18
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
                       ),
                     ),
-
                     const SizedBox(height: 10), // Réduit de 20 à 10
                     // Niveau actuel avec description
                     AnimatedSwitcher(

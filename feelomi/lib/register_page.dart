@@ -187,10 +187,13 @@ class _RegisterPageState extends State<RegisterPage>
                   Center(
                     child: Hero(
                       tag: 'logo',
-                      child: Image.network(
-                        'https://img.freepik.com/vecteurs-premium/ecureuil-mignon-lunettes-mascotte-dessin-anime_138676-2550.jpg',
-                        height: 70,
-                        width: 70,
+                      child: ClipRRect(
+                        child: Image.asset(
+                          ('assets/images/hello.png'),
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

@@ -56,6 +56,7 @@ class _HealthTrackerState extends State<HealthTracker> {
                   ),
                 ],
               ),
+
               child: Column(
                 children: [
                   Row(
