@@ -22,6 +22,7 @@
         "lottie",
         "shared_preferences",
         "speech_to_text",
+        "table_calendar",
         "url_launcher",
         "webview_flutter"
       ],
@@ -971,6 +972,22 @@
       "dependencies": [
         "meta",
         "path"
+      ]
+    },
+    {
+      "name": "simple_gesture_detector",
+      "version": "0.2.1",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "table_calendar",
+      "version": "3.0.9",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "simple_gesture_detector"
       ]
     }
   ],

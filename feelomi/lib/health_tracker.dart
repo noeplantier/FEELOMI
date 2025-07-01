@@ -42,7 +42,6 @@ class _HealthTrackerState extends State<HealthTracker> {
           children: [
             const CustomBackButton(iconColor: Colors.white),
 
-            // Barre chronologique en haut
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
@@ -56,7 +55,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                   ),
                 ],
               ),
-
               child: Column(
                 children: [
                   Row(
@@ -64,6 +62,10 @@ class _HealthTrackerState extends State<HealthTracker> {
                     children: [
                       Row(
                         children: [
+                          CustomBackButton(
+                            iconColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Container(
                             width: 30,
                             height: 30,
@@ -71,7 +73,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                               shape: BoxShape.circle,
                               border: Border.all(color: primaryColor, width: 2),
                             ),
-
                             child: Center(
                               child: Text(
                                 '1',
@@ -94,7 +95,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Redirection vers la page de sélection du genre
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -113,7 +113,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // Barre de progression
                   LinearProgressIndicator(
                     value: 0.13,
                     backgroundColor: Colors.grey.shade200,
@@ -263,9 +262,8 @@ class _HealthTrackerState extends State<HealthTracker> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: _selectedOption == null
-                      ? null // Désactivé si aucune option sélectionnée
+                      ? null
                       : () {
-                          // Navigation vers la page de sélection du genre
                           Navigator.push(
                             context,
                             MaterialPageRoute(

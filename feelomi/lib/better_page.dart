@@ -1,4 +1,5 @@
 import 'package:feelomi/custom_back.dart';
+import 'package:feelomi/profile_page.dart';
 import 'package:feelomi/validation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -219,7 +220,7 @@ class _BetterPageState extends State<BetterPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ValidationPage(),
+                              builder: (context) => const ProfilePage(),
                             ),
                           );
                         },

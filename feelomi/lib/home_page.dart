@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage>
                             duration: const Duration(milliseconds: 800),
                             curve: Curves.easeIn,
                             child: const Text(
-                              'Je suis Feelo, ton compagnon IA personnalisé, prêt pour notre aventure ?',
+                              'Je suis Feelo, ton compagnon IA personnalisé, prêt pour l\'aventure ?',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'custom_back.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'calendary_page.dart';
 
 class ValidationPage extends StatefulWidget {
   const ValidationPage({super.key});
@@ -535,34 +536,34 @@ class _ValidationPageState extends State<ValidationPage>
                           // Feedback haptique
                           HapticFeedback.mediumImpact();
                           // Navigation vers la page d'accueil
-                          Navigator.of(context).pushAndRemoveUntil(
+                          Navigator.push(
+                            context,
                             MaterialPageRoute(
-                              builder: (context) => const HomePage(),
+                              builder: (context) => const CalendaryPage(),
                             ),
-                            (route) => false,
                           );
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _primaryColor,
-                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    elevation: 2,
-                    shadowColor: _primaryColor.withOpacity(0.5),
+                    elevation: 3,
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Commencer l\'aventure',
+                        "Commencer l'aventure",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
+
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.all(4),

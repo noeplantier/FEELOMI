@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:feelomi/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart' as charts;
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +9,15 @@ class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
+
+final Color primaryPurple = Colors.purple;
+final Color lightPurple = const Color.fromARGB(
+  101,
+  155,
+  39,
+  176,
+).withOpacity(0.8);
+final Color lighterPurple = Colors.purple.withOpacity(0.6);
 
 class _ProfilePageState extends State<ProfilePage> {
   String? _profileImagePath;
@@ -126,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: const Color.fromARGB(255, 255, 255, 255),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Row(
@@ -171,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         const SizedBox(height: 16.0),
-        _buildMentalHealthChart(),
+        _buildMentalHealthChart(_DummyUserData()),
       ],
     );
   }
@@ -180,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
+        color: primaryPurple,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
@@ -191,13 +199,16 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.orange,
+              color: Color.fromARGB(255, 255, 255, 255),
             ),
           ),
           const SizedBox(height: 8.0),
           const Text(
             "Niveau actuel",
-            style: TextStyle(fontSize: 14.0, color: Colors.black54),
+            style: TextStyle(
+              fontSize: 14.0,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
           ),
           const SizedBox(height: 16.0),
           Stack(
@@ -220,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: lightPurple,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
@@ -231,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: Color.fromARGB(255, 147, 30, 173),
             ),
           ),
           const SizedBox(height: 8.0),
@@ -245,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircularProgressIndicator(
                 value: 0.5,
-                backgroundColor: Colors.blue[100],
+                backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
               ),
               const Text("50%", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -256,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildMentalHealthChart() {
+  Widget _buildMentalHealthChart(dynamic userData) {
     final data = [
       _MentalHealthData('Lun', 60, 40),
       _MentalHealthData('Mar', 70, 50),
@@ -268,72 +279,98 @@ class _ProfilePageState extends State<ProfilePage> {
     ];
 
     return Container(
-      height: 250,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: primaryPurple,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Évolution hebdomadaire",
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          Text(
+            DateTime.now().toString().split(' ')[0],
+            style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: charts.BarChart(
-              charts.BarChartData(
-                barGroups: [
-                  // Créer des groupes de barres à partir de vos données
-                  for (int i = 0; i < data.length; i++)
-                    charts.BarChartGroupData(
-                      x: i,
-                      barRods: [
-                        charts.BarChartRodData(
-                          toY: data[i].stress.toDouble(),
-                          color: const Color(0xFFFF9800), // Orange
-                          width: 15,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4),
-                            topRight: Radius.circular(4),
+          const SizedBox(height: 8),
+          Text(
+            'Salut Enzo',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            height: 250,
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Évolution hebdomadaire",
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8.0),
+                Expanded(
+                  child: charts.BarChart(
+                    charts.BarChartData(
+                      barGroups: [
+                        // Créer des groupes de barres à partir de vos données
+                        for (int i = 0; i < data.length; i++)
+                          charts.BarChartGroupData(
+                            x: i,
+                            barRods: [
+                              charts.BarChartRodData(
+                                toY: data[i].stress.toDouble(),
+                                color: const Color(0xFFFF9800), // Orange
+                                width: 15,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                ),
+                              ),
+                              charts.BarChartRodData(
+                                toY: data[i].sleep.toDouble(),
+                                color: const Color(0xFF2196F3), // Bleu
+                                width: 15,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        charts.BarChartRodData(
-                          toY: data[i].sleep.toDouble(),
-                          color: const Color(0xFF2196F3), // Bleu
-                          width: 15,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4),
-                            topRight: Radius.circular(4),
-                          ),
-                        ),
                       ],
-                    ),
-                ],
-                titlesData: charts.FlTitlesData(
-                  bottomTitles: charts.AxisTitles(
-                    sideTitles: charts.SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(data[value.toInt()].day),
-                        );
-                      },
-                      reservedSize: 30,
+                      titlesData: charts.FlTitlesData(
+                        bottomTitles: charts.AxisTitles(
+                          sideTitles: charts.SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(data[value.toInt()].day),
+                              );
+                            },
+                            reservedSize: 30,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -626,6 +663,10 @@ class _MentalHealthData {
   final int sleep;
 
   _MentalHealthData(this.day, this.stress, this.sleep);
+}
+
+class _DummyUserData {
+  final String firstName = 'User';
 }
 
 class _AIMessageBubble extends StatelessWidget {

@@ -11,7 +11,8 @@ class SleepingPage extends StatefulWidget {
 }
 
 class _SleepingPageState extends State<SleepingPage> {
-  // Variables pour suivre les choix de l'utilisateur
+  final Color primaryColor = const Color.fromARGB(255, 150, 95, 186);
+  final Color secondaryColor = const Color.fromARGB(255, 90, 0, 150);
   String _sleepQuality = 'Bien'; // Valeur par défaut pour éviter le null
   String _sleepDuration = '7-8 heures'; // Valeur par défaut pour éviter le null
   String _fallingAsleepTime =
@@ -42,8 +43,6 @@ class _SleepingPageState extends State<SleepingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
