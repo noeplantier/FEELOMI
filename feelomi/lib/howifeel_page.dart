@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:feelomi/howifeel_page.dart';
 import 'dart:math' as math;
 
 class HowIFeelPage extends StatefulWidget {
@@ -22,6 +21,7 @@ class _HowIFeelPageState extends State<HowIFeelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -30,139 +30,145 @@ class _HowIFeelPageState extends State<HowIFeelPage> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header avec bouton retour
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                  ],
-                ),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight:
+                    MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
               ),
-
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Titre
-                      Text(
-                        "Comment te sens-tu aujourd'hui ?",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      SizedBox(height: 40),
-
-                      // Image questioning.png
-                      Image.asset(
-                        '/assets/images/questionning.png',
-                        width: 100,
-                        height: 100,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Icon(
-                              Icons.help_outline,
-                              color: Colors.white,
-                              size: 50,
-                            ),
-                          );
-                        },
-                      ),
-
-                      SizedBox(height: 60),
-
-                      // Emoji sélectionné
-                      Text(
-                        moodEmojis[selectedMoodIndex],
-                        style: TextStyle(fontSize: 80),
-                      ),
-
-                      SizedBox(height: 20),
-
-                      Text(
-                        moodLabels[selectedMoodIndex],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-
-                      SizedBox(height: 60),
-
-                      // Courbe avec 5 points
-                      Container(
-                        width: double.infinity,
-                        height: 120,
-                        child: CustomPaint(
-                          painter: MoodCurvePainter(selectedMoodIndex),
-                          child: GestureDetector(
-                            onTapDown: (details) {
-                              _handleTap(details, context);
-                            },
+              child: Column(
+                children: [
+                  // Header avec bouton retour
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 28,
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
 
-                      SizedBox(height: 80),
+                  // Contenu principal
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20),
 
-                      // Bouton Humeur
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigation vers la page suivante
-                          print(
-                            "Humeur sélectionnée: ${moodLabels[selectedMoodIndex]}",
-                          );
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Color(0xFF8B5CF6),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 60,
-                            vertical: 18,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: 8,
-                        ),
-                        child: Text(
-                          "Humeur",
+                        // Titre
+                        Text(
+                          "Comment te sens-tu aujourd'hui ?",
                           style: TextStyle(
-                            fontSize: 20,
+                            color: Colors.white,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: 30),
+
+                        // Image questioning.png - chemin corrigé
+                        Image.asset(
+                          'assets/images/questionning.png',
+                          width: 120,
+                          height: 120,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: Icon(
+                                Icons.help_outline,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                            );
+                          },
+                        ),
+
+                        SizedBox(height: 40),
+
+                        // Label sélectionné (sans emoji)
+                        Text(
+                          moodLabels[selectedMoodIndex],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+
+                        SizedBox(height: 50),
+
+                        // Courbe avec 5 points (plus courbée)
+                        Container(
+                          width: double.infinity,
+                          height: 100,
+                          child: CustomPaint(
+                            painter: MoodCurvePainter(selectedMoodIndex),
+                            child: GestureDetector(
+                              onTapDown: (details) {
+                                _handleTap(details, context);
+                              },
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 60),
+
+                        // Bouton Humeur
+                        ElevatedButton(
+                          onPressed: () {
+                            // Navigation vers la page suivante
+                            print(
+                              "Humeur sélectionnée: ${moodLabels[selectedMoodIndex]}",
+                            );
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Color(0xFF8B5CF6),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 50,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            elevation: 6,
+                          ),
+                          child: Text(
+                            "Humeur",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 40),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -192,7 +198,7 @@ class MoodCurvePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final linePaint = Paint()
       ..color = Colors.white.withOpacity(0.4)
-      ..strokeWidth = 3
+      ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
 
     final pointPaint = Paint()
@@ -205,22 +211,22 @@ class MoodCurvePainter extends CustomPainter {
 
     final selectedBorderPaint = Paint()
       ..color = Color(0xFF8B5CF6)
-      ..strokeWidth = 4
+      ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
-    // Dessiner la courbe légèrement courbée vers le bas
+    // Dessiner la courbe plus courbée vers le bas
     final path = Path();
     final startX = 30.0;
     final endX = size.width - 30;
-    final centerY = size.height / 2;
-    final curveDepth = 15.0;
+    final centerY = size.height / 2 - 10;
+    final curveDepth = 35.0; // Augmenté pour plus de courbure
 
     path.moveTo(startX, centerY);
     path.quadraticBezierTo(size.width / 2, centerY + curveDepth, endX, centerY);
 
     canvas.drawPath(path, linePaint);
 
-    // Dessiner les 5 points
+    // Dessiner les 5 points (sans smileys)
     for (int i = 0; i < 5; i++) {
       double x = startX + (endX - startX) * (i / 4);
       double t = i / 4.0;
@@ -228,11 +234,11 @@ class MoodCurvePainter extends CustomPainter {
 
       if (i == selectedIndex) {
         // Point sélectionné - plus grand avec bordure
-        canvas.drawCircle(Offset(x, y), 16, selectedPointPaint);
-        canvas.drawCircle(Offset(x, y), 16, selectedBorderPaint);
+        canvas.drawCircle(Offset(x, y), 14, selectedPointPaint);
+        canvas.drawCircle(Offset(x, y), 14, selectedBorderPaint);
       } else {
         // Points non sélectionnés
-        canvas.drawCircle(Offset(x, y), 10, pointPaint);
+        canvas.drawCircle(Offset(x, y), 8, pointPaint);
       }
     }
   }
