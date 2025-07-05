@@ -143,7 +143,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.0, // 100% de progression
+                    value: 1.43, // 143% - Page 12
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

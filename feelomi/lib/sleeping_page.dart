@@ -123,8 +123,7 @@ class _SleepingPageState extends State<SleepingPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value:
-                        0.75, // Ajustez selon la position dans votre workflow
+                    value: 1.04, // 104% - Page 9
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

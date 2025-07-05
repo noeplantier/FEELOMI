@@ -352,7 +352,7 @@ class _SpecifyPageState extends State<SpecifyPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.04, // 100% de progression
+                    value: 0.91, // 91% - Page 8
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:feelomi/humor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart' as charts;
 import 'package:image_picker/image_picker.dart';
@@ -39,9 +40,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 24.0),
                 _buildSearchBar(),
                 const SizedBox(height: 24.0),
-                const Text(
-                  "Comment te sens-tu aujourd'hui ?",
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HumorPage()),
+                    );
+                  },
+                  child: Text(
+                    "Comment te sens-tu aujourd'hui ?",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 _buildFeelingCard(),
@@ -145,10 +157,6 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text(
-                  "Comment te sens-tu aujourd'hui ?",
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                ),
                 SizedBox(height: 8.0),
                 Text(
                   "Partage ton humeur avec tes amis",

@@ -104,7 +104,7 @@ class _GenderPageState extends State<GenderPage> {
                   ),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.26,
+                    value: 0.13, // 13% - Page 2
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

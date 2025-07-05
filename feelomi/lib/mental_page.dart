@@ -184,7 +184,7 @@ class _MentalPageState extends State<MentalPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.3,
+                    value: 1.17, // 117% - Page 10
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

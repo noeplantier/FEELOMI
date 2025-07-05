@@ -133,7 +133,7 @@ class _HelpPageState extends State<HelpPage>
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.65,
+                    value: 0.52, // 52% - Page 5
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

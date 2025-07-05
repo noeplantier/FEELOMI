@@ -234,8 +234,7 @@ class _BetterPageState extends State<BetterPage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.69,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    value: 1.69, // 169% - Page finale
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       Colors.white,
                     ),

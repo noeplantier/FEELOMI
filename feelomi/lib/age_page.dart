@@ -99,7 +99,7 @@ class _AgePageState extends State<AgePage> {
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.39,
+                    value: 0.26, // 26% - Page 3
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

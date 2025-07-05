@@ -128,7 +128,7 @@ class _MedicsPageState extends State<MedicsPage> {
                   // Barre de progression
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 0.91,
+                    value: 0.78, // 78% - Page 7
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,

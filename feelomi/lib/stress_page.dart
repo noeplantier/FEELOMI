@@ -198,7 +198,7 @@ class _StressPageState extends State<StressPage>
                   const SizedBox(height: 8),
                   // Barre de progression
                   LinearProgressIndicator(
-                    value: 1.43,
+                    value: 1.30, // 130% - Page 11
                     backgroundColor: Colors.grey.shade200,
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                     minHeight: 5,
