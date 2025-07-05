@@ -1,3 +1,4 @@
+import 'package:feelomi/whysosad_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -139,7 +140,12 @@ class _HowIFeelPageState extends State<HowIFeelPage> {
                             print(
                               "Humeur sélectionnée: ${moodLabels[selectedMoodIndex]}",
                             );
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WhySoSadPage(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
