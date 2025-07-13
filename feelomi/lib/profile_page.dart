@@ -11,14 +11,8 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-final Color primaryPurple = Colors.purple;
-final Color lightPurple = const Color.fromARGB(
-  101,
-  155,
-  39,
-  176,
-).withOpacity(0.8);
-final Color lighterPurple = Colors.purple.withOpacity(0.6);
+final Color primaryColor = const Color(0xFF8B5CF6);
+final Color lightPurple = const Color(0x8B5CF6);
 
 class _ProfilePageState extends State<ProfilePage> {
   String? _profileImagePath;
@@ -159,8 +153,8 @@ class _ProfilePageState extends State<ProfilePage> {
               children: const [
                 SizedBox(height: 8.0),
                 Text(
-                  "Partage ton humeur avec tes amis",
-                  style: TextStyle(fontSize: 14.0, color: Colors.black54),
+                  "Comment te sens-tu aujourd'hui ?",
+                  style: TextStyle(fontSize: 17.0, color: Colors.black54),
                 ),
               ],
             ),
@@ -196,7 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: primaryPurple,
+        color: primaryColor,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
@@ -289,7 +283,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: primaryPurple,
+        color: primaryColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

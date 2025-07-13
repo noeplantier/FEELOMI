@@ -251,7 +251,7 @@ class _EmotionsTrackerState extends State<EmotionsTracker>
       backgroundColor: _backgroundColor,
       appBar: AppBar(
         title: const Text('Ton bien-être'),
-        backgroundColor: _primaryColor,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -263,7 +263,7 @@ class _EmotionsTrackerState extends State<EmotionsTracker>
                 children: [
                   // Header avec la mascotte Feelo
                   Container(
-                    color: _primaryColor,
+                    color: primaryColor,
                     padding: const EdgeInsets.only(bottom: 30, top: 20),
                     child: Column(
                       children: [
@@ -351,7 +351,7 @@ class _EmotionsTrackerState extends State<EmotionsTracker>
                                 ElevatedButton(
                                   onPressed: _openEmotionSelector,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: _primaryColor,
+                                    backgroundColor: primaryColor,
                                     shape: const CircleBorder(),
                                     padding: const EdgeInsets.all(12),
                                   ),

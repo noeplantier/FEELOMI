@@ -300,7 +300,7 @@ class _ValidationPageState extends State<ValidationPage>
                                   style: TextStyle(
                                     fontSize: 48,
                                     fontWeight: FontWeight.bold,
-                                    color: _primaryColor,
+                                    color: primaryColor,
                                     shadows: [
                                       Shadow(
                                         color: _accentColor.withOpacity(0.3),
@@ -364,7 +364,7 @@ class _ValidationPageState extends State<ValidationPage>
                                 children: [
                                   Icon(
                                     Icons.format_quote,
-                                    color: _primaryColor.withOpacity(0.7),
+                                    color: primaryColor.withOpacity(0.7),
                                     size: 32,
                                   ),
                                   const SizedBox(height: 16),
@@ -380,7 +380,7 @@ class _ValidationPageState extends State<ValidationPage>
                                   ),
                                   const SizedBox(height: 16),
                                   Divider(
-                                    color: _primaryColor.withOpacity(0.2),
+                                    color: primaryColor.withOpacity(0.2),
                                     thickness: 1,
                                   ),
                                   const SizedBox(height: 16),
@@ -409,7 +409,7 @@ class _ValidationPageState extends State<ValidationPage>
                                 color: _accentColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: _primaryColor.withOpacity(0.3),
+                                  color: primaryColor.withOpacity(0.3),
                                   width: 1,
                                 ),
                               ),
@@ -421,11 +421,11 @@ class _ValidationPageState extends State<ValidationPage>
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: _primaryColor.withOpacity(0.2),
+                                          color: primaryColor.withOpacity(0.2),
                                         ),
                                         child: Icon(
                                           Icons.calendar_today_rounded,
-                                          color: _primaryColor,
+                                          color: primaryColor,
                                           size: 24,
                                         ),
                                       ),
@@ -466,7 +466,7 @@ class _ValidationPageState extends State<ValidationPage>
                                       HapticFeedback.lightImpact();
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _primaryColor,
+                                      backgroundColor: primaryColor,
                                       foregroundColor: Colors.white,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 20,
@@ -545,7 +545,7 @@ class _ValidationPageState extends State<ValidationPage>
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _primaryColor,
+                    backgroundColor: primaryColor,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
@@ -573,7 +573,7 @@ class _ValidationPageState extends State<ValidationPage>
                         ),
                         child: Icon(
                           Icons.arrow_forward,
-                          color: _primaryColor,
+                          color: primaryColor,
                           size: 16,
                         ),
                       ),
@@ -593,7 +593,7 @@ class _ValidationPageState extends State<ValidationPage>
     return Scaffold(
       appBar: AppBar(
         title: Text('Rendez-vous $_selectedSpecialty'),
-        backgroundColor: _primaryColor,
+        backgroundColor: primaryColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: _closeWebView,
@@ -696,7 +696,7 @@ class _ValidationPageState extends State<ValidationPage>
                   ),
                   trailing: Icon(
                     Icons.arrow_forward_ios,
-                    color: _primaryColor,
+                    color: primaryColor,
                     size: 16,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -743,7 +743,7 @@ class _ValidationPageState extends State<ValidationPage>
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: _primaryColor.withOpacity(0.2),
+            color: primaryColor.withOpacity(0.2),
             blurRadius: 15,
             spreadRadius: 5,
           ),

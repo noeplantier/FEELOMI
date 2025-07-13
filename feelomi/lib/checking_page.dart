@@ -257,7 +257,7 @@ class _CheckingPageState extends State<CheckingPage>
                                     Navigator.of(context).pushNamed('/mood');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: _primaryColor,
+                                    backgroundColor: primaryColor,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),

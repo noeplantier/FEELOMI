@@ -646,7 +646,7 @@ class _BetterPageState extends State<BetterPage> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: secondaryColor.withOpacity(0.2),
+                          color: primaryColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: Colors.white.withOpacity(0.2),
@@ -723,7 +723,7 @@ class _BetterPageState extends State<BetterPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _hasDrawnSmile
                         ? Colors.green
-                        : secondaryColor,
+                        : primaryColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -749,7 +749,7 @@ class _BetterPageState extends State<BetterPage> {
                         ),
                         child: Icon(
                           Icons.check,
-                          color: _hasDrawnSmile ? Colors.green : secondaryColor,
+                          color: _hasDrawnSmile ? Colors.green : primaryColor,
                           size: 16,
                         ),
                       ),

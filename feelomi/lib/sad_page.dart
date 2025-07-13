@@ -144,7 +144,7 @@ class _SadTrackerState extends State<SadTracker>
       backgroundColor: _backgroundColor,
       appBar: AppBar(
         title: const Text('Analyser ta tristesse'),
-        backgroundColor: _primaryColor,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -169,7 +169,7 @@ class _SadTrackerState extends State<SadTracker>
             children: [
               // Header avec la mascotte Feelo
               Container(
-                color: _primaryColor,
+                color: primaryColor,
                 padding: const EdgeInsets.only(bottom: 30, top: 20),
                 child: Column(
                   children: [
@@ -366,7 +366,7 @@ class _SadTrackerState extends State<SadTracker>
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: _primaryColor,
+                                    color: primaryColor,
                                     width: 2,
                                   ),
                                 ),
@@ -388,7 +388,7 @@ class _SadTrackerState extends State<SadTracker>
                           Navigator.of(context).pushNamed('/feeling');
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _primaryColor,
+                          backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -445,10 +445,10 @@ class _SadTrackerState extends State<SadTracker>
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: _primaryColor.withOpacity(0.1),
+                    color: primaryColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, color: _primaryColor, size: 24),
+                  child: Icon(icon, color: primaryColor, size: 24),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -471,13 +471,13 @@ class _SadTrackerState extends State<SadTracker>
                     child: SliderTheme(
                       data: SliderThemeData(
                         trackHeight: 8,
-                        activeTrackColor: _primaryColor,
+                        activeTrackColor: primaryColor,
                         inactiveTrackColor: Colors.grey.shade200,
                         thumbColor: Colors.white,
                         thumbShape: const RoundSliderThumbShape(
                           enabledThumbRadius: 12,
                         ),
-                        overlayColor: _primaryColor.withOpacity(0.2),
+                        overlayColor: primaryColor.withOpacity(0.2),
                         overlayShape: const RoundSliderOverlayShape(
                           overlayRadius: 20,
                         ),

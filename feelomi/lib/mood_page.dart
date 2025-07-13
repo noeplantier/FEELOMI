@@ -259,7 +259,7 @@ class _MoodPageState extends State<MoodPage>
       backgroundColor: _backgroundColor,
       appBar: AppBar(
         title: const Text('Suivi de ton humeur'),
-        backgroundColor: _primaryColor,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -274,7 +274,7 @@ class _MoodPageState extends State<MoodPage>
                 children: [
                   // Header avec titre
                   Container(
-                    color: _primaryColor,
+                    color: primaryColor,
                     padding: const EdgeInsets.only(bottom: 30, top: 10),
                     child: const Center(
                       child: Text(
@@ -362,7 +362,7 @@ class _MoodPageState extends State<MoodPage>
                                 ),
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? _primaryColor
+                                      ? primaryColor
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -393,7 +393,7 @@ class _MoodPageState extends State<MoodPage>
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Card(
                       elevation: 4,
-                      color: _primaryColor.withOpacity(0.9),
+                      color: primaryColor.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -528,7 +528,7 @@ class _MoodPageState extends State<MoodPage>
     return CustomPaint(
       painter: MoodChartPainter(
         moodData: _moodData,
-        primaryColor: _primaryColor,
+        primaryColor: primaryColor,
       ),
       size: const Size(double.infinity, 200),
     );

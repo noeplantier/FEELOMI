@@ -251,50 +251,38 @@ class _HomePageState extends State<HomePage>
                     const SizedBox(height: 40),
 
                     // Texte de connexion avec animation de fondu
-                    AnimatedOpacity(
-                      opacity: _readyForInteraction ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 800),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Vous avez déjà un compte ?',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Vous avez déjà un compte ?',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
                           ),
-
-                          const SizedBox(height: 16),
-
-                          // Bouton de connexion
-                          TextButton(
-                            onPressed: _readyForInteraction
-                                ? () {
-                                    HapticFeedback.lightImpact();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const LoginPage(),
-                                      ),
-                                    );
-                                  }
-                                : null,
-                            style: TextButton.styleFrom(
-                              foregroundColor: secondaryColor,
-                            ),
-                            child: const Text(
-                              'Connectez-vous',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
                               ),
+                            );
+                          },
+                          child: Text(
+                            'Connectez vous',
+
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: primaryColor,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
