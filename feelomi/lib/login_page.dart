@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
+    final Color primaryColor = const Color(0xFF8B5CF6);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
 
     return Scaffold(

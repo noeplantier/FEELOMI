@@ -11,7 +11,7 @@ class SleepingPage extends StatefulWidget {
 }
 
 class _SleepingPageState extends State<SleepingPage> {
-  final Color primaryColor = const Color.fromARGB(255, 150, 95, 186);
+  final Color primaryColor = const Color(0xFF8B5CF6);
   final Color secondaryColor = const Color.fromARGB(255, 90, 0, 150);
   String _sleepQuality = 'Bien'; // Valeur par défaut pour éviter le null
   String _sleepDuration = '7-8 heures'; // Valeur par défaut pour éviter le null

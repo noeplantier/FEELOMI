@@ -83,7 +83,7 @@ class _ValidationPageState extends State<ValidationPage>
   late String _selectedQuote;
 
   // Couleurs thématiques
-  final Color _primaryColor = const Color.fromARGB(255, 150, 95, 186);
+  final Color primaryColor = const Color(0xFF8B5CF6);
   final Color _accentColor = const Color.fromARGB(255, 90, 0, 150);
   final Color _backgroundColor = const Color.fromARGB(255, 250, 245, 255);
 

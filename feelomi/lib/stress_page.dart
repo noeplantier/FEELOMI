@@ -111,9 +111,8 @@ class _StressPageState extends State<StressPage>
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
-    final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
-    final deviceWidth = MediaQuery.of(context).size.width;
+    final Color primaryColor = const Color(0xFF8B5CF6);
+
     // Define a stressLevel value to use in the chart
     final stressLevel =
         _stressLevel * 25.0; // Scale value appropriately for the chart

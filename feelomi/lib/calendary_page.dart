@@ -9,7 +9,7 @@ class CalendaryPage extends StatefulWidget {
 }
 
 class _CalendaryPageState extends State<CalendaryPage> {
-  final primaryColor = const Color.fromARGB(255, 150, 95, 186);
+  final Color primaryColor = const Color(0xFF8B5CF6);
   final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();

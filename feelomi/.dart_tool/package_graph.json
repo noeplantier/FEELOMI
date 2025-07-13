@@ -244,6 +244,15 @@
       ]
     },
     {
+      "name": "table_calendar",
+      "version": "3.0.9",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "simple_gesture_detector"
+      ]
+    },
+    {
       "name": "lints",
       "version": "5.1.1",
       "dependencies": []
@@ -772,6 +781,13 @@
       ]
     },
     {
+      "name": "simple_gesture_detector",
+      "version": "0.2.1",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
       "name": "plugin_platform_interface",
       "version": "2.1.8",
       "dependencies": [
@@ -972,22 +988,6 @@
       "dependencies": [
         "meta",
         "path"
-      ]
-    },
-    {
-      "name": "simple_gesture_detector",
-      "version": "0.2.1",
-      "dependencies": [
-        "flutter"
-      ]
-    },
-    {
-      "name": "table_calendar",
-      "version": "3.0.9",
-      "dependencies": [
-        "flutter",
-        "intl",
-        "simple_gesture_detector"
       ]
     }
   ],

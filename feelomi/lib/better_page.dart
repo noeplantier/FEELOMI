@@ -155,8 +155,7 @@ class _BetterPageState extends State<BetterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 90, 0, 150);
-    final secondaryColor = const Color.fromARGB(255, 150, 95, 186);
+    final Color primaryColor = const Color(0xFF8B5CF6);
     final backgroundColor = const Color.fromARGB(255, 70, 0, 120);
 
     return Scaffold(
@@ -272,7 +271,7 @@ class _BetterPageState extends State<BetterPage> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: secondaryColor,
+                          color: primaryColor,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
@@ -342,7 +341,7 @@ class _BetterPageState extends State<BetterPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: secondaryColor.withOpacity(0.3),
+                          color: primaryColor.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: Colors.white.withOpacity(0.3),

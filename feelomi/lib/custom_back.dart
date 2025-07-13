@@ -9,7 +9,7 @@ class CustomBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
+    final Color primaryColor = const Color(0xFF8B5CF6);
     return IconButton(
       icon: const Icon(Icons.arrow_back_rounded),
       color: iconColor ?? primaryColor,

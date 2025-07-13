@@ -32,7 +32,7 @@ class _HealthTrackerState extends State<HealthTracker> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color.fromARGB(255, 150, 95, 186);
+    final Color primaryColor = const Color(0xFF8B5CF6);
     final secondaryColor = const Color.fromARGB(255, 90, 0, 150);
 
     return Scaffold(
@@ -43,7 +43,7 @@ class _HealthTrackerState extends State<HealthTracker> {
             const CustomBackButton(iconColor: Colors.white),
 
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -112,7 +112,6 @@ class _HealthTrackerState extends State<HealthTracker> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   LinearProgressIndicator(
                     value: 0.13,
                     backgroundColor: Colors.grey.shade200,
