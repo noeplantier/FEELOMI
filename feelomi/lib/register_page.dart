@@ -1,3 +1,4 @@
+import 'package:feelomi/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -94,17 +95,28 @@ class _RegisterPageState extends State<RegisterPage>
       _isLoading = true;
     });
 
-    // Simuler une inscription avec délai
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      // Inscription avec Firebase
+      final credential = await AuthService.registerWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        fullName: _nameController.text.trim(),
+      );
 
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (!mounted) return;
-
-    // Pour démonstration, on considère l'inscription réussie
-    _showSuccessDialog();
+      if (credential != null && mounted) {
+        _showSuccessDialog();
+      }
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar(e.toString());
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   bool _isValidEmail(String email) {

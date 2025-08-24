@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "cocoapods": "^0.0.0",
+    "flutter": "^0.0.5",
+    "xcode": "^3.0.1"
+  }
+}

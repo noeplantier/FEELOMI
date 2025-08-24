@@ -1,6 +1,7 @@
 import 'package:feelomi/emotions_page.dart';
 import 'package:feelomi/profile_page.dart';
 import 'package:feelomi/register_page.dart';
+import 'package:feelomi/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,58 +53,41 @@ class _LoginPageState extends State<LoginPage>
 
   // Fonction pour gérer la connexion
   Future<void> _handleLogin() async {
-    // Ferme le clavier
     FocusScope.of(context).unfocus();
 
-    // Vérifie si les champs sont remplis
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez remplir tous les champs')),
+      );
+      return;
+    }
 
-      // Simulation d'une connexion (à remplacer par votre logique d'authentification réelle)
-      try {
-        // Feedback haptique
-        HapticFeedback.mediumImpact();
+    setState(() {
+      _isLoading = true;
+    });
 
-        // Simule un délai pour une vraie connexion
-        await Future.delayed(const Duration(seconds: 1));
+    try {
+      final credential = await AuthService.signInWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
 
-        // Marque l'utilisateur comme connecté
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('is_logged_in', true);
-
-        // Sauvegarde la date d'inscription si c'est la première connexion
-        if (prefs.getString('registration_date') == null) {
-          await prefs.setString(
-            'registration_date',
-            DateTime.now().toIso8601String(),
-          );
-        }
-
-        // Navigue vers la page des émotions
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const ProfilePage()),
-          );
-        }
-      } catch (e) {
-        // En cas d'erreur, affiche un message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Erreur lors de la connexion: ${e.toString()}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
+      if (credential != null && mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
